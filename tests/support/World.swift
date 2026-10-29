@@ -6,19 +6,18 @@ import XCTest
 final class World {
     let db: Database
     let app: Flashcards
-    private var ticks = 0
-    private var ids = 0
+    let roles: Roles
 
-    init() throws {
+    init(shuffle: @escaping ([String]) -> [String] = { $0 }) throws {
         db = try Database.inMemory()
         var tick = 0
         var id = 0
-        let roles = Roles(
+        roles = Roles(
             now: {
                 tick += 1
                 return Date(timeIntervalSince1970: 1_700_000_000 + Double(tick))
             },
-            shuffle: { $0 },
+            shuffle: shuffle,
             newID: {
                 id += 1
                 return "id-\(id)"
