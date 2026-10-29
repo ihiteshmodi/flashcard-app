@@ -64,16 +64,19 @@ Couple cards also hold Curious (question) and Cozy Up (dare) groups.
 - A new custom card is unasked for every existing profile.
 - Extras in v1: own cards, undo/redo, export/import the SQLite file.
 
-## Open guesses (need a yes)
+## Assumptions (approved with the mockups)
 Confirmed: new profiles start with all decks on; skipped cards go to the end of the stack and stay unasked; start over keeps answers; no wording rewrite; source zip and generated card data stay out of git; new custom cards are unasked for every profile.
 
-Still guesses:
+Approved together with the mockups:
 1. After Undo, the answer stays saved and is pre-filled if the card is asked again. Redo is available until the next new swipe.
 2. A saved answer on a card that is currently un-asked (after Undo) does not appear in history until the card is asked again.
-3. Export writes a copy of the SQLite file through the iOS Files sheet to any location; import validates the file and backs up the current database first.
-4. Does anyone care? Yes: personal use, confirmed by the owner.
+3. Export writes a copy of the SQLite file through the iOS Files sheet (or the share sheet) to any location; import validates the file and backs up the current database first.
+4. Removing or deleting a person keeps their past group answers, labelled with the name they had when saved.
+5. A new group starts with all decks on, like a new person.
+6. Names are unique across people and groups.
 
-Groups (delta, needs a yes):
-5. Removing or deleting a person keeps their past group answers, labelled with the name they had when saved.
-6. A new group starts with all decks on, like a new person.
-7. Names are unique across people and groups.
+Decisions made while building (not in the original examples):
+- Quotes that only wrap a whole card (for example around a topic title) are dropped when the seed is built; the words are untouched.
+- A this-or-that option label drops its trailing "?" and gets a capital first letter, so it reads as a button.
+- Own cards can be a question, this-or-that (two options) or multiple choice (two to four options).
+- The Appearance setting (System, Light, Dark) defaults to System.
