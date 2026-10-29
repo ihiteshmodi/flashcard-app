@@ -7,7 +7,6 @@ public struct DeckSummary: Identifiable, Equatable {
     public var id: String { deck.id }
 }
 
-/// Read-only browsing of the bundled decks. The owner's own cards are managed in `CustomCards`.
 public final class DeckCatalog {
     let db: Database
 

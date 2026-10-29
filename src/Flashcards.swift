@@ -1,6 +1,5 @@
 import Foundation
 
-/// The application interface: one place that exposes every use case to the app and the tests.
 public final class Flashcards {
     public let database: Database
     public let profiles: Profiles

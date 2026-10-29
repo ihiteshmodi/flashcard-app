@@ -5,7 +5,6 @@ struct MigrationStep {
     let apply: (Database) throws -> Void
 }
 
-/// Each step runs once, in order, and only when the file is below its version.
 struct Migrator {
     let steps: [MigrationStep]
 

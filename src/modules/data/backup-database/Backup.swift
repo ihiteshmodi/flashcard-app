@@ -20,7 +20,6 @@ public struct BackupInfo: Equatable {
     public let answerCount: Int
 }
 
-/// Export and import of the whole database as one SQLite file.
 public final class Backup {
     private static let lastExportKey = "last_export_at"
     private static let requiredTables: Set<String> = [
@@ -50,14 +49,12 @@ public final class Backup {
         return Date(timeIntervalSince1970: seconds)
     }
 
-    /// Writes a consistent copy of everything. An existing file at `url` is replaced.
     public func export(to url: URL) throws {
         if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
         try db.run("VACUUM INTO ?1", [.text(url.path)])
         try db.setSetting(Self.lastExportKey, String(roles.now().timeIntervalSince1970))
     }
 
-    /// Checks that `url` is a Flashcards backup this app can read, without changing anything.
     public func inspect(_ url: URL) throws -> BackupInfo {
         guard FileManager.default.fileExists(atPath: url.path) else { throw BackupError.unreadable("the file is missing") }
         let source: Database
