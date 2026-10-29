@@ -8,11 +8,13 @@ public final class Flashcards {
     public let groups: Groups
     public let answers: AnswerBook
     public let customCards: CustomCards
+    public let backup: Backup
     private let seedLoader: SeedLoader
     private let roles: Roles
+    private var seedData: Data?
     private var sessions: [String: CardSession] = [:]
 
-    public init(database: Database, roles: Roles = .live) throws {
+    public init(database: Database, roles: Roles = .live, safetyCopyFolder: URL? = nil) throws {
         try Migrator.current.migrate(database)
         self.database = database
         self.roles = roles
@@ -22,6 +24,13 @@ public final class Flashcards {
         answers = AnswerBook(db: database, roles: roles)
         customCards = CustomCards(db: database, roles: roles)
         seedLoader = SeedLoader(db: database, roles: roles)
+        var reload: () throws -> Void = {}
+        backup = Backup(db: database, roles: roles, safetyFolder: safetyCopyFolder, afterRestore: { try reload() })
+        reload = { [weak self] in
+            guard let self else { return }
+            self.sessions.removeAll()
+            if let data = self.seedData { try self.seedLoader.load(data) }
+        }
     }
 
     /// One session per profile, kept so undo and redo survive switching profiles.
@@ -32,8 +41,9 @@ public final class Flashcards {
         return created
     }
 
-    /// Adds or updates the bundled decks from the seed JSON.
+    /// Adds or updates the bundled decks from the seed JSON, and again after an import.
     public func loadSeed(_ data: Data) throws {
         try seedLoader.load(data)
+        seedData = data
     }
 }
