@@ -1,0 +1,54 @@
+name: Flashcards
+options:
+  bundleIdPrefix: app.flashcards
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+packages:
+  FlashcardsCore:
+    path: .
+targets:
+  Flashcards:
+    type: application
+    platform: iOS
+    sources:
+      - path: app
+      - path: Generated/seed.json
+        optional: true
+        buildPhase: resources
+    dependencies:
+      - package: FlashcardsCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.flashcards.personal
+        PRODUCT_NAME: Flashcards
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Flashcards
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+  FlashcardsUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: tests/ui
+    dependencies:
+      - target: Flashcards
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.flashcards.personal.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+schemes:
+  Flashcards:
+    build:
+      targets:
+        Flashcards: all
+    test:
+      targets:
+        - FlashcardsUITests
