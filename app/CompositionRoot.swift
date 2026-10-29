@@ -5,17 +5,31 @@ import Foundation
 enum CompositionRoot {
     static func start() -> Result<Flashcards, Error> {
         Result {
-            let database = try openDatabase()
-            return try Flashcards(database: database, roles: .live)
+            let arguments = ProcessInfo.processInfo.arguments
+            let isUITest = arguments.contains("-UITestInMemory")
+            let database = isUITest ? try Database.inMemory() : try openDatabase()
+            let roles = isUITest
+                ? Roles(now: { Date() }, shuffle: { $0 }, newID: { UUID().uuidString })
+                : Roles.live
+            let app = try Flashcards(database: database, roles: roles, safetyCopyFolder: try safetyCopyFolder())
+            let seedName = arguments.contains("-UITestDemoData") ? "DemoDecks" : "seed"
+            if let url = Bundle.main.url(forResource: seedName, withExtension: "json") {
+                try app.loadSeed(Data(contentsOf: url))
+            }
+            return app
         }
     }
 
     private static func openDatabase() throws -> Database {
-        if ProcessInfo.processInfo.arguments.contains("-UITestInMemory") {
-            return try Database.inMemory()
-        }
         let folder = try FileManager.default.url(
             for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         return try Database(path: folder.appendingPathComponent("flashcards.sqlite").path)
+    }
+
+    /// Visible in Files under "On My iPhone" so safety copies can be fetched or kept.
+    private static func safetyCopyFolder() throws -> URL {
+        try FileManager.default
+            .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            .appendingPathComponent("Safety Copies")
     }
 }
