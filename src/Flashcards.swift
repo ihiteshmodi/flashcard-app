@@ -5,6 +5,7 @@ public final class Flashcards {
     public let database: Database
     public let profiles: Profiles
     public let decks: DeckChoices
+    public let catalog: DeckCatalog
     public let groups: Groups
     public let answers: AnswerBook
     public let customCards: CustomCards
@@ -20,6 +21,7 @@ public final class Flashcards {
         self.roles = roles
         profiles = Profiles(db: database, roles: roles)
         decks = DeckChoices(db: database)
+        catalog = DeckCatalog(db: database)
         groups = Groups(db: database, profiles: profiles)
         answers = AnswerBook(db: database, roles: roles)
         customCards = CustomCards(db: database, roles: roles)
