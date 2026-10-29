@@ -14,7 +14,6 @@ public struct DeckRow: Identifiable, Equatable {
     public var id: String { deck.id }
 }
 
-/// Which decks a profile (a person or a group) draws its stack from.
 public final class DeckChoices {
     let db: Database
 

@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 
-/// The swipe stack for one profile (a person or a group), with undo and redo.
 @Observable
 public final class CardSession {
     private enum Swipe {

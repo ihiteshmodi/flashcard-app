@@ -1,6 +1,5 @@
 import Foundation
 
-/// The things that change between runs: time, randomness and id generation.
 public struct Roles {
     public var now: () -> Date
     public var shuffle: ([String]) -> [String]
