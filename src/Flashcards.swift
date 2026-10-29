@@ -5,6 +5,8 @@ public final class Flashcards {
     public let database: Database
     public let profiles: Profiles
     public let decks: DeckChoices
+    public let groups: Groups
+    public let answers: AnswerBook
     private let seedLoader: SeedLoader
     private let roles: Roles
     private var sessions: [String: CardSession] = [:]
@@ -15,6 +17,8 @@ public final class Flashcards {
         self.roles = roles
         profiles = Profiles(db: database, roles: roles)
         decks = DeckChoices(db: database)
+        groups = Groups(db: database, profiles: profiles)
+        answers = AnswerBook(db: database, roles: roles)
         seedLoader = SeedLoader(db: database, roles: roles)
     }
 
