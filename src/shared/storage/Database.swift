@@ -76,9 +76,11 @@ public final class Database {
     @ObservationIgnored private var transactionDepth = 0
     public private(set) var revision = 0
 
-    public init(path: String) throws {
+    public init(path: String, readOnly: Bool = false) throws {
         var opened: OpaquePointer?
-        let flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX
+        let flags = readOnly
+            ? SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX
+            : SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX
         guard sqlite3_open_v2(path, &opened, flags, nil) == SQLITE_OK, let opened else {
             let message = opened.map { String(cString: sqlite3_errmsg($0)) } ?? "unknown error"
             if let opened { sqlite3_close(opened) }
@@ -161,6 +163,18 @@ public final class Database {
 
     func setSchemaVersion(_ version: Int) throws {
         try run("PRAGMA user_version = \(version)")
+    }
+
+    /// Replaces everything in this database with the contents of `source`, keeping this connection open.
+    func replaceContents(with source: Database) throws {
+        guard let copy = sqlite3_backup_init(handle, "main", source.handle, "main") else {
+            throw DatabaseError.failed(lastMessage)
+        }
+        let step = sqlite3_backup_step(copy, -1)
+        let finish = sqlite3_backup_finish(copy)
+        guard step == SQLITE_DONE, finish == SQLITE_OK else { throw DatabaseError.failed(lastMessage) }
+        try run("PRAGMA foreign_keys = ON")
+        revision += 1
     }
 
     func tableNames() throws -> Set<String> {
