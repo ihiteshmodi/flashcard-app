@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "decks": [
+    {
+      "id": "demo-deep",
+      "title": "Demo Deep Talk",
+      "cards": [
+        {"id": "demo-deep-001", "kind": "question", "category": "Values", "prompt": "What is a belief you changed your mind about?"},
+        {"id": "demo-deep-002", "kind": "question", "category": "Values", "prompt": "What small thing instantly improves your mood?"},
+        {"id": "demo-deep-003", "kind": "topic", "prompt": "What is the best trip you ever took?", "detail": "Why it works: it invites a story."}
+      ]
+    },
+    {
+      "id": "demo-pairs",
+      "title": "Demo Pairs",
+      "cards": [
+        {"id": "demo-pairs-001", "kind": "multipleChoice", "category": "Dilemmas", "prompt": "You find a wallet on the street. Do you...", "options": ["Hand it to the police", "Look for the owner online", "Leave it where it is"]},
+        {"id": "demo-pairs-002", "kind": "thisOrThat", "category": "This or That", "prompt": "Coffee OR tea", "options": ["Coffee", "Tea"]},
+        {"id": "demo-pairs-003", "kind": "dare", "category": "Cozy Up", "prompt": "Hold hands for thirty seconds", "detail": "no talking"}
+      ]
+    }
+  ]
+}

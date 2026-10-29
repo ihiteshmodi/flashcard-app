@@ -4,26 +4,46 @@ import SwiftUI
 @main
 struct FlashcardsApp: App {
     @State private var startup = CompositionRoot.start()
+    @AppStorage("appearance") private var appearance = Appearance.system.rawValue
 
     var body: some Scene {
         WindowGroup {
-            switch startup {
-            case .success(let app):
-                RootView(app: app)
-            case .failure(let error):
-                StartupFailureView(message: error.localizedDescription)
+            Group {
+                switch startup {
+                case .success(let app):
+                    RootView(app: app)
+                case .failure(let error):
+                    ContentUnavailableView(
+                        "Flashcards Could Not Start",
+                        systemImage: "exclamationmark.triangle",
+                        description: Text(error.localizedDescription))
+                }
             }
+            .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme)
         }
     }
 }
 
-private struct StartupFailureView: View {
-    let message: String
+enum Appearance: String, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
 
-    var body: some View {
-        ContentUnavailableView(
-            "Flashcards Could Not Start",
-            systemImage: "exclamationmark.triangle",
-            description: Text(message))
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
     }
 }
