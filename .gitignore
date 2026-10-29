@@ -1,0 +1,19 @@
+# Private source content and mockups
+Internal Artifacts/
+
+# Generated card data (built from the private source)
+Generated/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Xcode and Swift
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+.build/
+.swiftpm/
+build/
+
+# macOS
+.DS_Store
