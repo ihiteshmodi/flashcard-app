@@ -6,13 +6,24 @@ public final class Flashcards {
     public let profiles: Profiles
     public let decks: DeckChoices
     private let seedLoader: SeedLoader
+    private let roles: Roles
+    private var sessions: [String: CardSession] = [:]
 
     public init(database: Database, roles: Roles = .live) throws {
         try Migrator.current.migrate(database)
         self.database = database
+        self.roles = roles
         profiles = Profiles(db: database, roles: roles)
         decks = DeckChoices(db: database)
         seedLoader = SeedLoader(db: database, roles: roles)
+    }
+
+    /// One session per profile, kept so undo and redo survive switching profiles.
+    public func session(for profileID: String) throws -> CardSession {
+        if let existing = sessions[profileID] { return existing }
+        let created = try CardSession(profileID: profileID, db: database, roles: roles)
+        sessions[profileID] = created
+        return created
     }
 
     /// Adds or updates the bundled decks from the seed JSON.
