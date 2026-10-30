@@ -14,6 +14,25 @@
 | <img src="docs/screenshots/cards.png" width="300" alt="A safe question from the public 21 Questions deck, ready to swipe"> | <img src="docs/screenshots/profiles.png" width="300" alt="Sample people tagged Woman · Dating and Man · Friend, plus a separate Game Night group"> |
 | A sample card from the public **21 Questions** deck. | Sample profiles and a group; each has its own progress. |
 
+### Design mockups (dark mode)
+
+Illustrative screens with fictional names and sample prompts.
+
+| Screen 1: Question card | Screen 2: Saved answer |
+|---|---|
+| <img src="docs/screenshots/mockup-01-question.png" width="260" alt="Dark-mode question card with swipe actions and progress"> | <img src="docs/screenshots/mockup-02-saved-answer.png" width="260" alt="Dark-mode sheet for saving an answer to a question"> |
+| A readable prompt card with skip, asked, undo, and redo controls. | An optional answer note appears after a card is marked asked. |
+
+| Screen 3: Multiple choice | Screen 6: Profiles |
+|---|---|
+| <img src="docs/screenshots/mockup-03-multiple-choice.png" width="260" alt="Dark-mode couple-card multiple-choice prompt with a selected option"> | <img src="docs/screenshots/mockup-06-profiles.png" width="260" alt="Dark-mode profiles page listing people and groups with separate progress"> |
+| Choose an option and optionally add a note. | People and groups keep separate progress; a checkmark marks the active profile. |
+
+| Screen 10: Add a card | Screen 14: Group members |
+|---|---|
+| <img src="docs/screenshots/mockup-10-new-card.png" width="260" alt="Dark-mode form for adding a question card"> | <img src="docs/screenshots/mockup-14-group-members.png" width="260" alt="Dark-mode group profile showing its member list"> |
+| Add a question to the My Cards deck. | View and manage group members separately from their individual profiles. |
+
 ## What it does
 - **Swipe cards.** Right = asked, left = skip (the card returns later). Undo and Redo cover accidental swipes.
 - **People and groups.** Each person has their own asked list, answers and deck choices. A group is made of people you already added and tracks its own asked cards and answers, separate from its members.
