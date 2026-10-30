@@ -35,6 +35,23 @@ struct SettingsView: View {
                 .accessibilityIdentifier("appearance")
             }
             Section {
+                Picker("I am", selection: Binding(
+                    get: { (try? app.owner.gender()) ?? nil },
+                    set: { new in
+                        do { try app.setOwnerGender(new) } catch { errorMessage = error.localizedDescription }
+                    })
+                ) {
+                    Text("Not set").tag(Gender?.none)
+                    ForEach(Gender.allCases.reversed(), id: \.self) { Text($0.title).tag(Gender?.some($0)) }
+                }
+                .accessibilityIdentifier("i-am")
+                .listRowBackground(Theme.surface)
+            } header: {
+                Text("About You")
+            } footer: {
+                Text("Some cards are worded from a man's or a woman's point of view. They only show when this matches.")
+            }
+            Section {
                 Button("Save Export to Files…") { export(thenSave: true) }
                     .listRowBackground(Theme.surface)
                     .accessibilityIdentifier("export-files")
@@ -47,7 +64,7 @@ struct SettingsView: View {
             } header: {
                 Text("Backup")
             } footer: {
-                Text("Export saves one file, \(app.backup.suggestedFileName()), with all profiles, groups, decks chosen, asked cards, answers and your own cards. You choose where it goes. Import replaces everything after you confirm, and keeps a safety copy first.")
+                Text("Export saves one file, \(app.backup.suggestedFileName()), with all profiles, groups, decks chosen, asked cards, answers, your own cards and who you are. You choose where it goes. Import replaces everything after you confirm, and keeps a safety copy first.")
             }
             Section("Data") {
                 row("Profiles", "\(people.count + groups.count)")

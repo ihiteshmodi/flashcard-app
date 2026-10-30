@@ -30,7 +30,7 @@ scripts/bootstrap.sh
 
 # Verify the core works (no simulator needed)
 swift test
-# Expected: Executed 136 tests, with 0 failures
+# Expected: Executed 178 tests, with 0 failures
 
 # Run the app
 open Flashcards.xcodeproj    # choose the Flashcards scheme, then Run
@@ -54,11 +54,22 @@ The IPA embeds your private `Generated/seed.json` (when you have one), so keep i
 ## Usage
 
 ### In the app
-1. **Profiles** tab: add a person (name, optional emoji). Add a group from the same menu and tick its members.
+1. **Profiles** tab: add a person (name, optional emoji, gender Woman or Man, and closeness Friend, Dating or Partner). Add a group from the same menu and tick its members. Open a person to move them from Friend to Dating to Partner with one tap.
 2. **Cards** tab: pick who you are talking to with the name at the top, then swipe. Use ✓ / ✕ and the Undo / Redo buttons if you prefer taps.
 3. After a right swipe, type the answer in the sheet and tap **Save Answer**, or tap **Not Now**.
 4. Open a profile to see its **History**, change its **Decks**, or (for groups) edit **Members**.
-5. **Library** tab: add your own cards. **Settings** tab: export, import, appearance.
+5. **Library** tab: add your own cards (any deck, category, tip line, Dare kind, and the three labels below). **Settings** tab: who you are ("I am"), export, import, appearance.
+
+### Who sees which card
+Every card has three labels: **Who it's for** (Everyone, Women, Men, Couples), **How spicy** (Safe, Flirty, Explicit) and **Worded for** (Anyone, A man's view, A woman's view). A profile is shown a card only when all three fit:
+
+| Label | Shown when |
+|---|---|
+| Spice | Safe to everyone; Flirty to Dating and Partner; Explicit to Partner |
+| Who it's for | Everyone to all; Women or Men to that gender; Couples to Dating and Partner |
+| Worded for | A man's view needs "I am: Man"; a woman's view needs "I am: Woman"; hidden when "I am" is not set |
+
+A person with no gender, and every group, only sees Everyone, Safe cards. Progress and deck counts count only the cards a profile can see; a card hidden by a later change stays in its history. Existing profiles from an older backup have no gender and closeness Friend until you set them.
 
 ### From code
 Everything the screens do goes through one object, `Flashcards`. This is the same code the tests use:
@@ -147,6 +158,8 @@ One flashcard holds one question. When a source line holds two standalone questi
 python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" app/resources/StarterDecks.json --only 21-questions
 ```
 
+The builder labels each card from its deck, category and wording (`tools/build-seed/classify.py`; a keyword can only raise a card's spice). Defaults are left out of the JSON. Optional card fields: `audience` (`everyone`, `women`, `men`, `couples`), `spice` (`safe`, `flirty`, `explicit`), `perspective` (`anyone`, `man`, `woman`).
+
 Card shapes the app understands:
 
 | Kind | Looks like |
@@ -182,12 +195,12 @@ All types live in the `FlashcardsCore` Swift package (`src/`). Methods throw; th
 
 | Area | Calls |
 |---|---|
-| Profiles | `profiles.addPerson(name:emoji:)`, `rename(_:to:)`, `delete(_:)`, `impactOfDeleting(_:)`, `people()`, `groups()`, `select(_:)`, `selectedProfile()` |
+| Profiles | `profiles.addPerson(name:emoji:gender:closeness:)`, `setGender(of:to:)`, `setCloseness(of:to:)`, `setOwnerGender(_:)`, `owner.gender()`, `rename(_:to:)`, `delete(_:)`, `impactOfDeleting(_:)`, `people()`, `groups()`, `select(_:)`, `selectedProfile()` |
 | Groups | `groups.createGroup(name:emoji:memberIDs:)`, `members(of:)`, `addMembers(_:to:)`, `removeMember(_:from:)` |
 | Decks | `decks.rows(for:)`, `decks.setDeck(_:on:for:)`, `catalog.decks()`, `catalog.cards(in:)` |
 | Swiping | `session(for:)` returns a `CardSession` with `topCard`, `stack`, `progress`, `swipeRight()`, `swipeLeft()`, `undo()`, `redo()`, `startOver()`, `syncWithLibrary()` |
 | Answers | `answers.save(profileID:cardID:text:pickIndex:answeredBy:)`, `answer(profileID:cardID:)`, `history(profileID:onlyWithAnswers:)`, `answerers(forGroup:)` |
-| Own cards | `customCards.add(kind:prompt:options:)`, `edit(_:prompt:options:)`, `delete(_:)`, `answersLost(ifDeleting:)`, `cards()` |
+| Own cards | `customCards.add(kind:prompt:options:deckID:category:detail:audience:spice:perspective:)`, `edit(_:prompt:options:deckID:category:detail:audience:spice:perspective:)` (replaces every field), `delete(_:)`, `answersLost(ifDeleting:)`, `categories(inDeck:)`, `cards()` |
 | Backup | `backup.export(to:)`, `inspect(_:)`, `restore(from:)`, `suggestedFileName()`, `lastExportedAt` |
 | Seed | `loadSeed(_:)` |
 
