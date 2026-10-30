@@ -30,7 +30,7 @@ scripts/bootstrap.sh
 
 # Verify the core works (no simulator needed)
 swift test
-# Expected: Executed 125 tests, with 0 failures
+# Expected: Executed 133 tests, with 0 failures
 
 # Run the app
 open Flashcards.xcodeproj    # choose the Flashcards scheme, then Run
@@ -38,7 +38,7 @@ open Flashcards.xcodeproj    # choose the Flashcards scheme, then Run
 
 `scripts/bootstrap.sh` creates an empty `Generated/seed.json` (if missing) and generates `Flashcards.xcodeproj`. The number of tests grows as features are added; the line should always end in `0 failures`.
 
-A fresh clone starts with **no cards** because the bundled deck content is private. Add your own cards in the Library tab, or build the bundled decks from your own export (see [Bundled decks](#bundled-decks-private)).
+A fresh clone starts with one deck, **21 Questions** (40 get-to-know-you questions in four themes such as Values & Character and Ambition & Personal Growth), so the app is usable straight away. Add your own cards in the Library tab, or build more decks from your own export (see [Bundled decks](#bundled-decks)).
 
 To run on a real iPhone, set your signing team on the Flashcards target in Xcode.
 
@@ -49,7 +49,7 @@ scripts/build-unsigned-ipa.sh
 # Created build/Flashcards-unsigned.ipa
 ```
 
-The IPA embeds your private `Generated/seed.json`, so keep it out of git (`build/` is ignored) and do not share it.
+The IPA embeds your private `Generated/seed.json` (when you have one), so keep it out of git (`build/` is ignored) and do not share it.
 
 ## Usage
 
@@ -115,14 +115,21 @@ The app needs no environment variables or secrets.
 | Database file | `Application Support/flashcards.sqlite` on the device | created on first launch | No |
 | Safety copies on import | `Documents/Safety Copies/` (visible in Files under "On My iPhone") | created when needed | No |
 | Appearance | Settings tab | System | No |
-| Bundled decks | `Generated/seed.json` (private, git-ignored) | empty placeholder from `scripts/bootstrap.sh` | No |
+| Bundled decks | `app/resources/StarterDecks.json` (public: the 21 Questions deck) and `Generated/seed.json` (private, git-ignored) | starter deck plus an empty placeholder from `scripts/bootstrap.sh` | No |
 | Launch arguments `-UITestInMemory -UITestDemoData` | Xcode scheme or `xcodebuild` | off | No (used by UI tests: in-memory database, made-up demo decks, cards in deck order) |
 
 If the database cannot be opened, or the seed file is unreadable, the app shows a "Flashcards Could Not Start" screen instead of running with missing data.
 
-## Bundled decks (private)
+## Bundled decks
 
-The deck content is not in this repository. `tools/build-seed` turns a Notion HTML export (a `.html` file or the `.zip` Notion produces) into the JSON the app bundles:
+The app bundles two deck files and loads them in this order at every launch:
+
+1. `app/resources/StarterDecks.json`: the public **21 Questions** deck, committed to the repository.
+2. `Generated/seed.json`: your own decks, private and git-ignored.
+
+Both use stable card ids, so a deck that appears in both files is updated in place, never duplicated.
+
+To build your own decks, `tools/build-seed` turns a Notion HTML export (a `.html` file or the `.zip` Notion produces) into the JSON the app bundles:
 
 ```bash
 python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" Generated/seed.json
@@ -132,7 +139,11 @@ python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" Generat
 scripts/bootstrap.sh
 ```
 
-`Internal Artifacts/` and `Generated/` are git-ignored. Card ids are stable (`general-001`), so rebuilding the seed with corrected text keeps every asked mark and answer. The card text is copied exactly; only HTML and wrapping quotes are cleaned.
+`Internal Artifacts/` and `Generated/` are git-ignored. Card ids are stable (`general-001`), so rebuilding the seed with corrected text keeps every asked mark and answer. The card text is copied exactly; only HTML and wrapping quotes are cleaned. To refresh the public starter deck from an export:
+
+```bash
+python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" app/resources/StarterDecks.json --only 21-questions
+```
 
 Card shapes the app understands:
 
@@ -233,4 +244,4 @@ Design notes live in [docs/design/flashcards](docs/design/flashcards): the [impa
 5. Commit only on green, one feature per commit.
 
 ## Privacy
-Nothing leaves the device unless you export or share a backup yourself. The repository contains no personal data and no card content; both stay in git-ignored folders.
+Nothing leaves the device unless you export or share a backup yourself. The repository contains no personal data. The only card content in it is the public 21 Questions starter deck; every other deck stays in git-ignored folders.
