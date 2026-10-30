@@ -80,3 +80,4 @@ Decisions made while building (not in the original examples):
 - A this-or-that option label drops its trailing "?" and gets a capital first letter, so it reads as a button.
 - Own cards can be a question, this-or-that (two options) or multiple choice (two to four options).
 - The Appearance setting (System, Light, Dark) defaults to System.
+- The "21 Questions" deck is public: it ships in `app/resources/StarterDecks.json` so anyone who builds the app from GitHub starts with 40 questions. All other decks stay private. Both files use the same card ids, so loading both never duplicates a card.
