@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from build_seed import build, only_decks
+from build_seed import build, only_decks, split_questions
 
 FIXTURE = """<html><body><article><div class="page-body">
 <details open="" class="toggle"><summary>189 questions to ask your gf (general)</summary><div class="indented">
@@ -10,6 +10,10 @@ FIXTURE = """<html><body><article><div class="page-body">
 <ol class="numbered-list" start="3"><li>When was your first trip &amp; where?</li></ol>
 <ol class="numbered-list" start="4"><li>Dirty questions</li></ol>
 <ol class="numbered-list" start="5"><li>Cheeky one?</li></ol>
+<ol class="numbered-list" start="6"><li>What do you like most about trains? What do you like least about trains?</li></ol>
+<ol class="numbered-list" start="7"><li>How do you want to be greeted? In a crowded square or privately on a hill?</li></ol>
+<ol class="numbered-list" start="8"><li>Do you want a pet? If not, what else would you consider?</li></ol>
+<ol class="numbered-list" start="9"><li>Do you like mornings? Or do you prefer nights?</li></ol>
 </div></details>
 <details class="toggle"><summary>Questions to ask your gf (about you guys)</summary><div class="indented">
 <ol class="numbered-list"><li>What do I do that you never get tired of?</li></ol></div></details>
@@ -71,14 +75,42 @@ class BuildSeedTests(unittest.TestCase):
     def test_general_headings_become_categories_and_are_not_cards(self):
         cards = self.decks["general"]["cards"]
         self.assertEqual(
-            [(c["prompt"], c.get("category")) for c in cards],
+            [(c["prompt"], c.get("category")) for c in cards[:3]],
             [("What is your favorite flower?", None),
              ("When was your first trip & where?", "Romantic"),
              ("Cheeky one?", "Dirty")],
         )
 
+    def test_a_card_with_two_standalone_questions_becomes_two_cards(self):
+        cards = [c for c in self.decks["general"]["cards"] if "trains" in c["prompt"]]
+        self.assertEqual(
+            [(c["id"], c["prompt"]) for c in cards],
+            [("general-004a", "What do you like most about trains?"),
+             ("general-004b", "What do you like least about trains?")],
+        )
+        self.assertTrue(all(c["category"] == "Dirty" for c in cards))
+
+    def test_a_follow_up_or_a_list_of_options_stays_with_its_question(self):
+        prompts = [c["prompt"] for c in self.decks["general"]["cards"]]
+        self.assertIn("How do you want to be greeted? In a crowded square or privately on a hill?", prompts)
+        self.assertIn("Do you want a pet? If not, what else would you consider?", prompts)
+        self.assertIn("Do you like mornings? Or do you prefer nights?", prompts)
+
+    def test_ids_of_the_other_cards_do_not_shift_when_a_card_is_split(self):
+        ids = [c["id"] for c in self.decks["general"]["cards"]]
+        self.assertEqual(
+            ids,
+            ["general-001", "general-002", "general-003", "general-004a", "general-004b",
+             "general-005", "general-006", "general-007"])
+
+    def test_no_card_holds_more_than_one_standalone_question(self):
+        for deck in self.seed["decks"]:
+            for card in deck["cards"]:
+                if card["kind"] == "question":
+                    self.assertEqual(split_questions(card["prompt"]), [card["prompt"]], card["id"])
+
     def test_card_ids_are_stable_numbers_per_deck(self):
-        self.assertEqual([c["id"] for c in self.decks["general"]["cards"]], ["general-001", "general-002", "general-003"])
+        self.assertEqual([c["id"] for c in self.decks["general"]["cards"]][:3], ["general-001", "general-002", "general-003"])
 
     def test_plain_lists_become_questions(self):
         self.assertEqual(self.decks["about-you-two"]["cards"][0]["kind"], "question")

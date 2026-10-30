@@ -157,6 +157,27 @@ def read_export(path):
     return path.read_text(encoding="utf-8")
 
 
+QUESTION_START = re.compile(
+    r"^(What|Where|When|Who|Why|How|Which|Do|Does|Did|Have|Has|Is|Are|Was|Were|Would|Could|Can|Will|Should)\b"
+)
+
+
+def split_questions(prompt):
+    """One flashcard holds one question: split a prompt only when each sentence stands on its own.
+
+    A follow-up that needs the first sentence ("If yes, ...") or lists the options of the first
+    question ("..., or ...") stays with it.
+    """
+    parts = [part.strip() for part in re.split(r"(?<=\?)\s+", prompt) if part.strip()]
+    if len(parts) < 2:
+        return [prompt]
+    if not all(part.endswith("?") and QUESTION_START.match(part) for part in parts):
+        return [prompt]
+    if any(re.search(r"\bor\b", part) for part in parts[1:]):
+        return [prompt]
+    return parts
+
+
 def build(source_html):
     body = source_html[source_html.find("<body"):]
     heads = list(re.finditer(r"<details[^>]*>\s*<summary>(.*?)</summary>", body, re.S))
@@ -169,9 +190,12 @@ def build(source_html):
         title_in_source = next((t for t in sections if needle in t.lower()), None)
         if title_in_source is None:
             continue
-        cards = extractor(sections[title_in_source])
-        for number, entry in enumerate(cards, start=1):
-            entry["id"] = f"{deck_id}-{number:03d}"
+        cards = []
+        for number, entry in enumerate(extractor(sections[title_in_source]), start=1):
+            parts = split_questions(entry["prompt"]) if entry["kind"] == "question" else [entry["prompt"]]
+            for index, part in enumerate(parts):
+                suffix = "" if len(parts) == 1 else "abcdefghij"[index]
+                cards.append({**entry, "prompt": part, "id": f"{deck_id}-{number:03d}{suffix}"})
         decks.append({"id": deck_id, "title": title, "cards": [compact(c) for c in cards]})
     if not decks:
         raise SystemExit("No known dropdowns found in the export")

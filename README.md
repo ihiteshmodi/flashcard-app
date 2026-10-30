@@ -30,7 +30,7 @@ scripts/bootstrap.sh
 
 # Verify the core works (no simulator needed)
 swift test
-# Expected: Executed 133 tests, with 0 failures
+# Expected: Executed 136 tests, with 0 failures
 
 # Run the app
 open Flashcards.xcodeproj    # choose the Flashcards scheme, then Run
@@ -139,7 +139,9 @@ python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" Generat
 scripts/bootstrap.sh
 ```
 
-`Internal Artifacts/` and `Generated/` are git-ignored. Card ids are stable (`general-001`), so rebuilding the seed with corrected text keeps every asked mark and answer. The card text is copied exactly; only HTML and wrapping quotes are cleaned. To refresh the public starter deck from an export:
+`Internal Artifacts/` and `Generated/` are git-ignored. Card ids are stable (`general-001`), so rebuilding the seed with corrected text keeps every asked mark and answer. The card text is copied exactly; only HTML and wrapping quotes are cleaned.
+
+One flashcard holds one question. When a source line holds two standalone questions ("What do you like most? What do you like least?"), the builder makes two cards with ids `general-007a` and `general-007b`; other ids do not shift. A follow-up that needs the first sentence ("If yes, ..."), or a sentence that lists the options of the first question, stays on the same card. A card that leaves the seed is removed from the app on the next launch unless it was already asked or answered. To refresh the public starter deck from an export:
 
 ```bash
 python3 tools/build-seed/build_seed.py "Internal Artifacts/<export>.zip" app/resources/StarterDecks.json --only 21-questions
