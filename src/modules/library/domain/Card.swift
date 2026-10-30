@@ -28,6 +28,9 @@ public struct Card: Identifiable, Equatable, Hashable {
     public let detail: String?
     public let options: [String]
     public let isBuiltIn: Bool
+    public let audience: Audience
+    public let spice: Spice
+    public let perspective: Perspective
 }
 
 extension Deck {
@@ -47,7 +50,10 @@ extension Card {
             prompt: row.string("prompt"),
             detail: row.optionalString("detail"),
             options: (try? JSONDecoder().decode([String].self, from: optionData)) ?? [],
-            isBuiltIn: row.bool("is_builtin")
+            isBuiltIn: row.bool("is_builtin"),
+            audience: Audience(rawValue: row.string("audience")) ?? .everyone,
+            spice: Spice(rawValue: row.string("spice")) ?? .safe,
+            perspective: Perspective(rawValue: row.string("perspective")) ?? .anyone
         )
     }
 

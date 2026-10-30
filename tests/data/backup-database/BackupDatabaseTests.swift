@@ -188,13 +188,13 @@ final class BackupDatabaseTests: XCTestCase {
         let oldFile = file("v1.sqlite")
         try source.app.backup.export(to: oldFile)
         let target = try World()
-        let addNotes = MigrationStep(version: 2) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
+        let addNotes = MigrationStep(version: 3) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
         let nextRelease = Migrator(steps: Migrator.current.steps + [addNotes])
         let backup = Backup(db: target.db, roles: target.roles, migrator: nextRelease, safetyFolder: nil, afterRestore: {})
 
         try backup.restore(from: oldFile)
 
-        XCTAssertEqual(try target.db.schemaVersion(), 2)
+        XCTAssertEqual(try target.db.schemaVersion(), 3)
         XCTAssertEqual(try target.db.count("SELECT COUNT(*) AS n FROM profile"), 3)
         XCTAssertEqual(try target.db.count("SELECT COUNT(*) AS n FROM answer"), 1)
     }

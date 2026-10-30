@@ -18,6 +18,9 @@ struct SeedFile: Decodable {
         let prompt: String
         let detail: String?
         let options: [String]?
+        let audience: Audience?
+        let spice: Spice?
+        let perspective: Perspective?
     }
 
     struct SeedDeck: Decodable {
@@ -55,16 +58,20 @@ struct SeedLoader {
                 for (cardIndex, card) in deck.cards.enumerated() {
                     try db.run(
                         """
-                        INSERT INTO card(id, deck_id, category, kind, prompt, detail, options, sort_order, is_builtin, created_at)
-                        VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 1, ?9)
+                        INSERT INTO card(id, deck_id, category, kind, prompt, detail, options, sort_order, is_builtin, created_at,
+                                         audience, spice, perspective)
+                        VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 1, ?9, ?10, ?11, ?12)
                         ON CONFLICT(id) DO UPDATE SET
                             deck_id = excluded.deck_id, category = excluded.category, kind = excluded.kind,
                             prompt = excluded.prompt, detail = excluded.detail, options = excluded.options,
-                            sort_order = excluded.sort_order
+                            sort_order = excluded.sort_order, audience = excluded.audience,
+                            spice = excluded.spice, perspective = excluded.perspective
                         """,
                         [.text(card.id), .text(deck.id), .optional(card.category), .text(card.kind.rawValue),
                          .text(card.prompt), .optional(card.detail), .text(Card.encodeOptions(card.options ?? [])),
-                         .number(cardIndex), .date(now)])
+                         .number(cardIndex), .date(now),
+                         .text((card.audience ?? .everyone).rawValue), .text((card.spice ?? .safe).rawValue),
+                         .text((card.perspective ?? .anyone).rawValue)])
                 }
                 try removeRetiredCards(in: deck)
             }

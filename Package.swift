@@ -25,6 +25,9 @@ let package = Package(
                 "people/manage-groups/manage-groups.feature",
                 "library/choose-decks/choose-decks.feature",
                 "library/custom-cards/custom-cards.feature",
+                "library/custom-cards/custom-cards-v2.feature",
+                "library/card-audience/card-audience.feature",
+                "people/tag-people/tag-people.feature",
                 "data/backup-database/backup-database.feature",
             ]
         ),

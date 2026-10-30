@@ -14,15 +14,32 @@ public struct Progress: Equatable {
 /// Per-profile card state: no row means unseen.
 enum CardStates {
     static let enabledDecks = "card.deck_id NOT IN (SELECT deck_id FROM profile_deck_off WHERE profile_id = ?1)"
+    static let ownerGenderKey = "owner_gender"
+
+    static func eligibility(_ db: Database, profileID: String) throws -> Eligibility {
+        let row = try db.firstRow("SELECT kind, gender, closeness FROM profile WHERE id = ?1", [.text(profileID)])
+        let owner = try db.setting(ownerGenderKey).flatMap(Gender.init(rawValue:))
+        return Eligibility(
+            gender: row?.optionalString("gender").flatMap(Gender.init(rawValue:)),
+            closeness: row.flatMap { Closeness(rawValue: $0.string("closeness")) } ?? .friend,
+            isGroup: row?.string("kind") == ProfileKind.group.rawValue,
+            owner: owner)
+    }
+
+    /// Cards in the decks that are switched on and that the profile's labels allow, for `?1` = the profile id.
+    static func visibleCards(_ db: Database, profileID: String) throws -> String {
+        "\(enabledDecks) AND \(try eligibility(db, profileID: profileID).sqlCondition)"
+    }
 
     static func progress(_ db: Database, profileID: String) throws -> Progress {
+        let visible = try visibleCards(db, profileID: profileID)
         let total = try db.count(
-            "SELECT COUNT(*) AS n FROM card WHERE \(enabledDecks)", [.text(profileID)])
+            "SELECT COUNT(*) AS n FROM card WHERE \(visible)", [.text(profileID)])
         let asked = try db.count(
             """
             SELECT COUNT(*) AS n FROM card_state
             JOIN card ON card.id = card_state.card_id
-            WHERE card_state.profile_id = ?1 AND card_state.status = 'asked' AND \(enabledDecks)
+            WHERE card_state.profile_id = ?1 AND card_state.status = 'asked' AND \(visible)
             """, [.text(profileID)])
         return Progress(asked: asked, total: total)
     }

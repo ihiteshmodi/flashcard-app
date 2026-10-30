@@ -31,6 +31,22 @@ final class World {
     }
 
     @discardableResult
+    func person(_ name: String, gender: Gender?, _ closeness: Closeness) throws -> Profile {
+        try app.profiles.addPerson(name: name, gender: gender, closeness: closeness)
+    }
+
+    /// Sets the labels of a card that was created without any.
+    func label(_ prompt: String, _ audience: Audience = .everyone, _ spice: Spice = .safe, _ perspective: Perspective = .anyone) throws {
+        try db.run(
+            "UPDATE card SET audience = ?2, spice = ?3, perspective = ?4 WHERE prompt = ?1",
+            [.text(prompt), .text(audience.rawValue), .text(spice.rawValue), .text(perspective.rawValue)])
+    }
+
+    func stack(for profile: Profile) throws -> [String] {
+        try app.session(for: profile.id).stack.map(\.prompt)
+    }
+
+    @discardableResult
     func deck(_ title: String, cards prompts: [String], kind: CardKind = .question, options: [String] = []) throws -> [Card] {
         let deckID = title.lowercased().replacingOccurrences(of: " ", with: "-")
         let order = try db.count("SELECT COUNT(*) AS n FROM deck")

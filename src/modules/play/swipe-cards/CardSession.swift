@@ -106,7 +106,7 @@ public final class CardSession {
             FROM card
             JOIN deck ON deck.id = card.deck_id
             LEFT JOIN card_state s ON s.card_id = card.id AND s.profile_id = ?1
-            WHERE \(CardStates.enabledDecks) AND (s.status IS NULL OR s.status = 'skipped')
+            WHERE \(try CardStates.visibleCards(db, profileID: profileID)) AND (s.status IS NULL OR s.status = 'skipped')
             ORDER BY deck.sort_order, card.sort_order
             """, [.text(profileID)])
         let unseen = rows.filter { $0.optionalString("state_status") == nil }

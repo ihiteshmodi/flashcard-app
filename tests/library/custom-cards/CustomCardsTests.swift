@@ -71,10 +71,12 @@ final class CustomCardsTests: XCTestCase {
         XCTAssertEqual(try world.app.customCards.add(kind: .multipleChoice, prompt: "Pick", options: ["a", "b", "c"]).options.count, 3)
     }
 
-    func testOnlyQuestionThisOrThatAndMultipleChoiceCanBeAdded() throws {
+    func testTopicsAndUpgradesCannotBeAddedButDaresCan() throws {
         let world = try World()
 
-        XCTAssertThrowsError(try world.app.customCards.add(kind: .dare, prompt: "Do something"))
+        XCTAssertThrowsError(try world.app.customCards.add(kind: .topic, prompt: "Do something"))
+        XCTAssertThrowsError(try world.app.customCards.add(kind: .upgrade, prompt: "Do something"))
+        XCTAssertNoThrow(try world.app.customCards.add(kind: .dare, prompt: "Do something"))
     }
 
     func testEditingChangesTheTextAndKeepsAnswers() throws {
