@@ -8,22 +8,20 @@
 > An offline iPhone app of conversation cards. Swipe through icebreakers, small-talk upgrades, dares and "this or that" prompts with one person or a group, and never ask the same profile the same card twice.
 
 ## Screenshots
-
-
-| Screen 1: Question card | Screen 2: Saved answer |
-|---|---|
-| <img src="docs/screenshots/mockup-01-question.png" width="260" alt="Dark-mode question card with swipe actions and progress"> | <img src="docs/screenshots/mockup-02-saved-answer.png" width="260" alt="Dark-mode sheet for saving an answer to a question"> |
-| A readable prompt card with skip, asked, undo, and redo controls. | An optional answer note appears after a card is marked asked. |
-
-| Screen 3: Multiple choice | Screen 6: Profiles |
-|---|---|
-| <img src="docs/screenshots/mockup-03-multiple-choice.png" width="260" alt="Dark-mode couple-card multiple-choice prompt with a selected option"> | <img src="docs/screenshots/mockup-06-profiles.png" width="260" alt="Dark-mode profiles page listing people and groups with separate progress"> |
-| Choose an option and optionally add a note. | People and groups keep separate progress; a checkmark marks the active profile. |
-
-| Screen 10: Add a card | Screen 14: Group members |
-|---|---|
-| <img src="docs/screenshots/mockup-10-new-card.png" width="260" alt="Dark-mode form for adding a question card"> | <img src="docs/screenshots/mockup-14-group-members.png" width="260" alt="Dark-mode group profile showing its member list"> |
-| Add a question to the My Cards deck. | View and manage group members separately from their individual profiles. |
+<table width="100%">
+  <tr>
+    <td width="50%" align="center"><strong>Screen 1: Question card</strong><br><img src="docs/screenshots/mockup-01-question.png" width="260" alt="Dark-mode question card with swipe actions and progress"><br>A readable prompt card with skip, asked, undo, and redo controls.</td>
+    <td width="50%" align="center"><strong>Screen 2: Saved answer</strong><br><img src="docs/screenshots/mockup-02-saved-answer.png" width="260" alt="Dark-mode sheet for saving an answer to a question"><br>An optional answer note appears after a card is marked asked.</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Screen 3: Multiple choice</strong><br><img src="docs/screenshots/mockup-03-multiple-choice.png" width="260" alt="Dark-mode couple-card multiple-choice prompt with a selected option"><br>Choose an option and optionally add a note.</td>
+    <td width="50%" align="center"><strong>Screen 4: Profiles</strong><br><img src="docs/screenshots/mockup-06-profiles.png" width="260" alt="Dark-mode profiles page listing people and groups with separate progress"><br>People and groups keep separate progress; a checkmark marks the active profile.</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Screen 5: Add a card</strong><br><img src="docs/screenshots/mockup-10-new-card.png" width="260" alt="Dark-mode form for adding a question card"><br>Add a question to the My Cards deck.</td>
+    <td width="50%" align="center"><strong>Screen 6: Group members</strong><br><img src="docs/screenshots/mockup-14-group-members.png" width="260" alt="Dark-mode group profile showing its member list"><br>View and manage group members separately from their individual profiles.</td>
+  </tr>
+</table>
 
 ## What it does
 - **Swipe cards.** Right = asked, left = skip (the card returns later). Undo and Redo cover accidental swipes.
