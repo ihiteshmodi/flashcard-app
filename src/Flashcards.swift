@@ -11,7 +11,7 @@ public final class Flashcards {
     public let backup: Backup
     private let seedLoader: SeedLoader
     private let roles: Roles
-    private var seedData: Data?
+    private var seeds: [Data] = []
     private var sessions: [String: CardSession] = [:]
 
     public init(database: Database, roles: Roles = .live, safetyCopyFolder: URL? = nil) throws {
@@ -30,7 +30,7 @@ public final class Flashcards {
         reload = { [weak self] in
             guard let self else { return }
             self.sessions.removeAll()
-            if let data = self.seedData { try self.seedLoader.load(data) }
+            for data in self.seeds { try self.seedLoader.load(data) }
         }
     }
 
@@ -45,6 +45,6 @@ public final class Flashcards {
     /// Adds or updates the bundled decks from the seed JSON, and again after an import.
     public func loadSeed(_ data: Data) throws {
         try seedLoader.load(data)
-        seedData = data
+        seeds.append(data)
     }
 }

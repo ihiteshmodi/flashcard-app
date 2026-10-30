@@ -1,0 +1,231 @@
+{
+ "version": 1,
+ "decks": [
+  {
+   "id": "21-questions",
+   "title": "21 Questions",
+   "cards": [
+    {
+     "id": "21-questions-001",
+     "kind": "question",
+     "prompt": "What kind of life would you build if money stopped being a problem tomorrow?"
+    },
+    {
+     "id": "21-questions-002",
+     "kind": "question",
+     "prompt": "What's something you're secretly proud of but rarely talk about?"
+    },
+    {
+     "id": "21-questions-003",
+     "kind": "question",
+     "prompt": "What kind of people drain your energy the fastest?"
+    },
+    {
+     "id": "21-questions-004",
+     "kind": "question",
+     "prompt": "What experience changed how you see the world?"
+    },
+    {
+     "id": "21-questions-005",
+     "kind": "question",
+     "prompt": "What's something most people misunderstand about you?"
+    },
+    {
+     "id": "21-questions-006",
+     "kind": "question",
+     "prompt": "If you could master one skill instantly, what would it be?"
+    },
+    {
+     "id": "21-questions-007",
+     "kind": "question",
+     "prompt": "What kind of lifestyle would actually make you happy long term?"
+    },
+    {
+     "id": "21-questions-008",
+     "kind": "question",
+     "prompt": "What's a place you visited that felt completely different than you expected?"
+    },
+    {
+     "id": "21-questions-009",
+     "kind": "question",
+     "prompt": "What's something you believe that most people disagree with?"
+    },
+    {
+     "id": "21-questions-010",
+     "kind": "question",
+     "prompt": "What's a small thing that instantly improves your mood?"
+    },
+    {
+     "id": "21-questions-011",
+     "kind": "question",
+     "prompt": "When do you feel the most confident?"
+    },
+    {
+     "id": "21-questions-012",
+     "kind": "question",
+     "prompt": "What kind of people do you naturally respect?"
+    },
+    {
+     "id": "21-questions-013",
+     "kind": "question",
+     "prompt": "What kind of life would feel like a waste to you?"
+    },
+    {
+     "id": "21-questions-014",
+     "kind": "question",
+     "prompt": "What kind of partner actually brings out the best version of you?"
+    },
+    {
+     "id": "21-questions-015",
+     "kind": "question",
+     "prompt": "What's something about you that people notice immediately?"
+    },
+    {
+     "id": "21-questions-016",
+     "kind": "question",
+     "prompt": "What kind of environment makes you feel most alive?"
+    },
+    {
+     "id": "21-questions-017",
+     "kind": "question",
+     "prompt": "What's a goal you've never told anyone about?"
+    },
+    {
+     "id": "21-questions-018",
+     "kind": "question",
+     "prompt": "What lesson did life teach you the hard way?"
+    },
+    {
+     "id": "21-questions-019",
+     "kind": "question",
+     "prompt": "What kind of memories do you want to look back on when you're older?"
+    },
+    {
+     "id": "21-questions-020",
+     "kind": "question",
+     "prompt": "What's something you'd regret never trying?"
+    },
+    {
+     "id": "21-questions-021",
+     "kind": "question",
+     "prompt": "What kind of man do you naturally respect?",
+     "detail": "use when the vibe is right"
+    },
+    {
+     "id": "21-questions-022",
+     "kind": "question",
+     "prompt": "What is a boundary you set for yourself that completely changed your life?",
+     "category": "Values & Character"
+    },
+    {
+     "id": "21-questions-023",
+     "kind": "question",
+     "prompt": "What is something you used to judge others for until you experienced it yourself?",
+     "category": "Values & Character"
+    },
+    {
+     "id": "21-questions-024",
+     "kind": "question",
+     "prompt": "What does genuine emotional strength look like to you in a person?",
+     "category": "Values & Character"
+    },
+    {
+     "id": "21-questions-025",
+     "kind": "question",
+     "prompt": "What is a core value you refuse to compromise on, no matter the situation?",
+     "category": "Values & Character"
+    },
+    {
+     "id": "21-questions-026",
+     "kind": "question",
+     "prompt": "When someone is having a bad day, what is your instinctive way of supporting them?",
+     "category": "Values & Character"
+    },
+    {
+     "id": "21-questions-027",
+     "kind": "question",
+     "prompt": "What is a risk you took that didn't pay off, but you are still glad you took it?",
+     "category": "Ambition & Personal Growth"
+    },
+    {
+     "id": "21-questions-028",
+     "kind": "question",
+     "prompt": "What version of yourself are you currently working to leave behind?",
+     "category": "Ambition & Personal Growth"
+    },
+    {
+     "id": "21-questions-029",
+     "kind": "question",
+     "prompt": "What is a belief you held firmly five years ago that you no longer believe today?",
+     "category": "Ambition & Personal Growth"
+    },
+    {
+     "id": "21-questions-030",
+     "kind": "question",
+     "prompt": "What does success look like to you when nobody else is watching or judging?",
+     "category": "Ambition & Personal Growth"
+    },
+    {
+     "id": "21-questions-031",
+     "kind": "question",
+     "prompt": "If you could relive one year of your life without changing anything, which one would it be?",
+     "category": "Ambition & Personal Growth"
+    },
+    {
+     "id": "21-questions-032",
+     "kind": "question",
+     "prompt": "What makes you feel genuinely understood rather than just heard?",
+     "category": "Connection & Relationships"
+    },
+    {
+     "id": "21-questions-033",
+     "kind": "question",
+     "prompt": "What is a small green flag in a relationship that most people overlook?",
+     "category": "Connection & Relationships"
+    },
+    {
+     "id": "21-questions-034",
+     "kind": "question",
+     "prompt": "How do you prefer to handle conflict when you are upset: space first, or talk it out immediately?",
+     "category": "Connection & Relationships"
+    },
+    {
+     "id": "21-questions-035",
+     "kind": "question",
+     "prompt": "What is something a previous relationship taught you about what you don't want?",
+     "category": "Connection & Relationships"
+    },
+    {
+     "id": "21-questions-036",
+     "kind": "question",
+     "prompt": "What kind of dynamic helps you let your guard down around someone new?",
+     "category": "Connection & Relationships"
+    },
+    {
+     "id": "21-questions-037",
+     "kind": "question",
+     "prompt": "What is a compliment someone gave you that has stuck with you for years?",
+     "category": "Inner World & Perspective"
+    },
+    {
+     "id": "21-questions-038",
+     "kind": "question",
+     "prompt": "When was the last time you felt complete peace of mind, and where were you?",
+     "category": "Inner World & Perspective"
+    },
+    {
+     "id": "21-questions-039",
+     "kind": "question",
+     "prompt": "What is something you are intensely passionate about that most people don't know?",
+     "category": "Inner World & Perspective"
+    },
+    {
+     "id": "21-questions-040",
+     "kind": "question",
+     "prompt": "How do you recharge when the world feels overwhelmingly noisy?",
+     "category": "Inner World & Perspective"
+    }
+   ]
+  }
+ ]
+}
