@@ -12,9 +12,12 @@ enum CompositionRoot {
                 ? Roles(now: { Date() }, shuffle: { $0 }, newID: { UUID().uuidString })
                 : Roles.live
             let app = try Flashcards(database: database, roles: roles, safetyCopyFolder: try safetyCopyFolder())
-            let seedName = arguments.contains("-UITestDemoData") ? "DemoDecks" : "seed"
-            if let url = Bundle.main.url(forResource: seedName, withExtension: "json") {
-                try app.loadSeed(Data(contentsOf: url))
+            // The public starter deck first, then the owner's private decks; shared ids update in place.
+            let deckFiles = arguments.contains("-UITestDemoData") ? ["DemoDecks"] : ["StarterDecks", "seed"]
+            for name in deckFiles {
+                if let url = Bundle.main.url(forResource: name, withExtension: "json") {
+                    try app.loadSeed(Data(contentsOf: url))
+                }
             }
             return app
         }
