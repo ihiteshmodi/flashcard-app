@@ -8,6 +8,7 @@ public final class Flashcards {
     public let groups: Groups
     public let answers: AnswerBook
     public let customCards: CustomCards
+    public let owner: Owner
     public let backup: Backup
     private let seedLoader: SeedLoader
     private let roles: Roles
@@ -24,6 +25,7 @@ public final class Flashcards {
         groups = Groups(db: database, profiles: profiles)
         answers = AnswerBook(db: database, roles: roles)
         customCards = CustomCards(db: database, roles: roles)
+        owner = Owner(db: database)
         seedLoader = SeedLoader(db: database, roles: roles)
         var reload: () throws -> Void = {}
         backup = Backup(db: database, roles: roles, safetyFolder: safetyCopyFolder, afterRestore: { try reload() })
@@ -46,5 +48,24 @@ public final class Flashcards {
     public func loadSeed(_ data: Data) throws {
         try seedLoader.load(data)
         seeds.append(data)
+    }
+
+    public func setGender(of profileID: String, to gender: Gender?) throws {
+        try profiles.setGender(profileID, to: gender)
+        try syncSessions()
+    }
+
+    public func setCloseness(of profileID: String, to closeness: Closeness) throws {
+        try profiles.setCloseness(profileID, to: closeness)
+        try syncSessions()
+    }
+
+    public func setOwnerGender(_ gender: Gender?) throws {
+        try owner.setGender(gender)
+        try syncSessions()
+    }
+
+    private func syncSessions() throws {
+        for session in sessions.values { try session.syncWithLibrary() }
     }
 }

@@ -8,7 +8,10 @@ struct MigrationStep {
 struct Migrator {
     let steps: [MigrationStep]
 
-    static let current = Migrator(steps: [MigrationStep(version: 1, apply: SchemaV1.apply)])
+    static let current = Migrator(steps: [
+        MigrationStep(version: 1, apply: SchemaV1.apply),
+        MigrationStep(version: 2, apply: SchemaV2.apply),
+    ])
 
     var latestVersion: Int { steps.map(\.version).max() ?? 0 }
 
@@ -20,6 +23,19 @@ struct Migrator {
                 try db.setSchemaVersion(step.version)
             }
         }
+    }
+}
+
+/// Card labels (who it is for, how spicy, worded for) and the gender and closeness of each person.
+enum SchemaV2 {
+    static func apply(_ db: Database) throws {
+        try db.script("""
+        ALTER TABLE card ADD COLUMN audience TEXT NOT NULL DEFAULT 'everyone';
+        ALTER TABLE card ADD COLUMN spice TEXT NOT NULL DEFAULT 'safe';
+        ALTER TABLE card ADD COLUMN perspective TEXT NOT NULL DEFAULT 'anyone';
+        ALTER TABLE profile ADD COLUMN gender TEXT;
+        ALTER TABLE profile ADD COLUMN closeness TEXT NOT NULL DEFAULT 'friend';
+        """)
     }
 }
 

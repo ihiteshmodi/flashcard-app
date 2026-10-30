@@ -40,8 +40,20 @@ public final class Profiles {
     }
 
     @discardableResult
-    public func addPerson(name: String, emoji: String = "🙂") throws -> Profile {
-        try create(kind: .person, name: name, emoji: emoji)
+    public func addPerson(name: String, emoji: String = "🙂", gender: Gender? = nil, closeness: Closeness = .friend) throws -> Profile {
+        try create(kind: .person, name: name, emoji: emoji, gender: gender, closeness: closeness)
+    }
+
+    func setGender(_ id: String, to gender: Gender?) throws {
+        try db.run(
+            "UPDATE profile SET gender = ?2 WHERE id = ?1 AND kind = 'person'",
+            [.text(id), .optional(gender?.rawValue)])
+    }
+
+    func setCloseness(_ id: String, to closeness: Closeness) throws {
+        try db.run(
+            "UPDATE profile SET closeness = ?2 WHERE id = ?1 AND kind = 'person'",
+            [.text(id), .text(closeness.rawValue)])
     }
 
     public func rename(_ id: String, to name: String) throws {
@@ -85,15 +97,19 @@ public final class Profiles {
         try db.setSetting(Self.selectedKey, id)
     }
 
-    func create(kind: ProfileKind, name: String, emoji: String) throws -> Profile {
+    func create(kind: ProfileKind, name: String, emoji: String, gender: Gender? = nil, closeness: Closeness = .friend) throws -> Profile {
         let trimmed = try validName(name, excluding: nil)
         let symbol = emoji.trimmingCharacters(in: .whitespaces).isEmpty ? (kind == .person ? "🙂" : "👥") : emoji
         let id = roles.newID()
         try db.run(
-            "INSERT INTO profile(id, kind, name, emoji, name_key, created_at) VALUES(?1, ?2, ?3, ?4, ?5, ?6)",
-            [.text(id), .text(kind.rawValue), .text(trimmed), .text(symbol), .text(trimmed.lowercased()), .date(roles.now())])
+            """
+            INSERT INTO profile(id, kind, name, emoji, name_key, created_at, gender, closeness)
+            VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+            """,
+            [.text(id), .text(kind.rawValue), .text(trimmed), .text(symbol), .text(trimmed.lowercased()), .date(roles.now()),
+             .optional(gender?.rawValue), .text(closeness.rawValue)])
         try select(id)
-        return Profile(id: id, kind: kind, name: trimmed, emoji: symbol)
+        return Profile(id: id, kind: kind, name: trimmed, emoji: symbol, gender: gender, closeness: closeness)
     }
 
     private func validName(_ name: String, excluding id: String?) throws -> String {

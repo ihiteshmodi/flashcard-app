@@ -21,12 +21,14 @@ public final class DeckChoices {
 
     /// Only decks that hold cards are listed, so an empty "My Cards" stays out of the way.
     public func rows(for profileID: String) throws -> [DeckRow] {
+        let visible = try CardStates.eligibility(db, profileID: profileID).sqlCondition
         let rows = try db.rows(
             """
             SELECT deck.*,
-                (SELECT COUNT(*) FROM card WHERE card.deck_id = deck.id) AS card_count,
+                (SELECT COUNT(*) FROM card WHERE card.deck_id = deck.id AND \(visible)) AS card_count,
                 (SELECT COUNT(*) FROM card_state JOIN card ON card.id = card_state.card_id
-                    WHERE card.deck_id = deck.id AND card_state.profile_id = ?1 AND card_state.status = 'asked') AS asked_count,
+                    WHERE card.deck_id = deck.id AND card_state.profile_id = ?1 AND card_state.status = 'asked'
+                        AND \(visible)) AS asked_count,
                 EXISTS(SELECT 1 FROM profile_deck_off WHERE profile_id = ?1 AND deck_id = deck.id) AS is_off
             FROM deck
             WHERE card_count > 0

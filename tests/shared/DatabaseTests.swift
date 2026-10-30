@@ -25,12 +25,12 @@ final class DatabaseTests: XCTestCase {
         let db = try Database.inMemory()
         try Migrator.current.migrate(db)
         try db.run("INSERT INTO profile(id, kind, name, emoji, name_key, created_at) VALUES('p1', 'person', 'Maya', 'x', 'maya', 0)")
-        let addNotes = MigrationStep(version: 2) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
+        let addNotes = MigrationStep(version: 3) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
         let nextRelease = Migrator(steps: Migrator.current.steps + [addNotes])
 
         try nextRelease.migrate(db)
 
-        XCTAssertEqual(try db.schemaVersion(), 2)
+        XCTAssertEqual(try db.schemaVersion(), 3)
         XCTAssertEqual(try db.firstRow("SELECT name FROM profile")?.string("name"), "Maya")
     }
 
