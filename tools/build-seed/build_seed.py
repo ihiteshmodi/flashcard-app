@@ -12,6 +12,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+from classify import classify
+
 TAG = re.compile(r"<[^>]+>")
 
 
@@ -195,7 +197,9 @@ def build(source_html):
             parts = split_questions(entry["prompt"]) if entry["kind"] == "question" else [entry["prompt"]]
             for index, part in enumerate(parts):
                 suffix = "" if len(parts) == 1 else "abcdefghij"[index]
-                cards.append({**entry, "prompt": part, "id": f"{deck_id}-{number:03d}{suffix}"})
+                labels = classify(deck_id, {**entry, "prompt": part})
+                cards.append({**entry, "prompt": part, "id": f"{deck_id}-{number:03d}{suffix}",
+                              "audience": labels[0], "spice": labels[1], "perspective": labels[2]})
         decks.append({"id": deck_id, "title": title, "cards": [compact(c) for c in cards]})
     if not decks:
         raise SystemExit("No known dropdowns found in the export")
@@ -209,6 +213,9 @@ def compact(entry):
             ordered[key] = entry[key]
     if entry["options"]:
         ordered["options"] = entry["options"]
+    for key, default in (("audience", "everyone"), ("spice", "safe"), ("perspective", "anyone")):
+        if entry[key] != default:
+            ordered[key] = entry[key]
     return ordered
 
 

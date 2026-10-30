@@ -146,7 +146,8 @@ class BuildSeedTests(unittest.TestCase):
         cards = self.decks["x-rated"]["cards"]
         self.assertEqual(len(cards), 3)
         self.assertEqual(cards[0], {"id": "x-rated-001", "kind": "dare", "prompt": "Slow dance",
-                                    "category": "Level 1: Tease", "detail": "no kissing until the song ends"})
+                                    "category": "Level 1: Tease", "detail": "no kissing until the song ends",
+                                    "audience": "couples", "spice": "flirty"})
         self.assertEqual(cards[2]["category"], "Level 2: Touch")
 
     def test_couple_cards_keep_their_shape_per_group(self):
@@ -158,6 +159,21 @@ class BuildSeedTests(unittest.TestCase):
         self.assertEqual(cards["This or That"]["options"], ["Never text first", "Never end a call first"])
         self.assertEqual(cards["Curious"]["kind"], "question")
         self.assertEqual(cards["Cozy Up"]["kind"], "dare")
+
+    def test_cards_carry_their_labels_and_defaults_are_left_out(self):
+        general = self.decks["general"]["cards"]
+        self.assertNotIn("audience", general[0])
+        self.assertEqual(general[1]["spice"], "flirty")
+        self.assertEqual(general[2]["spice"], "explicit")
+        self.assertEqual(general[2]["audience"], "couples")
+        topic = self.decks["conversation-topics"]["cards"][0]
+        self.assertEqual((topic["audience"], topic["spice"], topic["perspective"]), ("women", "flirty", "man"))
+        final = self.decks["21-questions"]["cards"][2]
+        self.assertEqual((final["audience"], final["perspective"]), ("women", "man"))
+
+    def test_split_cards_are_classified_on_their_own_wording(self):
+        parts = [c for c in self.decks["general"]["cards"] if "trains" in c["prompt"]]
+        self.assertTrue(all(c["spice"] == "explicit" and c["audience"] == "couples" for c in parts))
 
     def test_output_is_valid_json_the_app_can_load(self):
         self.assertEqual(json.loads(json.dumps(self.seed, ensure_ascii=False))["version"], 1)

@@ -109,7 +109,9 @@
      "id": "21-questions-021",
      "kind": "question",
      "prompt": "What kind of man do you naturally respect?",
-     "detail": "use when the vibe is right"
+     "detail": "use when the vibe is right",
+     "audience": "women",
+     "perspective": "man"
     },
     {
      "id": "21-questions-022",

@@ -26,8 +26,20 @@ final class StarterDeckTests: XCTestCase {
         let maya = try world.person("Maya")
         let session = try world.app.session(for: maya.id)
 
-        XCTAssertEqual(session.progress.total, try world.app.catalog.decks()[0].cardCount)
+        XCTAssertEqual(session.progress.total, try world.app.catalog.decks()[0].cardCount - 1)
         XCTAssertNotNil(try session.swipeRight())
+    }
+
+    func testTheFinalCardIsOnlyForWomenWhenIAmAMan() throws {
+        let world = try World()
+        try world.app.loadSeed(try starterData())
+        try world.app.setOwnerGender(.man)
+        let maya = try world.person("Maya", gender: .woman, .friend)
+        let sam = try world.person("Sam", gender: .man, .friend)
+        let finalCard = "What kind of man do you naturally respect?"
+
+        XCTAssertTrue(try world.stack(for: maya).contains(finalCard))
+        XCTAssertFalse(try world.stack(for: sam).contains(finalCard))
     }
 
     func testEveryStarterCardIsAPlainQuestionWithAStableUniqueId() throws {
