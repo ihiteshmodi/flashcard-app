@@ -81,3 +81,45 @@ Decisions made while building (not in the original examples):
 - Own cards can be a question, this-or-that (two options) or multiple choice (two to four options).
 - The Appearance setting (System, Light, Dark) defaults to System.
 - The "21 Questions" deck is public: it ships in `app/resources/StarterDecks.json` so anyone who builds the app from GitHub starts with 40 questions. All other decks stay private. Both files use the same card ids, so loading both never duplicates a card.
+
+## Delta: audience labels, gender and closeness (approved)
+Why: some bundled cards (X-Rated, topics worded for a man asking a woman, couples-only questions) should not be asked to a friend, a man or a group. Own cards must carry the same details as bundled cards.
+
+Cards carry three labels (built-in cards classified once by deck, category and wording; own cards pick them in New Card):
+- **Who it is for:** Everyone, Women, Men, Couples.
+- **How spicy:** Safe, Flirty, Explicit.
+- **Worded for:** Anyone, A man's view, A woman's view (the asker's point of view, e.g. "Do you like it when I wear cologne?").
+
+People carry a **gender** (Woman, Man, or not set; there is no other option) and a **closeness** (Friend, Dating, Partner; default Friend), changeable at any time. The owner sets **I am** (Man or Woman, or not set) in Settings.
+
+A card is shown to a person when all of these hold:
+| Rule | Condition |
+|---|---|
+| Spice | Safe for everyone; Flirty needs Dating or Partner; Explicit needs Partner |
+| Audience | Everyone always; Women needs gender Woman; Men needs gender Man; Couples needs Dating or Partner |
+| Worded for | "A man's view" needs I am = Man; "A woman's view" needs I am = Woman; unset I am hides both |
+| No gender tag | Treated as untagged: only Everyone + Safe + Anyone-worded cards |
+| Groups | Same as untagged: only Everyone + Safe cards |
+
+Progress and deck counts count only the cards a profile can see. Cards hidden by a change stay in history. New Card also offers deck (My Cards or any built-in deck), category, tip line and the Dare kind. Own cards in a built-in deck are kept when the bundled deck is reloaded.
+
+Default classification of the bundled decks (applied without a review step, as agreed):
+| Deck | Who | Spice | Worded for |
+|---|---|---|---|
+| General: untitled, Fun, Cute, Deep, Random, Personal | Everyone | Safe | Anyone |
+| General: Relationship | Couples | Safe | Anyone |
+| General: Romantic | Everyone | Flirty | Anyone |
+| General: Dirty | Couples | Explicit | Anyone |
+| General: wording that points at one gender ("men in uniforms", "attracted to a woman") | Women or Men | as category | Anyone |
+| General: cards in a man's voice ("my cologne") | Women | as category | A man's view |
+| About You Two, Crazy Questions | Couples | Safe | Anyone |
+| Conversation Topics | Women | Flirty | A man's view |
+| Small Talk Upgrades | Everyone | Safe | Anyone |
+| 21 Questions | Everyone | Safe | Anyone (the last card: Women, A man's view) |
+| X-Rated level 1 | Couples | Flirty | Anyone |
+| X-Rated levels 2 to 4 | Couples | Explicit | Anyone |
+| Couple Cards: Conflicted, This or That, Curious | Couples (Curious: Everyone) | Safe | Anyone |
+| Couple Cards: Cozy Up | Couples | Flirty | Anyone |
+Words that signal sex or nudity raise a General card to Explicit; words that signal attraction or romance raise it to Flirty.
+
+Features: `tests/library/card-audience/`, `tests/people/tag-people/`, `tests/library/custom-cards/custom-cards-v2.feature`.
