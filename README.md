@@ -9,14 +9,6 @@
 
 ## Screenshots
 
-| Safe starter card · Dark mode | People and groups · Dark mode |
-|---|---|
-| <img src="docs/screenshots/cards.png" width="300" alt="A safe question from the public 21 Questions deck, ready to swipe"> | <img src="docs/screenshots/profiles.png" width="300" alt="Sample people tagged Woman · Dating and Man · Friend, plus a separate Game Night group"> |
-| A sample card from the public **21 Questions** deck. | Sample profiles and a group; each has its own progress. |
-
-### Design mockups (dark mode)
-
-Illustrative screens with fictional names and sample prompts.
 
 | Screen 1: Question card | Screen 2: Saved answer |
 |---|---|
