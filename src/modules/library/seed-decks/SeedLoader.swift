@@ -66,7 +66,24 @@ struct SeedLoader {
                          .text(card.prompt), .optional(card.detail), .text(Card.encodeOptions(card.options ?? [])),
                          .number(cardIndex), .date(now)])
                 }
+                try removeRetiredCards(in: deck)
             }
+        }
+    }
+
+    /// A card that left the seed (for example one split into two) disappears unless someone already
+    /// asked it or answered it, so a stale combined card is not left in the stack.
+    private func removeRetiredCards(in deck: SeedFile.SeedDeck) throws {
+        let current = Set(deck.cards.map(\.id))
+        let stored = try db.rows(
+            "SELECT id FROM card WHERE deck_id = ?1 AND is_builtin = 1", [.text(deck.id)]).map { $0.string("id") }
+        for id in stored where !current.contains(id) {
+            try db.run(
+                """
+                DELETE FROM card WHERE id = ?1
+                    AND NOT EXISTS (SELECT 1 FROM answer WHERE card_id = ?1)
+                    AND NOT EXISTS (SELECT 1 FROM card_state WHERE card_id = ?1 AND status = 'asked')
+                """, [.text(id)])
         }
     }
 }

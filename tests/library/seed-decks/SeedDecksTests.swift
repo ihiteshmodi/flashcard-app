@@ -74,14 +74,52 @@ final class SeedDecksTests: XCTestCase {
         XCTAssertEqual(try world.db.count("SELECT COUNT(*) AS n FROM answer"), 1)
     }
 
-    func testACardMissingFromANewerSeedIsKeptSoAnswersSurvive() throws {
+    func testACardThatLeftTheSeedIsRemovedWhenNobodyUsedIt() throws {
         let world = try World()
         try world.app.loadSeed(Data(seed.utf8))
         let trimmed = #"{"version":1,"decks":[{"id":"deep","title":"Deep Talk","cards":[{"id":"deep-001","kind":"question","prompt":"Q1"}]}]}"#
 
         try world.app.loadSeed(Data(trimmed.utf8))
 
+        XCTAssertEqual(try world.db.count("SELECT COUNT(*) AS n FROM card WHERE id = 'deep-002'"), 0)
+        XCTAssertEqual(try world.db.count("SELECT COUNT(*) AS n FROM card WHERE id = 'deep-001'"), 1)
+    }
+
+    func testASplitCardReplacesItsCombinedCardInTheStack() throws {
+        let world = try World()
+        let maya = try world.person("Maya")
+        let combined = #"{"version":1,"decks":[{"id":"g","title":"G","cards":[{"id":"g-001","kind":"question","prompt":"Most? Least?"}]}]}"#
+        let split = #"{"version":1,"decks":[{"id":"g","title":"G","cards":[{"id":"g-001a","kind":"question","prompt":"Most?"},{"id":"g-001b","kind":"question","prompt":"Least?"}]}]}"#
+        try world.app.loadSeed(Data(combined.utf8))
+        try world.app.session(for: maya.id).swipeLeft()
+
+        try world.app.loadSeed(Data(split.utf8))
+        let session = try world.app.session(for: maya.id)
+        try session.syncWithLibrary()
+
+        XCTAssertEqual(session.stack.map(\.prompt), ["Most?", "Least?"])
+    }
+
+    func testACardThatLeftTheSeedIsKeptWhenItWasAskedOrAnswered() throws {
+        let world = try World()
+        let maya = try world.person("Maya")
+        try world.app.loadSeed(Data(seed.utf8))
+        try world.markAsked(["Q2"], for: maya)
+        let trimmed = #"{"version":1,"decks":[{"id":"deep","title":"Deep Talk","cards":[{"id":"deep-001","kind":"question","prompt":"Q1"}]}]}"#
+
+        try world.app.loadSeed(Data(trimmed.utf8))
+
         XCTAssertEqual(try world.db.count("SELECT COUNT(*) AS n FROM card WHERE id = 'deep-002'"), 1)
+    }
+
+    func testDecksMissingFromAFileAreLeftAloneByThatFile() throws {
+        let world = try World()
+        try world.app.loadSeed(Data(seed.utf8))
+        let other = #"{"version":1,"decks":[{"id":"extra","title":"Extra","cards":[{"id":"extra-1","kind":"question","prompt":"E"}]}]}"#
+
+        try world.app.loadSeed(Data(other.utf8))
+
+        XCTAssertEqual(try world.db.count("SELECT COUNT(*) AS n FROM card WHERE deck_id = 'deep'"), 2)
     }
 
     func testAnEmptySeedIsAcceptedSoAFreshCloneStillStarts() throws {
