@@ -7,6 +7,13 @@
 
 > An offline iPhone app of conversation cards. Swipe through icebreakers, small-talk upgrades, dares and "this or that" prompts with one person or a group, and never ask the same profile the same card twice.
 
+## Screenshots
+
+| Safe starter cards | People and groups |
+|---|---|
+| <img src="docs/screenshots/cards.png" width="300" alt="A safe question from the public 21 Questions deck, ready to swipe"> | <img src="docs/screenshots/profiles.png" width="300" alt="Sample people tagged Woman · Dating and Man · Friend, plus a separate Game Night group"> |
+| A sample card from the public **21 Questions** deck. | Sample profiles and a group; each has its own progress. |
+
 ## What it does
 - **Swipe cards.** Right = asked, left = skip (the card returns later). Undo and Redo cover accidental swipes.
 - **People and groups.** Each person has their own asked list, answers and deck choices. A group is made of people you already added and tracks its own asked cards and answers, separate from its members.
