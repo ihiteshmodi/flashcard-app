@@ -12,10 +12,17 @@ struct ProfileFormSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var emoji = ""
+    @State private var gender: Gender?
+    @State private var closeness = Closeness.friend
     @State private var errorMessage: String?
 
     private var isRename: Bool {
         if case .rename = mode { return true }
+        return false
+    }
+
+    private var isGroup: Bool {
+        if case .rename(let profile) = mode { return profile.kind == .group }
         return false
     }
 
@@ -31,13 +38,30 @@ struct ProfileFormSheet: View {
                     }
                 }
                 .listRowBackground(Theme.surface)
+                if !isGroup {
+                    Section {
+                        Picker("Gender", selection: $gender) {
+                            Text("Not set").tag(Gender?.none)
+                            ForEach(Gender.allCases, id: \.self) { Text($0.title).tag(Gender?.some($0)) }
+                        }
+                        .accessibilityIdentifier("profile-gender")
+                        Picker("Closeness", selection: $closeness) {
+                            ForEach(Closeness.allCases, id: \.self) { Text($0.title).tag($0) }
+                        }
+                        .pickerStyle(.segmented)
+                        .accessibilityIdentifier("profile-closeness")
+                    } footer: {
+                        Text("Gender and closeness decide which cards this person is shown. Without a gender only everyday cards appear. You can change both any time.")
+                    }
+                    .listRowBackground(Theme.surface)
+                }
                 if let errorMessage {
                     Section { Text(errorMessage).foregroundStyle(.red).accessibilityIdentifier("form-error") }
                         .listRowBackground(Theme.surface)
                 }
             }
             .appListStyle()
-            .navigationTitle(isRename ? "Rename" : "New Person")
+            .navigationTitle(isRename ? "Edit" : "New Person")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
@@ -46,17 +70,27 @@ struct ProfileFormSheet: View {
                 }
             }
             .onAppear {
-                if case .rename(let profile) = mode { name = profile.name }
+                if case .rename(let profile) = mode {
+                    name = profile.name
+                    gender = profile.gender
+                    closeness = profile.closeness
+                }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func save() {
         do {
             switch mode {
-            case .newPerson: try app.profiles.addPerson(name: name, emoji: String(emoji.prefix(2)))
-            case .rename(let profile): try app.profiles.rename(profile.id, to: name)
+            case .newPerson:
+                try app.profiles.addPerson(name: name, emoji: String(emoji.prefix(2)), gender: gender, closeness: closeness)
+            case .rename(let profile):
+                try app.profiles.rename(profile.id, to: name)
+                if profile.kind == .person {
+                    try app.setGender(of: profile.id, to: gender)
+                    try app.setCloseness(of: profile.id, to: closeness)
+                }
             }
             dismiss()
         } catch {

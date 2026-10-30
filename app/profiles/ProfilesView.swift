@@ -67,6 +67,7 @@ struct ProfilesView: View {
     private func row(_ summary: ProfileSummary, selected: Profile?) -> some View {
         let profile = summary.profile
         var parts: [String] = []
+        if let tags = profile.tagSummary { parts.append(tags) }
         if profile.kind == .group { parts.append("\(summary.memberCount) people") }
         parts.append("\(summary.progress.asked) of \(summary.progress.total) asked")
         if summary.answerCount > 0 { parts.append("\(summary.answerCount) answers") }
@@ -90,7 +91,7 @@ struct ProfilesView: View {
         }
         .contextMenu {
             Button("Use on Cards", systemImage: "checkmark") { try? app.profiles.select(profile.id) }
-            Button("Rename", systemImage: "pencil") { renaming = profile }
+            Button("Edit", systemImage: "pencil") { renaming = profile }
         }
     }
 

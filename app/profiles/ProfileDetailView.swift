@@ -26,6 +26,7 @@ struct ProfileDetailView: View {
             let tabs = profile.kind == .group ? Tab.allCases : [.history, .decks]
             VStack(spacing: 8) {
                 header(profile)
+                if profile.kind == .person { relationshipControl(profile) }
                 Picker("Section", selection: $tab) {
                     ForEach(tabs) { Text($0.rawValue).tag($0) }
                 }
@@ -44,7 +45,7 @@ struct ProfileDetailView: View {
             .toolbar {
                 Menu {
                     Button("Use on Cards", systemImage: "checkmark") { try? app.profiles.select(profile.id) }
-                    Button("Rename", systemImage: "pencil") { isRenaming = true }
+                    Button("Edit", systemImage: "pencil") { isRenaming = true }
                     Button("Delete Profile", systemImage: "trash", role: .destructive) { isConfirmingDelete = true }
                 } label: {
                     Image(systemName: "ellipsis.circle").accessibilityLabel("More")
@@ -79,6 +80,20 @@ struct ProfileDetailView: View {
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 20)
+    }
+
+    private func relationshipControl(_ profile: Profile) -> some View {
+        Picker("Relationship", selection: Binding(
+            get: { profile.closeness },
+            set: { new in
+                do { try app.setCloseness(of: profile.id, to: new) } catch { errorMessage = error.localizedDescription }
+            })
+        ) {
+            ForEach(Closeness.allCases, id: \.self) { Text($0.title).tag($0) }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 16)
+        .accessibilityIdentifier("relationship-control")
     }
 
     private func history(_ profile: Profile) -> some View {
