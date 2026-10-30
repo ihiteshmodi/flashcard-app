@@ -42,6 +42,15 @@ A fresh clone starts with **no cards** because the bundled deck content is priva
 
 To run on a real iPhone, set your signing team on the Flashcards target in Xcode.
 
+To sideload without Xcode signing (for example into LiveContainer, which signs the app itself), build an unsigned IPA:
+
+```bash
+scripts/build-unsigned-ipa.sh
+# Created build/Flashcards-unsigned.ipa
+```
+
+The IPA embeds your private `Generated/seed.json`, so keep it out of git (`build/` is ignored) and do not share it.
+
 ## Usage
 
 ### In the app
