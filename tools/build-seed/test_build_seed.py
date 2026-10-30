@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from build_seed import build
+from build_seed import build, only_decks
 
 FIXTURE = """<html><body><article><div class="page-body">
 <details open="" class="toggle"><summary>189 questions to ask your gf (general)</summary><div class="indented">
@@ -133,6 +133,15 @@ class BuildSeedTests(unittest.TestCase):
     def test_an_export_with_no_known_dropdowns_is_refused(self):
         with self.assertRaises(SystemExit):
             build("<html><body><details><summary>Something else</summary></details></body></html>")
+
+    def test_only_keeps_the_chosen_decks_with_their_ids_unchanged(self):
+        starter = only_decks(self.seed, ["21-questions"])
+        self.assertEqual([deck["id"] for deck in starter["decks"]], ["21-questions"])
+        self.assertEqual(starter["decks"][0]["cards"], self.decks["21-questions"]["cards"])
+
+    def test_only_refuses_an_unknown_deck(self):
+        with self.assertRaises(SystemExit):
+            only_decks(self.seed, ["nope"])
 
 
 if __name__ == "__main__":

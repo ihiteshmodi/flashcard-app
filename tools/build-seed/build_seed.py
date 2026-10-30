@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds the private seed JSON (decks and cards) from a Notion HTML export of conversation cards.
 
-Usage: build_seed.py <export.html|export.zip> <seed.json>
+Usage: build_seed.py <export.html|export.zip> <seed.json> [--only deck-id,deck-id]
 
 Card text is copied exactly as written in the export; only HTML tags, entities and spacing are cleaned.
 """
@@ -188,12 +188,31 @@ def compact(entry):
     return ordered
 
 
+def only_decks(seed, deck_ids):
+    wanted = set(deck_ids)
+    decks = [deck for deck in seed["decks"] if deck["id"] in wanted]
+    missing = wanted - {deck["id"] for deck in decks}
+    if missing:
+        raise SystemExit(f"Unknown deck id(s): {', '.join(sorted(missing))}")
+    return {**seed, "decks": decks}
+
+
 def main(argv):
-    if len(argv) != 3:
+    args = argv[1:]
+    only = None
+    if "--only" in args:
+        position = args.index("--only")
+        if position + 1 >= len(args):
+            raise SystemExit(__doc__)
+        only = args[position + 1].split(",")
+        del args[position:position + 2]
+    if len(args) != 2:
         raise SystemExit(__doc__)
-    seed = build(read_export(argv[1]))
-    Path(argv[2]).parent.mkdir(parents=True, exist_ok=True)
-    Path(argv[2]).write_text(json.dumps(seed, ensure_ascii=False, indent=1), encoding="utf-8")
+    seed = build(read_export(args[0]))
+    if only:
+        seed = only_decks(seed, only)
+    Path(args[1]).parent.mkdir(parents=True, exist_ok=True)
+    Path(args[1]).write_text(json.dumps(seed, ensure_ascii=False, indent=1), encoding="utf-8")
     for deck in seed["decks"]:
         print(f"{deck['title']}: {len(deck['cards'])} cards")
 
