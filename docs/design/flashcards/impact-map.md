@@ -70,7 +70,7 @@ Confirmed: new profiles start with all decks on; skipped cards go to the end of 
 Approved together with the mockups:
 1. After Undo, the answer stays saved and is pre-filled if the card is asked again. Redo is available until the next new swipe.
 2. A saved answer on a card that is currently un-asked (after Undo) does not appear in history until the card is asked again.
-3. Export writes a copy of the SQLite file through the iOS Files sheet (or the share sheet) to any location; import validates the file and backs up the current database first.
+3. Export writes a copy of the SQLite file straight to the iOS share sheet (AirDrop, Save to Files, Google Drive, ...); import validates the file and backs up the current database first.
 4. Removing or deleting a person keeps their past group answers, labelled with the name they had when saved.
 5. A new group starts with all decks on, like a new person.
 6. Names are unique across people and groups.

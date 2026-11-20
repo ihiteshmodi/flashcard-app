@@ -5,13 +5,16 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
     let app: Flashcards
     @AppStorage("appearance") private var appearance = Appearance.system.rawValue
-    @State private var exportURL: URL?
-    @State private var isSavingToFiles = false
-    @State private var isSharing = false
+    @State private var shareItem: ShareItem?
     @State private var isPickingImport = false
     @State private var pendingImport: PendingImport?
     @State private var message: String?
     @State private var errorMessage: String?
+
+    private struct ShareItem: Identifiable {
+        let id = UUID()
+        let url: URL
+    }
 
     private struct PendingImport: Identifiable {
         let id = UUID()
@@ -52,19 +55,16 @@ struct SettingsView: View {
                 Text("Some cards are worded from a man's or a woman's point of view. They only show when this matches.")
             }
             Section {
-                Button("Save Export to Files…") { export(thenSave: true) }
+                Button("Export Database…") { export() }
                     .listRowBackground(Theme.surface)
-                    .accessibilityIdentifier("export-files")
-                Button("Share Export…") { export(thenSave: false) }
-                    .listRowBackground(Theme.surface)
-                    .accessibilityIdentifier("export-share")
+                    .accessibilityIdentifier("export-database")
                 Button("Import Database…") { isPickingImport = true }
                     .listRowBackground(Theme.surface)
                     .accessibilityIdentifier("import-database")
             } header: {
                 Text("Backup")
             } footer: {
-                Text("Export saves one file, \(app.backup.suggestedFileName()), with all profiles, groups, decks chosen, asked cards, answers, your own cards and who you are. You choose where it goes. Import replaces everything after you confirm, and keeps a safety copy first.")
+                Text("Export makes one file, \(app.backup.suggestedFileName()), with all profiles, groups, decks chosen, asked cards, answers, your own cards and who you are, then opens the share sheet so you can AirDrop it, save it to Files or send it to Google Drive. Import replaces everything after you confirm, and keeps a safety copy first.")
             }
             Section("Data") {
                 row("Profiles", "\(people.count + groups.count)")
@@ -74,16 +74,7 @@ struct SettingsView: View {
         }
         .appListStyle()
         .navigationTitle("Settings")
-        .fileMover(isPresented: $isSavingToFiles, file: exportURL) { result in
-            switch result {
-            case .success: message = "Export saved."
-            case .failure(let error): errorMessage = error.localizedDescription
-            }
-            cleanUpExport()
-        }
-        .sheet(isPresented: $isSharing, onDismiss: cleanUpExport) {
-            if let exportURL { ShareSheet(items: [exportURL]) }
-        }
+        .sheet(item: $shareItem) { item in ShareSheet(items: [item.url]) }
         .fileImporter(isPresented: $isPickingImport, allowedContentTypes: [.data]) { result in
             handleImport(result)
         }
@@ -114,20 +105,18 @@ struct SettingsView: View {
         .listRowBackground(Theme.surface)
     }
 
-    private func export(thenSave: Bool) {
+    // A fresh folder per export keeps the dated file name intact; iOS clears the temporary directory, and
+    // deleting the file when the sheet closes could cut off an upload that is still reading it.
+    private func export() {
         do {
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent(app.backup.suggestedFileName())
+            let folder = FileManager.default.temporaryDirectory.appendingPathComponent("export-\(UUID().uuidString)")
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            let url = folder.appendingPathComponent(app.backup.suggestedFileName())
             try app.backup.export(to: url)
-            exportURL = url
-            if thenSave { isSavingToFiles = true } else { isSharing = true }
+            shareItem = ShareItem(url: url)
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    private func cleanUpExport() {
-        if let exportURL { try? FileManager.default.removeItem(at: exportURL) }
-        exportURL = nil
     }
 
     private func handleImport(_ result: Result<URL, Error>) {

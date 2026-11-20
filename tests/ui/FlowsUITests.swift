@@ -114,8 +114,7 @@ final class FlowsUITests: FlashcardsUITestCase {
     func testTheSettingsScreenOffersExportAndImport() {
         openTab("Settings")
 
-        XCTAssertTrue(app.buttons["export-files"].waitForExistence(timeout: 15))
-        XCTAssertTrue(app.buttons["export-share"].exists)
+        XCTAssertTrue(app.buttons["export-database"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.buttons["import-database"].exists)
     }
 }

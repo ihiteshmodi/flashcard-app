@@ -28,7 +28,7 @@
 - **People and groups.** Each person has their own asked list, answers and deck choices. A group is made of people you already added and tracks its own asked cards and answers, separate from its members.
 - **Optional answers.** After a right swipe, a sheet offers a note, the picked option (multiple choice, this or that) and, in a group, who answered. Dismiss it to save nothing; the card still counts as asked.
 - **Decks.** Turn decks on or off per profile. Add your own questions, "this or that" and multiple-choice cards.
-- **Backup.** Export everything as one SQLite file to any location (Files, AirDrop) and import it back. Import keeps a safety copy first.
+- **Backup.** Export everything as one SQLite file; the share sheet opens at once (AirDrop, Save to Files, Google Drive) and the file can be imported back. Import keeps a safety copy first.
 - **Dark mode.** True black, or follow the system.
 
 No accounts, no network, no analytics. All data stays on the phone.

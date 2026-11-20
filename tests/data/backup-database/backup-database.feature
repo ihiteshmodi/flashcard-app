@@ -1,13 +1,14 @@
 Feature: Export and import the database
   As a host
-  I want the whole database as one SQLite file in a folder I choose
+  I want the whole database as one SQLite file sent straight from the share sheet
   So that I can back it up whenever I want and move it between builds
 
   Scenario: Export
     Given profiles, asked cards and answers exist
-    When I tap Export Database and choose a folder in Files
-    Then a file "flashcards-2026-10-29.sqlite" is saved there
-    And opening it shows the same profiles, asked cards and answers
+    When I tap Export Database
+    Then the share sheet opens at once, with no Files picker first
+    And it offers the file "flashcards-2026-10-29.sqlite" to AirDrop, Messages, Mail, Save to Files and Google Drive
+    And opening that file shows the same profiles, asked cards and answers
 
   Scenario: Export contains everything
     Given profiles "Maya" and "Sam", deck choices, asked marks, answers and one custom card
@@ -20,7 +21,7 @@ Feature: Export and import the database
     Then the exported file contains that swipe
 
   Scenario: Export is cancelled
-    When I tap Export Database and cancel the folder picker
+    When I tap Export Database and close the share sheet without choosing a destination
     Then nothing is written
     And I see no error
 
