@@ -1,26 +1,27 @@
 # Play the game: state machine
 
-One round of a `Game`. Everything else (scores, hands, piles) changes only through these transitions.
+One round of a `Game`. Every player answers the same black card from the same round options; picks stay hidden until the last player finishes.
 
 ```mermaid
 stateDiagram-v2
     [*] --> passToPlayer: start
     passToPlayer --> choosing: ready
-    choosing --> passToPlayer: play (more players still to play)
-    choosing --> passToCzar: play (last player)
-    passToCzar --> judging: ready
-    judging --> roundResult: choose
-    roundResult --> passToPlayer: nextRound
+    choosing --> passToPlayer: submit (more players still to answer)
+    choosing --> reveal: submit (last player answered)
+    reveal --> passToPlayer: nextRound (more unasked black cards)
+    reveal --> allAsked: nextRound (no unasked black cards left)
+    allAsked --> passToPlayer: resetAndContinue
 ```
 
 ## Invariants
-- Between `start` and the end there are always 3 to 10 players with distinct names, and a Czar who is one of them.
-- A hand is readable only in `choosing`, and only the hand of the player named by the phase.
-- A player plays exactly `pick` cards, all from that player's own hand, none twice.
-- The Czar never plays; every other player plays exactly once per round.
-- The plays shown to the Czar carry no names and are in the order the shuffle gave.
-- A point is awarded only in `choose`, to the player of the chosen play, once.
-- At the start of every round each player holds the hand size again, and no card is in two places.
+- Between `start` and the end there are 1 to 10 players with distinct identities/names.
+- Every player in a round sees the exact same list of white option cards (`options`, up to 12 cards).
+- A player's choice is not visible to any other player during `passToPlayer` or `choosing`; choices are readable only in `reveal`.
+- Two players may choose the exact same white card(s) in the same round, and white cards remain eligible in later rounds.
+- Within a single multi-pick answer (`Pick 2` or `Pick 3`), a player chooses `pick` distinct white cards from the round's options, kept in the order chosen.
+- Every player answers once per round, in player order.
+- Entering `reveal` records the asked black card and every player's answer to History (on the Group if playing as a group, otherwise on each participating Person profile).
+- Black cards already asked for the Group (or already asked for every participating Person) are excluded until reset; resetting clears the asked marks while preserving saved History entries.
 
 ## Forbidden arrows (each has a test)
-`play` outside `choosing`; `ready` in `choosing`, `judging` or `roundResult`; `choose` outside `judging`, or with a play that does not exist; `nextRound` outside `roundResult`; reading a hand outside `choosing`.
+`submit` outside `choosing`; `ready` outside `passToPlayer`; `nextRound` outside `reveal`; reading players' answers before `reveal`; choosing a card not in the round's options or fewer/more than `pick` cards.

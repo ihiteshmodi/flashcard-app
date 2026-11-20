@@ -11,6 +11,7 @@ struct Migrator {
     static let current = Migrator(steps: [
         MigrationStep(version: 1, apply: SchemaV1.apply),
         MigrationStep(version: 2, apply: SchemaV2.apply),
+        MigrationStep(version: 3, apply: SchemaV3.apply),
     ])
 
     var latestVersion: Int { steps.map(\.version).max() ?? 0 }
@@ -23,6 +24,25 @@ struct Migrator {
                 try db.setSchemaVersion(step.version)
             }
         }
+    }
+}
+
+/// Completed party-game rounds per profile or group, keeping History intact even when asked status is reset.
+enum SchemaV3 {
+    static func apply(_ db: Database) throws {
+        try db.script("""
+        CREATE TABLE game_round(
+            id TEXT PRIMARY KEY,
+            profile_id TEXT NOT NULL REFERENCES profile(id) ON DELETE CASCADE,
+            black_card_id TEXT NOT NULL,
+            prompt TEXT NOT NULL,
+            answers_json TEXT NOT NULL,
+            is_asked INTEGER NOT NULL DEFAULT 1,
+            played_at REAL NOT NULL
+        );
+        CREATE INDEX idx_game_round_profile_played ON game_round(profile_id, played_at DESC);
+        CREATE INDEX idx_game_round_profile_black ON game_round(profile_id, black_card_id);
+        """)
     }
 }
 

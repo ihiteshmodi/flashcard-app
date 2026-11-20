@@ -2,61 +2,51 @@ import XCTest
 @testable import FlashcardsCore
 
 final class GameScreenTests: XCTestCase {
-    private func game() throws -> Game {
-        try Game.start(players: ["Maya", "Sam", "Lee"], library: try GameFixtures.library(), sets: ["s"], shuffle: { $0 })
+    private func game(blacks: [String] = GameFixtures.blacks, excluded: Set<String> = []) throws -> Game {
+        try Game.start(
+            players: GameFixtures.players("Maya", "Sam"),
+            library: try GameFixtures.library(blacks: blacks),
+            sets: ["s"],
+            excludedBlackIDs: excluded,
+            shuffle: { $0 })
     }
 
-    private func play(_ game: inout Game) throws {
-        try game.ready()
-        try game.play([game.visibleHand[0].id])
+    func testTheFirstScreenAsksToPassThePhoneToTheFirstPlayerWithoutShowingAnyCards() throws {
+        let current = try game()
+
+        XCTAssertEqual(current.screen, .passPhone(to: GameFixtures.players("Maya")[0]))
     }
 
-    func testTheFirstScreenAsksForThePhoneToBePassedWithoutShowingAnyCards() throws {
-        XCTAssertEqual(try game().screen, .passPhone(to: "Sam", isCzar: false))
+    func testAPlayerWhoSaysItIsThemSeesTheBlackCardAndTheTwelveSharedOptions() throws {
+        var current = try game()
+
+        try current.ready()
+
+        XCTAssertEqual(
+            current.screen,
+            .chooseCards(player: GameFixtures.players("Maya")[0], black: current.blackCard, options: current.visibleOptions))
+        XCTAssertEqual(current.visibleOptions.count, 12)
     }
 
-    func testAPlayerWhoSaysItIsThemSeesTheBlackCardAndTheirOwnHand() throws {
-        var game = try game()
+    func testAfterTheLastPlayerSubmitsTheScreenRevealsEveryPlayersNamedAnswer() throws {
+        var current = try game()
+        try current.ready()
+        try current.submit(["s-w-1"])
+        try current.ready()
+        try current.submit(["s-w-2"])
 
-        try game.ready()
-
-        XCTAssertEqual(game.screen, .chooseCards(player: "Sam", black: game.blackCard, hand: game.visibleHand))
-        XCTAssertEqual(game.visibleHand.count, 10)
-    }
-
-    func testAfterTheLastPlayerThePhoneGoesToTheCzar() throws {
-        var game = try game()
-        try play(&game)
-        try play(&game)
-
-        XCTAssertEqual(game.screen, .passPhone(to: "Maya", isCzar: true))
-    }
-
-    func testTheCzarSeesTheBlackCardAndTheAnonymousPlays() throws {
-        var game = try game()
-        try play(&game)
-        try play(&game)
-
-        try game.ready()
-
-        XCTAssertEqual(game.screen, .judge(czar: "Maya", black: game.blackCard, plays: game.plays))
-        XCTAssertEqual(game.plays.count, 2)
-    }
-
-    func testTheResultNamesTheWinnerAndShowsTheScores() throws {
-        var game = try game()
-        try play(&game)
-        try play(&game)
-        try game.ready()
-        try game.choose(playAt: 1)
-
-        guard case .roundResult(let winner, let black, let winningPlay, let scoreboard) = game.screen else {
-            return XCTFail("not a result: \(game.screen)")
+        guard case .reveal(let black, let answers) = current.screen else {
+            return XCTFail("expected reveal, got \(current.screen)")
         }
-        XCTAssertEqual(winner, "Lee")
-        XCTAssertEqual(black, game.blackCard)
-        XCTAssertEqual(winningPlay.cards.map(\.id), ["s-w-21"])
-        XCTAssertEqual(scoreboard.map(\.points), [0, 0, 1])
+        XCTAssertEqual(black, current.blackCard)
+        XCTAssertEqual(answers.map(\.player.name), ["Maya", "Sam"])
+        XCTAssertEqual(answers.map { $0.cards.map(\.id) }, [["s-w-1"], ["s-w-2"]])
+    }
+
+    func testWhenEveryBlackCardWasAlreadyPlayedTheScreenShowsAllAsked() throws {
+        let current = try game(blacks: ["One _____."], excluded: ["s-b-1"])
+
+        XCTAssertEqual(current.screen, .allAsked)
     }
 }
 

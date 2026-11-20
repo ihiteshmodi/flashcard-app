@@ -2,20 +2,19 @@ import Foundation
 
 /// What the player holding the phone sees. The screens only draw this; they decide nothing.
 public enum GameScreen: Equatable {
-    case passPhone(to: String, isCzar: Bool)
-    case chooseCards(player: String, black: BlackCard, hand: [WhiteCard])
-    case judge(czar: String, black: BlackCard, plays: [Game.Play])
-    case roundResult(winner: String, black: BlackCard, play: Game.Play, scoreboard: [Game.ScoreLine])
+    case passPhone(to: GamePlayer)
+    case chooseCards(player: GamePlayer, black: BlackCard, options: [WhiteCard])
+    case reveal(black: BlackCard, answers: [Game.PlayerAnswer])
+    case allAsked
 }
 
 extension Game {
     public var screen: GameScreen {
         switch phase {
-        case .passToPlayer(let player): return .passPhone(to: player, isCzar: false)
-        case .choosing(let player): return .chooseCards(player: player, black: blackCard, hand: visibleHand)
-        case .passToCzar: return .passPhone(to: czar, isCzar: true)
-        case .judging: return .judge(czar: czar, black: blackCard, plays: plays)
-        case .roundResult(let winner, let play): return .roundResult(winner: winner, black: blackCard, play: play, scoreboard: scoreboard)
+        case .passToPlayer(let player): return .passPhone(to: player)
+        case .choosing(let player): return .chooseCards(player: player, black: blackCard, options: visibleOptions)
+        case .reveal(let answers): return .reveal(black: blackCard, answers: answers)
+        case .allAsked: return .allAsked
         }
     }
 }

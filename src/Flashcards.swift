@@ -10,6 +10,7 @@ public final class Flashcards {
     public let customCards: CustomCards
     public let owner: Owner
     public let backup: Backup
+    public let gameHistory: GameHistory
     public private(set) var gameCards: GameCardLibrary
     private let seedLoader: SeedLoader
     private let roles: Roles
@@ -27,6 +28,7 @@ public final class Flashcards {
         answers = AnswerBook(db: database, roles: roles)
         customCards = CustomCards(db: database, roles: roles)
         owner = Owner(db: database)
+        gameHistory = GameHistory(db: database, roles: roles)
         gameCards = try GameCardLibrary(files: [])
         seedLoader = SeedLoader(db: database, roles: roles)
         var reload: () throws -> Void = {}
@@ -57,26 +59,55 @@ public final class Flashcards {
         gameCards = try GameCardLibrary(files: files)
     }
 
-    /// Starts a game on the loaded cards and keeps it, replacing any game in progress.
-    public func startGame(players: [String], sets: Set<String>) throws -> GameTable {
-        let game = try Game.start(players: players, library: gameCards, sets: sets, shuffle: roles.shuffle)
-        let table = GameTable(game: game, db: database, roles: roles)
-        try table.save()
-        let setup = GameSetup(players: game.players, sets: sets.sorted())
-        try database.setSetting("game.setup", String(decoding: try JSONEncoder().encode(setup), as: UTF8.self))
+    /// Starts a game from existing people or a group, skipping already-asked black cards, and keeps it.
+    public func startGame(
+        groupID: String? = nil,
+        personIDs: [String] = [],
+        includeMe: Bool = false,
+        sets: Set<String>
+    ) throws -> GameTable {
+        var players: [GamePlayer] = includeMe ? [.me] : []
+        if let groupID {
+            let members = try groups.members(of: groupID)
+            players.append(contentsOf: members.map(GamePlayer.init(profile:)))
+        } else {
+            for id in personIDs {
+                if let profile = try profiles.profile(id), profile.kind == .person {
+                    players.append(GamePlayer(profile: profile))
+                }
+            }
+        }
+        let targets = GameHistory.targetProfileIDs(targetGroupID: groupID, players: players)
+        let excluded = try gameHistory.askedBlackCardIDs(forProfiles: targets)
+        let game = try Game.start(
+            players: players,
+            targetGroupID: groupID,
+            library: gameCards,
+            sets: sets,
+            excludedBlackIDs: excluded,
+            shuffle: roles.shuffle)
+        let table = GameTable(game: game, db: database, library: gameCards, history: gameHistory, roles: roles)
+        let setup = SavedGameSetup(groupID: groupID, personIDs: personIDs, includeMe: includeMe, sets: sets)
+        try database.transaction {
+            try table.save()
+            try database.setSetting("game.setup", String(decoding: try JSONEncoder().encode(setup), as: UTF8.self))
+        }
         return table
     }
 
-    /// The players and card sets of the last game that started, so the next one does not start from empty.
-    public func lastGameSetup() throws -> (players: [String], sets: Set<String>)? {
-        guard let saved = try database.setting("game.setup"),
-              let setup = try? JSONDecoder().decode(GameSetup.self, from: Data(saved.utf8)) else { return nil }
-        return (setup.players, Set(setup.sets))
+    public func resetAskedGameCards(groupID: String? = nil, personIDs: [String] = []) throws {
+        let targets = groupID.map { [$0] } ?? personIDs
+        try gameHistory.resetAsked(forProfiles: targets)
+    }
+
+    public func lastGameSetup() throws -> SavedGameSetup? {
+        guard let saved = try database.setting("game.setup") else { return nil }
+        return try? JSONDecoder().decode(SavedGameSetup.self, from: Data(saved.utf8))
     }
 
     /// The game that was in progress when the app was last closed, if any.
     public func resumeGame() throws -> GameTable? {
-        try GameTable.resume(from: database, roles: roles)
+        try GameTable.resume(from: database, library: gameCards, history: gameHistory, roles: roles)
     }
 
     public func setGender(of profileID: String, to gender: Gender?) throws {
@@ -97,9 +128,4 @@ public final class Flashcards {
     private func syncSessions() throws {
         for session in sessions.values { try session.syncWithLibrary() }
     }
-}
-
-private struct GameSetup: Codable {
-    let players: [String]
-    let sets: [String]
 }

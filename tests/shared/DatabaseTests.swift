@@ -25,13 +25,30 @@ final class DatabaseTests: XCTestCase {
         let db = try Database.inMemory()
         try Migrator.current.migrate(db)
         try db.run("INSERT INTO profile(id, kind, name, emoji, name_key, created_at) VALUES('p1', 'person', 'Maya', 'x', 'maya', 0)")
-        let addNotes = MigrationStep(version: 3) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
+        let nextVersion = Migrator.current.latestVersion + 1
+        let addNotes = MigrationStep(version: nextVersion) { try $0.script("ALTER TABLE profile ADD COLUMN note TEXT") }
         let nextRelease = Migrator(steps: Migrator.current.steps + [addNotes])
 
         try nextRelease.migrate(db)
 
-        XCTAssertEqual(try db.schemaVersion(), 3)
+        XCTAssertEqual(try db.schemaVersion(), nextVersion)
         XCTAssertEqual(try db.firstRow("SELECT name FROM profile")?.string("name"), "Maya")
+    }
+
+    func testASchemaV2DatabaseMigratesToV3WithGameRoundAndKeepsProfilesAndAnswers() throws {
+        let db = try Database.inMemory()
+        let v2Only = Migrator(steps: Migrator.current.steps.filter { $0.version <= 2 })
+        try v2Only.migrate(db)
+        try db.run("INSERT INTO profile(id, kind, name, emoji, name_key, created_at) VALUES('p1', 'person', 'Maya', '🙂', 'maya', 0)")
+        try db.run("INSERT INTO deck(id, title, sort_order, is_builtin) VALUES('d', 'D', 0, 1)")
+        try db.run("INSERT INTO card(id, deck_id, kind, prompt, sort_order, is_builtin, created_at) VALUES('c', 'd', 'question', 'Q', 1, 1, 0)")
+        try db.run("INSERT INTO answer(profile_id, card_id, text, updated_at) VALUES('p1', 'c', 'Lisbon', 10)")
+
+        try Migrator.current.migrate(db)
+
+        XCTAssertEqual(try db.schemaVersion(), 3)
+        XCTAssertTrue(try db.tableNames().contains("game_round"))
+        XCTAssertEqual(try db.firstRow("SELECT text FROM answer WHERE profile_id = 'p1'")?.string("text"), "Lisbon")
     }
 
     func testAFailedStepRollsEverythingBack() throws {
@@ -54,10 +71,12 @@ final class DatabaseTests: XCTestCase {
         try db.run("INSERT INTO deck(id, title, sort_order, is_builtin) VALUES('d', 'D', 0, 1)")
         try db.run("INSERT INTO card(id, deck_id, kind, prompt, sort_order, is_builtin, created_at) VALUES('c', 'd', 'question', 'Q', 1, 1, 0)")
         try db.run("INSERT INTO card_state(profile_id, card_id, status, updated_at) VALUES('p1', 'c', 'asked', 0)")
+        try db.run("INSERT INTO game_round(id, profile_id, black_card_id, prompt, answers_json, is_asked, played_at) VALUES('g1', 'p1', 'b1', 'P', '[]', 1, 0)")
 
         try db.run("DELETE FROM profile WHERE id = 'p1'")
 
         XCTAssertEqual(try db.count("SELECT COUNT(*) AS n FROM card_state"), 0)
+        XCTAssertEqual(try db.count("SELECT COUNT(*) AS n FROM game_round"), 0)
     }
 
     func testRevisionChangesAfterAWrite() throws {

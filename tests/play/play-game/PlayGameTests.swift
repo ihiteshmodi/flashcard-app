@@ -5,315 +5,225 @@ final class PlayGameTests: XCTestCase {
     private let identity: ([String]) -> [String] = { $0 }
     private let reversed: ([String]) -> [String] = { Array($0.reversed()) }
 
-    private func start(_ players: [String] = ["Maya", "Sam", "Lee"], whites: Int = 60,
-                       blacks: [String] = GameFixtures.blacks,
-                       sets: Set<String> = ["s"], shuffle: ([String]) -> [String] = { $0 }) throws -> Game {
-        try Game.start(players: players, library: try GameFixtures.library(whites: whites, blacks: blacks), sets: sets, shuffle: shuffle)
-    }
-
-    private func everyoneButTheCzarPlays(_ game: inout Game) throws {
-        while case .passToPlayer = game.phase {
-            try game.ready()
-            try game.play(game.visibleHand.prefix(game.blackCard.pick).map(\.id))
-        }
-    }
-
-    private func judging(_ shuffle: ([String]) -> [String] = { $0 }) throws -> Game {
-        var game = try start(shuffle: shuffle)
-        try everyoneButTheCzarPlays(&game)
-        try game.ready()
-        return game
-    }
-
-    private func wonRoundOne() throws -> Game {
-        var game = try judging()
-        try game.choose(playAt: 1)
-        return game
+    private func start(
+        _ players: [GamePlayer] = GameFixtures.players("Maya", "Sam"),
+        whites: Int = 20,
+        blacks: [String] = GameFixtures.blacks,
+        sets: Set<String> = ["s"],
+        excludedBlackIDs: Set<String> = [],
+        optionCount: Int = 12,
+        shuffle: ([String]) -> [String] = { $0 }
+    ) throws -> Game {
+        try Game.start(
+            players: players,
+            library: try GameFixtures.library(whites: whites, blacks: blacks),
+            sets: sets,
+            excludedBlackIDs: excludedBlackIDs,
+            optionCount: optionCount,
+            shuffle: shuffle)
     }
 
     private func message(_ error: Error) -> String { error.localizedDescription }
 
-    // MARK: Starting
+    // MARK: Starting and player counts
 
-    func testEveryPlayerHoldsTenWhiteCardsWhenTheGameStarts() throws {
-        let game = try start()
-
-        XCTAssertEqual(game.players.map { game.hands[$0]?.count }, [10, 10, 10])
-    }
-
-    func testTheFirstBlackCardIsTurnedAndTheFirstPlayerIsTheCzar() throws {
+    func testATwoPlayerGameTurnsABlackCardAndPreparesTwelveSharedWhiteOptions() throws {
         let game = try start()
 
         XCTAssertEqual(game.blackCard.id, "s-b-1")
-        XCTAssertEqual(game.czar, "Maya")
         XCTAssertEqual(game.round, 1)
+        XCTAssertEqual(game.phase, .passToPlayer(GameFixtures.players("Maya")[0]))
+        XCTAssertEqual(game.visibleOptions, [])
     }
 
-    func testEveryoneStartsWithNoPoints() throws {
-        XCTAssertEqual(try start().scoreboard.map(\.points), [0, 0, 0])
+    func testIncludingMeAlongsideOneFriendStartsATwoPlayerGame() throws {
+        let maya = GameFixtures.players("Maya")[0]
+        let game = try start([.me, maya])
+
+        XCTAssertEqual(game.players.map(\.name), ["Me", "Maya"])
+        XCTAssertEqual(game.phase, .passToPlayer(.me))
     }
 
-    func testThePlayersNamesAreKeptInTheOrderTheyWereTyped() throws {
-        XCTAssertEqual(try start([" Maya ", "Sam", "Lee"]).players, ["Maya", "Sam", "Lee"])
+    func testASinglePlayerIsAllowedWithNoThreePlayerMinimum() throws {
+        let game = try start(GameFixtures.players("Maya"))
+
+        XCTAssertEqual(game.players.map(\.name), ["Maya"])
     }
 
-    func testAGameNeedsThreeToTenPlayersWithDifferentNames() throws {
-        let eleven = (1...11).map { "P\($0)" }
-        let cases: [(String, [String], String)] = [
-            ("two players", ["Maya", "Sam"], "Add at least 3 players"),
-            ("eleven players", eleven, "A game takes at most 10 players"),
-            ("the same name in another case", ["Maya", "Sam", "maya"], "Each player needs a different name"),
-            ("a blank name", ["Maya", "Sam", " "], "Every player needs a name"),
+    func testAGameValidatesPlayersAndSets() throws {
+        let eleven = (1...11).map { GamePlayer(id: "p-\($0)", name: "P\($0)", emoji: "🙂", profileID: "p-\($0)") }
+        let duplicateName = [
+            GamePlayer(id: "p-1", name: "Maya", emoji: "🙂", profileID: "p-1"),
+            GamePlayer(id: "p-2", name: "maya", emoji: "🙂", profileID: "p-2"),
         ]
-        for (name, players, expected) in cases {
-            XCTAssertThrowsError(try start(players), name) { XCTAssertEqual(self.message($0), expected, name) }
+        let blankName = [GamePlayer(id: "p-1", name: "   ", emoji: "🙂", profileID: "p-1")]
+        let cases: [(String, [GamePlayer], Set<String>, String)] = [
+            ("no players", [], ["s"], "Pick at least one player"),
+            ("eleven players", eleven, ["s"], "A game takes at most 10 players"),
+            ("same name in another case", duplicateName, ["s"], "Each player needs a different name"),
+            ("blank name", blankName, ["s"], "Every player needs a name"),
+            ("no set switched on", GameFixtures.players("Maya", "Sam"), [], "Switch on at least one card set"),
+        ]
+        for (label, players, sets, expected) in cases {
+            XCTAssertThrowsError(try start(players, sets: sets), label) {
+                XCTAssertEqual(self.message($0), expected, label)
+            }
         }
     }
 
-    func testAGameNeedsACardSet() throws {
-        XCTAssertThrowsError(try start(sets: [])) { XCTAssertEqual(self.message($0), "Switch on at least one card set") }
-    }
-
-    func testTheChosenSetsMustHoldEnoughWhiteCardsForTheHands() throws {
-        XCTAssertThrowsError(try start(whites: 29)) {
-            XCTAssertEqual(self.message($0), "These sets do not have enough white cards for 3 players")
+    func testTheChosenSetsMustHoldAtLeastOneBlackCardAndEnoughWhiteCards() throws {
+        XCTAssertThrowsError(try start(blacks: [])) {
+            XCTAssertEqual(self.message($0), "These sets have no black cards")
+        }
+        XCTAssertThrowsError(try start(whites: 1, blacks: ["_____ and _____."])) {
+            XCTAssertEqual(self.message($0), "These sets do not have enough white cards")
         }
     }
 
-    func testTheChosenSetsMustHoldABlackCard() throws {
-        XCTAssertThrowsError(try start(blacks: [])) { XCTAssertEqual(self.message($0), "These sets have no black cards") }
-    }
+    // MARK: Shared reusable options and hidden turns
 
-    // MARK: Hidden hands and turns
-
-    func testTheNextPlayerIsAskedForBeforeAnyHandIsShown() throws {
-        let game = try start()
-
-        XCTAssertEqual(game.phase, .passToPlayer("Sam"))
-        XCTAssertEqual(game.visibleHand, [])
-    }
-
-    func testAPlayerSeesOnlyTheirOwnHandOnceTheySayItIsThem() throws {
+    func testEveryPlayerSeesTheExactSameWhiteOptionsAndCanPickTheExactSameAnswer() throws {
         var game = try start()
 
         try game.ready()
+        let mayaOptions = game.visibleOptions
+        XCTAssertEqual(mayaOptions.map(\.id), (1...12).map { "s-w-\($0)" })
+        try game.submit(["s-w-1"])
 
-        XCTAssertEqual(game.phase, .choosing("Sam"))
-        XCTAssertEqual(game.visibleHand.map(\.id), (11...20).map { "s-w-\($0)" })
-    }
-
-    func testPlayersPlayInTurnAfterTheCzarAndTheCzarIsAskedForLast() throws {
-        var game = try start()
+        XCTAssertEqual(game.phase, .passToPlayer(GameFixtures.players("Sam")[0]))
+        XCTAssertEqual(game.visibleOptions, [])
+        XCTAssertEqual(game.revealedAnswers, [])
 
         try game.ready()
-        try game.play(["s-w-11"])
-        XCTAssertEqual(game.phase, .passToPlayer("Lee"))
-        try game.ready()
-        try game.play(["s-w-21"])
-
-        XCTAssertEqual(game.phase, .passToCzar)
-        XCTAssertEqual(game.visibleHand, [])
+        XCTAssertEqual(game.visibleOptions, mayaOptions)
+        XCTAssertEqual(game.revealedAnswers, [])
+        XCTAssertNoThrow(try game.submit(["s-w-1"]))
     }
 
-    func testAPlayedCardLeavesTheHand() throws {
-        var game = try start()
+    func testChoicesStayHiddenUntilTheLastPlayerAnswersThenRevealShowsEveryPlayerWithTheirPick() throws {
+        var game = try start(blacks: ["Coming soon! Batman vs. _____."])
+
         try game.ready()
+        try game.submit(["s-w-1"])
+        XCTAssertEqual(game.revealedAnswers, [])
 
-        try game.play(["s-w-11"])
+        try game.ready()
+        try game.submit(["s-w-2"])
 
-        XCTAssertEqual(game.hands["Sam"]?.count, 9)
+        XCTAssertEqual(game.visibleOptions, [])
+        XCTAssertEqual(game.revealedAnswers.map(\.player.name), ["Maya", "Sam"])
+        XCTAssertEqual(game.revealedAnswers.map { $0.cards.map(\.text) }, [["White 1."], ["White 2."]])
     }
 
-    // MARK: Playing cards
+    // MARK: Multi-pick rules
 
-    func testAPlayerMustPlayAsManyCardsAsTheBlackCardAsksFor() throws {
+    func testAMultiBlankBlackCardRequiresThatManyDistinctCardsFromTheOptionsInOrder() throws {
         var game = try start(blacks: ["_____ is a slippery slope that leads to _____."])
         try game.ready()
 
-        XCTAssertThrowsError(try game.play(["s-w-11"])) { XCTAssertEqual(self.message($0), "Choose 2 cards") }
-        XCTAssertNoThrow(try game.play(["s-w-11", "s-w-12"]))
-    }
+        XCTAssertThrowsError(try game.submit(["s-w-1"])) {
+            XCTAssertEqual(self.message($0), "Choose 2 cards")
+        }
+        XCTAssertThrowsError(try game.submit(["s-w-1", "s-w-1"])) {
+            XCTAssertEqual(self.message($0), "Choose different cards")
+        }
+        XCTAssertThrowsError(try game.submit(["s-w-1", "s-w-99"])) {
+            XCTAssertEqual(self.message($0), "That card is not in the options")
+        }
 
-    func testAPlayerCanOnlyPlayCardsFromTheirOwnHand() throws {
-        var game = try start()
+        try game.submit(["s-w-5", "s-w-2"])
         try game.ready()
+        try game.submit(["s-w-3", "s-w-1"])
 
-        XCTAssertThrowsError(try game.play(["s-w-1"])) { XCTAssertEqual(self.message($0), "That card is not in your hand") }
+        XCTAssertEqual(game.revealedAnswers[0].cards.map(\.id), ["s-w-5", "s-w-2"])
+        XCTAssertEqual(game.revealedAnswers[1].cards.map(\.id), ["s-w-3", "s-w-1"])
     }
 
-    func testAPlayerCannotPlayTheSameCardTwice() throws {
-        var game = try start(blacks: ["_____ and _____."])
-        try game.ready()
-
-        XCTAssertThrowsError(try game.play(["s-w-11", "s-w-11"])) { XCTAssertEqual(self.message($0), "Choose different cards") }
-    }
-
-    func testARefusedPlayChangesNothing() throws {
+    func testARefusedSubmissionChangesNothing() throws {
         var game = try start()
         try game.ready()
         let before = game
 
-        _ = try? game.play(["s-w-1"])
+        _ = try? game.submit(["s-w-99"])
 
         XCTAssertEqual(game, before)
     }
 
-    // MARK: Judging
+    // MARK: Reusable white cards across rounds and unasked black cards
 
-    func testTheCzarSeesEveryPlayInTheOrderTheShuffleGave() throws {
-        let game = try judging(reversed)
-
-        // The reversed deck gives Sam s-w-50 and Lee s-w-40; the reversed order shows Lee's play first.
-        XCTAssertEqual(game.plays.map { $0.cards.map(\.id) }, [["s-w-40"], ["s-w-50"]])
-    }
-
-    func testThePlaysAreNotShownBeforeTheCzarIsJudging() throws {
-        var game = try start()
-        try everyoneButTheCzarPlays(&game)
-
-        XCTAssertEqual(game.phase, .passToCzar)
-        XCTAssertEqual(game.plays, [])
-    }
-
-    func testThePlayOfAPlayerWhoPlayedTwoCardsKeepsTheirOrder() throws {
-        var game = try start(blacks: ["_____ and _____."])
-        try everyoneButTheCzarPlays(&game)
+    func testWhiteCardsRemainAvailableInLaterRoundsEvenWithASmallSet() throws {
+        var game = try start(whites: 5, optionCount: 12, shuffle: reversed)
         try game.ready()
-
-        XCTAssertEqual(game.plays.first?.cards.map(\.id), ["s-w-11", "s-w-12"])
-    }
-
-    func testTheWinnerOfTheRoundIsNamedAndScoresOnePoint() throws {
-        var game = try judging()
-
-        try game.choose(playAt: 1)
-
-        guard case .roundResult(let winner, let play) = game.phase else { return XCTFail("not a result: \(game.phase)") }
-        XCTAssertEqual(winner, "Lee")
-        XCTAssertEqual(play.cards.map(\.id), ["s-w-21"])
-        XCTAssertEqual(game.scoreboard.map(\.points), [0, 0, 1])
-    }
-
-    func testAPlayThatDoesNotExistCannotBeChosen() throws {
-        var game = try judging()
-
-        XCTAssertThrowsError(try game.choose(playAt: 2)) { XCTAssertEqual(self.message($0), "That play does not exist") }
-    }
-
-    // MARK: Next round
-
-    func testTheNextRoundPassesTheCzarOnAndAsksForTheFirstPlayerAfterThem() throws {
-        var game = try wonRoundOne()
+        try game.submit(["s-w-5"])
+        try game.ready()
+        try game.submit(["s-w-4"])
 
         try game.nextRound(shuffle: identity)
+        try game.ready()
 
-        XCTAssertEqual(game.czar, "Sam")
         XCTAssertEqual(game.round, 2)
-        XCTAssertEqual(game.phase, .passToPlayer("Lee"))
+        XCTAssertEqual(game.visibleOptions.count, 5)
+        XCTAssertTrue(game.visibleOptions.map(\.id).contains("s-w-5"))
     }
 
-    func testTheNextRoundTurnsANewBlackCard() throws {
-        var game = try wonRoundOne()
+    func testAlreadyPlayedBlackCardsAreSkippedAndAllAskedAppearsWhenNoneRemainUntilReset() throws {
+        let library = try GameFixtures.library(whites: 10, blacks: ["One _____.", "Two _____."])
+        var game = try Game.start(
+            players: GameFixtures.players("Maya", "Sam"),
+            library: library,
+            sets: ["s"],
+            excludedBlackIDs: ["s-b-1"],
+            shuffle: identity)
 
-        try game.nextRound(shuffle: identity)
+        XCTAssertEqual(game.blackCard.text, "Two _____.")
 
-        XCTAssertEqual(game.blackCard.id, "s-b-2")
-    }
-
-    func testTheNextRoundRefillsEveryHandToTen() throws {
-        var game = try wonRoundOne()
-
-        try game.nextRound(shuffle: identity)
-
-        XCTAssertEqual(game.players.map { game.hands[$0]?.count }, [10, 10, 10])
-    }
-
-    func testThePointsAreKeptFromRoundToRound() throws {
-        var game = try wonRoundOne()
-
-        try game.nextRound(shuffle: identity)
-
-        XCTAssertEqual(game.scoreboard.map(\.points), [0, 0, 1])
-    }
-
-    func testCardsPlayedComeBackWhenTheWhitePileRunsOutAndNoCardIsHeldTwice() throws {
-        var game = try start(whites: 30)
-        try everyoneButTheCzarPlays(&game)
         try game.ready()
-        try game.choose(playAt: 0)
-
+        try game.submit(["s-w-1"])
+        try game.ready()
+        try game.submit(["s-w-2"])
         try game.nextRound(shuffle: identity)
 
-        let held = game.players.flatMap { game.hands[$0] ?? [] }.map(\.id)
-        XCTAssertEqual(held.count, 30)
-        XCTAssertEqual(Set(held).count, 30)
+        XCTAssertEqual(game.phase, .allAsked)
+
+        try game.resetAndContinue(library: library, shuffle: identity)
+        XCTAssertEqual(game.blackCard.text, "One _____.")
+        XCTAssertEqual(game.phase, .passToPlayer(GameFixtures.players("Maya")[0]))
     }
 
-    func testTheBlackCardsComeRoundAgainWhenTheyRunOut() throws {
-        var game = try start(blacks: ["One _____.", "Two _____."])
-        var turned: [String] = [game.blackCard.id]
-        for _ in 1...3 {
-            try everyoneButTheCzarPlays(&game)
-            try game.ready()
-            try game.choose(playAt: 0)
-            try game.nextRound(shuffle: identity)
-            turned.append(game.blackCard.id)
-        }
+    func testStartingWhenEveryBlackCardWasAlreadyPlayedOpensInAllAsked() throws {
+        let game = try start(blacks: ["One _____."], excludedBlackIDs: ["s-b-1"])
 
-        XCTAssertEqual(turned, ["s-b-1", "s-b-2", "s-b-1", "s-b-2"])
+        XCTAssertEqual(game.phase, .allAsked)
     }
 
-    func testTheCzarRotatesBackToTheFirstPlayer() throws {
-        var game = try start()
-        for _ in 1...3 {
-            try everyoneButTheCzarPlays(&game)
-            try game.ready()
-            try game.choose(playAt: 0)
-            try game.nextRound(shuffle: identity)
-        }
-
-        XCTAssertEqual(game.czar, "Maya")
-    }
-
-    // MARK: Nothing out of turn
+    // MARK: Out-of-turn guards & persistence
 
     func testNothingCanBeDoneOutOfTurn() throws {
         let outOfTurn = "That is not possible right now"
+        let library = try GameFixtures.library()
         var fresh = try start()
-        var judge = try judging()
-        var done = try wonRoundOne()
 
-        XCTAssertThrowsError(try fresh.play(["s-w-11"])) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try fresh.choose(playAt: 0)) { XCTAssertEqual(self.message($0), outOfTurn) }
+        XCTAssertThrowsError(try fresh.submit(["s-w-1"])) { XCTAssertEqual(self.message($0), outOfTurn) }
         XCTAssertThrowsError(try fresh.nextRound(shuffle: self.identity)) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try judge.play(["s-w-1"])) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try judge.ready()) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try judge.nextRound(shuffle: self.identity)) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try done.choose(playAt: 0)) { XCTAssertEqual(self.message($0), outOfTurn) }
-        XCTAssertThrowsError(try done.ready()) { XCTAssertEqual(self.message($0), outOfTurn) }
-    }
+        XCTAssertThrowsError(try fresh.resetAndContinue(library: library, shuffle: self.identity)) {
+            XCTAssertEqual(self.message($0), outOfTurn)
+        }
 
-    func testPlayingWhileTheNextPlayerIsStillBeingAskedForIsRefused() throws {
-        var game = try start()
-        try game.ready()
+        try fresh.ready()
+        XCTAssertThrowsError(try fresh.ready()) { XCTAssertEqual(self.message($0), outOfTurn) }
+        XCTAssertThrowsError(try fresh.nextRound(shuffle: self.identity)) { XCTAssertEqual(self.message($0), outOfTurn) }
 
-        XCTAssertThrowsError(try game.ready()) { XCTAssertEqual(self.message($0), "That is not possible right now") }
-    }
-
-    // MARK: Scores
-
-    func testTheScoreboardListsEveryoneInTheOrderTheyWereTypedAndMarksTheCzar() throws {
-        let game = try wonRoundOne()
-
-        XCTAssertEqual(game.scoreboard.map(\.name), ["Maya", "Sam", "Lee"])
-        XCTAssertEqual(game.scoreboard.map(\.points), [0, 0, 1])
-        XCTAssertEqual(game.scoreboard.map(\.isCzar), [true, false, false])
+        try fresh.submit(["s-w-1"])
+        try fresh.ready()
+        try fresh.submit(["s-w-2"])
+        XCTAssertThrowsError(try fresh.ready()) { XCTAssertEqual(self.message($0), outOfTurn) }
+        XCTAssertThrowsError(try fresh.submit(["s-w-1"])) { XCTAssertEqual(self.message($0), outOfTurn) }
     }
 
     func testAGameInTheMiddleOfARoundSurvivesBeingSavedAndOpenedAgain() throws {
         var game = try start()
         try game.ready()
-        try game.play(["s-w-11"])
+        try game.submit(["s-w-1"])
 
         let restored = try JSONDecoder().decode(Game.self, from: JSONEncoder().encode(game))
 

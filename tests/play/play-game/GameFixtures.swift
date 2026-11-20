@@ -5,18 +5,19 @@ import Foundation
 enum GameFixtures {
     static let blacks = ["One _____.", "Two _____.", "Three _____.", "Four _____."]
 
-    static func data(whites: Int = 60, blacks: [String] = GameFixtures.blacks) -> Data {
-        let black = blacks.enumerated().map { #"{"id":"s-b-\#($0.offset + 1)","text":"\#($0.element)"}"# }.joined(separator: ",")
-        let white = (0..<whites).map { #"{"id":"s-w-\#($0 + 1)","text":"White \#($0 + 1)"}"# }.joined(separator: ",")
-        return Data(#"{"version":1,"sets":[{"id":"s","title":"S","black":[\#(black)],"white":[\#(white)]}]}"#.utf8)
+    static func data(setID: String = "s", title: String = "S", whites: Int = 20, blacks: [String] = GameFixtures.blacks) -> Data {
+        let black = blacks.enumerated().map { #"{"id":"\#(setID)-b-\#($0.offset + 1)","text":"\#($0.element)"}"# }.joined(separator: ",")
+        let white = (0..<whites).map { #"{"id":"\#(setID)-w-\#($0 + 1)","text":"White \#($0 + 1)."}"# }.joined(separator: ",")
+        return Data(#"{"version":1,"sets":[{"id":"\#(setID)","title":"\#(title)","black":[\#(black)],"white":[\#(white)]}]}"#.utf8)
     }
 
-    static func library(whites: Int = 60, blacks: [String] = GameFixtures.blacks) throws -> GameCardLibrary {
+    static func library(whites: Int = 20, blacks: [String] = GameFixtures.blacks) throws -> GameCardLibrary {
         try GameCardLibrary(files: [data(whites: whites, blacks: blacks)])
     }
-}
 
-extension Game {
-    /// A test can look at any hand; the app can only ever see the hand of the player holding the phone.
-    func visibleHandOf(_ player: String) -> [WhiteCard] { hands[player] ?? [] }
+    static func players(_ names: String...) -> [GamePlayer] {
+        names.map { name in
+            GamePlayer(id: "p-\(name.lowercased())", name: name, emoji: "🙂", profileID: "p-\(name.lowercased())")
+        }
+    }
 }

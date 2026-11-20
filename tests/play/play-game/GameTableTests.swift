@@ -2,161 +2,170 @@ import XCTest
 @testable import FlashcardsCore
 
 final class GameTableTests: XCTestCase {
-    private func world(whites: Int = 60) throws -> World {
-        let world = try World()
-        try world.app.loadGameCards([GameFixtures.data(whites: whites)])
-        return world
+    private func world(
+        whites: Int = 20,
+        blacks: [String] = ["Coming soon! Batman vs. _____.", "Two _____."],
+        shuffle: @escaping ([String]) -> [String] = { $0 }
+    ) throws -> (World, Profile, Profile) {
+        let world = try World(shuffle: shuffle)
+        try world.app.loadGameCards([GameFixtures.data(whites: whites, blacks: blacks)])
+        let maya = try world.person("Maya")
+        let sam = try world.person("Sam")
+        return (world, maya, sam)
     }
 
-    private func table(_ world: World) throws -> GameTable {
-        try world.app.startGame(players: ["Maya", "Sam", "Lee"], sets: ["s"])
-    }
-
-    func testTheLoadedCardSetsCanBeChosenForAGame() throws {
-        XCTAssertEqual(try world().app.gameCards.sets.map(\.id), ["s"])
-    }
-
-    func testACardFileThatCannotBeReadIsRefusedWithTheReason() throws {
-        let world = try World()
+    func testTheLoadedCardSetsCanBeChosenAndInvalidCardDataIsRefused() throws {
+        let (world, _, _) = try world()
+        XCTAssertEqual(world.app.gameCards.sets.map(\.id), ["s"])
 
         XCTAssertThrowsError(try world.app.loadGameCards([Data("not json".utf8)])) {
             XCTAssertTrue($0.localizedDescription.hasPrefix("The card data could not be read"), $0.localizedDescription)
         }
     }
 
-    func testAGameStartsFromTheLoadedCards() throws {
-        let table = try table(try world())
+    func testStartingAGameWithTwoExistingPeopleUsesTheirProfiles() throws {
+        let (world, maya, sam) = try world()
 
-        XCTAssertEqual(table.game.phase, .passToPlayer("Sam"))
-        XCTAssertEqual(table.game.players, ["Maya", "Sam", "Lee"])
+        let table = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+
+        XCTAssertEqual(table.game.players.map(\.name), ["Maya", "Sam"])
+        XCTAssertEqual(table.game.phase, .passToPlayer(GamePlayer(profile: maya)))
     }
 
-    func testAGameNeedsEnoughLoadedCards() throws {
-        let world = try world(whites: 20)
+    func testStartingAGameWithIncludeMeAndOnePersonCreatesATwoPlayerGame() throws {
+        let (world, maya, _) = try world()
 
-        XCTAssertThrowsError(try table(world)) {
-            XCTAssertEqual($0.localizedDescription, "These sets do not have enough white cards for 3 players")
-        }
+        let table = try world.app.startGame(personIDs: [maya.id], includeMe: true, sets: ["s"])
+
+        XCTAssertEqual(table.game.players.map(\.name), ["Me", "Maya"])
     }
 
-    func testAGameInTheMiddleOfARoundIsFoundAgainWithTheSameHandsScoresAndBlackCard() throws {
-        let world = try world()
-        let table = try table(world)
+    func testStartingAGameWithAGroupUsesItsMembersInSortedOrder() throws {
+        let (world, maya, sam) = try world()
+        let group = try world.app.groups.createGroup(name: "Weekend Crew", memberIDs: [sam.id, maya.id])
+
+        let table = try world.app.startGame(groupID: group.id, sets: ["s"])
+
+        XCTAssertEqual(table.game.players.map(\.name), ["Maya", "Sam"])
+        XCTAssertEqual(table.game.targetGroupID, group.id)
+    }
+
+    func testCompletedRoundWithPeopleSavesEachPlayersOwnPickToTheirProfileHistory() throws {
+        let (world, maya, sam) = try world()
+        let table = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+
         try table.ready()
-        try table.play(["s-w-11"])
+        try table.submit(["s-w-1"])
+        XCTAssertTrue(try world.app.gameHistory.history(profileID: maya.id).isEmpty, "nothing recorded before reveal")
+
+        try table.ready()
+        try table.submit(["s-w-2"])
+
+        let mayaHistory = try world.app.gameHistory.history(profileID: maya.id)
+        let samHistory = try world.app.gameHistory.history(profileID: sam.id)
+        XCTAssertEqual(mayaHistory.map(\.prompt), ["Coming soon! Batman vs. _____."])
+        XCTAssertEqual(mayaHistory.first?.answerLines(for: maya), ["White 1."])
+        XCTAssertEqual(samHistory.first?.answerLines(for: sam), ["White 2."])
+    }
+
+    func testCompletedRoundWithAGroupSavesEveryonesNamedPickToTheGroupOnly() throws {
+        let (world, maya, sam) = try world()
+        let group = try world.app.groups.createGroup(name: "Weekend Crew", memberIDs: [maya.id, sam.id])
+        let table = try world.app.startGame(groupID: group.id, sets: ["s"])
+
+        try table.ready()
+        try table.submit(["s-w-1"])
+        try table.ready()
+        try table.submit(["s-w-2"])
+
+        let groupHistory = try world.app.gameHistory.history(profileID: group.id)
+        XCTAssertEqual(groupHistory.map(\.prompt), ["Coming soon! Batman vs. _____."])
+        XCTAssertEqual(groupHistory.first?.answerLines(for: group), ["Maya: White 1.", "Sam: White 2."])
+        XCTAssertTrue(try world.app.gameHistory.history(profileID: maya.id).isEmpty)
+        XCTAssertTrue(try world.app.gameHistory.history(profileID: sam.id).isEmpty)
+    }
+
+    func testAlreadyPlayedBlackCardsStayOutOfFutureGamesUntilResetWhichKeepsSavedHistory() throws {
+        let (world, maya, sam) = try world(blacks: ["One _____.", "Two _____."])
+        let first = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+        XCTAssertEqual(first.game.blackCard.text, "One _____.")
+        try first.ready()
+        try first.submit(["s-w-1"])
+        try first.ready()
+        try first.submit(["s-w-2"])
+        try first.end()
+
+        let second = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+        XCTAssertEqual(second.game.blackCard.text, "Two _____.")
+        try second.ready()
+        try second.submit(["s-w-1"])
+        try second.ready()
+        try second.submit(["s-w-2"])
+        try second.nextRound()
+        XCTAssertEqual(second.game.phase, .allAsked)
+
+        try second.resetAndContinue()
+
+        XCTAssertEqual(second.game.blackCard.text, "One _____.")
+        XCTAssertEqual(try world.app.gameHistory.history(profileID: maya.id).count, 2, "saved history is kept")
+    }
+
+    func testAGameInProgressSurvivesRestartAndEndingClearsItWithoutDuplicatingHistory() throws {
+        let (world, maya, sam) = try world()
+        let table = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+        try table.ready()
+        try table.submit(["s-w-1"])
 
         let resumed = try XCTUnwrap(try world.app.resumeGame())
-
         XCTAssertEqual(resumed.game, table.game)
-        XCTAssertEqual(resumed.game.phase, .passToPlayer("Lee"))
-    }
+        XCTAssertEqual(resumed.game.phase, .passToPlayer(GamePlayer(profile: sam)))
 
-    func testEveryMoveIsKeptSoTheLastOneIsNeverLost() throws {
-        let world = try world()
-        let table = try table(world)
-        try table.ready()
-        try table.play(["s-w-11"])
-        try table.ready()
-        try table.play(["s-w-21"])
-        try table.ready()
-        try table.choose(playAt: 0)
-        try table.nextRound()
+        try resumed.ready()
+        try resumed.submit(["s-w-2"])
+        let resumedAtReveal = try XCTUnwrap(try world.app.resumeGame())
+        try resumedAtReveal.nextRound()
+        XCTAssertEqual(try world.app.gameHistory.history(profileID: maya.id).count, 1)
 
-        let resumed = try XCTUnwrap(try world.app.resumeGame())
-
-        XCTAssertEqual(resumed.game.round, 2)
-        XCTAssertEqual(resumed.game.scoreboard.map(\.points), [0, 1, 0])
-    }
-
-    func testARefusedMoveChangesNothingAndKeepsTheSavedGame() throws {
-        let world = try world()
-        let table = try table(world)
-        try table.ready()
-        let before = table.game
-
-        XCTAssertThrowsError(try table.play(["s-w-1"]))
-
-        XCTAssertEqual(table.game, before)
-        XCTAssertEqual(try world.app.resumeGame()?.game, before)
-    }
-
-    func testThereIsNoGameToContinueBeforeOneIsStarted() throws {
-        XCTAssertNil(try world().app.resumeGame())
-    }
-
-    func testEndingTheGameGivesTheFinalScoresAndForgetsIt() throws {
-        let world = try world()
-        let table = try table(world)
-
-        let finalScores = try table.end()
-
-        XCTAssertEqual(finalScores.map(\.name), ["Maya", "Sam", "Lee"])
+        try resumedAtReveal.end()
         XCTAssertNil(try world.app.resumeGame())
     }
 
-    func testStartingANewGameReplacesTheOneInProgress() throws {
-        let world = try world()
-        _ = try table(world)
+    func testARefusedMoveChangesNothingAndCorruptSavedGameIsDroppedCleanly() throws {
+        let (world, maya, sam) = try world()
+        let table = try world.app.startGame(personIDs: [maya.id, sam.id], sets: ["s"])
+        try table.ready()
+        let before = table.game
 
-        _ = try world.app.startGame(players: ["Ann", "Bo", "Cy", "Di"], sets: ["s"])
+        XCTAssertThrowsError(try table.submit(["s-w-99"]))
+        XCTAssertEqual(table.game, before)
 
-        XCTAssertEqual(try world.app.resumeGame()?.game.players, ["Ann", "Bo", "Cy", "Di"])
-    }
-
-    func testASavedGameThatCannotBeReadIsDroppedInsteadOfBlockingTheGame() throws {
-        let world = try world()
-        _ = try table(world)
         try world.db.setSetting("game.current", "{ broken")
-
         XCTAssertNil(try world.app.resumeGame())
         XCTAssertNil(try world.db.setting("game.current"))
     }
 
-    func testTheNextRoundMakesTheWhitePileAgainWithTheAppsShuffle() throws {
-        let world = try World(shuffle: { Array($0.reversed()) })
-        try world.app.loadGameCards([GameFixtures.data(whites: 30)])
-        let table = try table(world)
-        try table.ready()
-        try table.play([table.game.visibleHand[0].id])
-        try table.ready()
-        try table.play([table.game.visibleHand[0].id])
-        try table.ready()
-        try table.choose(playAt: 0)
-
-        try table.nextRound()
-
-        // The reversed deck gave Sam s-w-20 and Lee s-w-10 to play; the pile made again from those two is reversed.
-        XCTAssertTrue(table.game.visibleHandOf("Sam").map(\.id).contains("s-w-10"))
-    }
-
-    func testNothingIsRememberedBeforeTheFirstGame() throws {
-        XCTAssertNil(try world().app.lastGameSetup())
-    }
-
-    func testTheLastPlayersAndSetsAreRememberedForTheNextGame() throws {
-        let world = try world()
-        _ = try world.app.startGame(players: [" Maya", "Sam", "Lee"], sets: ["s"])
-
-        let setup = try XCTUnwrap(try world.app.lastGameSetup())
-
-        XCTAssertEqual(setup.players, ["Maya", "Sam", "Lee"])
-        XCTAssertEqual(setup.sets, ["s"])
-    }
-
-    func testAGameThatCouldNotStartIsNotRemembered() throws {
-        let world = try world()
-
-        XCTAssertThrowsError(try world.app.startGame(players: ["Maya"], sets: ["s"]))
-
+    func testLastGameSetupIsRememberedAcrossEndAndBackupRestoresGameHistory() throws {
+        let (world, maya, sam) = try world()
         XCTAssertNil(try world.app.lastGameSetup())
-    }
+        let table = try world.app.startGame(personIDs: [maya.id, sam.id], includeMe: true, sets: ["s"])
+        try table.ready()
+        try table.submit(["s-w-1"])
+        try table.ready()
+        try table.submit(["s-w-1"])
+        try table.ready()
+        try table.submit(["s-w-2"])
+        try table.end()
 
-    func testTheRememberedSetupSurvivesTheGameEnding() throws {
-        let world = try world()
-        let table = try table(world)
+        XCTAssertEqual(
+            try world.app.lastGameSetup(),
+            SavedGameSetup(groupID: nil, personIDs: [maya.id, sam.id], includeMe: true, sets: ["s"]))
 
-        _ = try table.end()
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("game-backup-\(UUID().uuidString).sqlite")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try world.app.backup.export(to: url)
 
-        XCTAssertEqual(try world.app.lastGameSetup()?.players, ["Maya", "Sam", "Lee"])
+        let restored = try World()
+        try restored.app.backup.restore(from: url)
+        XCTAssertEqual(try restored.app.gameHistory.history(profileID: maya.id).count, 1)
     }
 }
