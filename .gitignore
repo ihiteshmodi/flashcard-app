@@ -1,8 +1,10 @@
 # Private source content and mockups
 Internal Artifacts/
 
-# Agent skills (kept local, not published)
+# Agent skills and instructions (kept local, not published)
 .agents/
+AGENTS.md
+CLAUDE.md
 
 # Generated card data (built from the private source)
 Generated/
