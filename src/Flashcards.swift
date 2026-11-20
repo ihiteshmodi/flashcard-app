@@ -10,6 +10,7 @@ public final class Flashcards {
     public let customCards: CustomCards
     public let owner: Owner
     public let backup: Backup
+    public private(set) var gameCards: GameCardLibrary
     private let seedLoader: SeedLoader
     private let roles: Roles
     private var seeds: [Data] = []
@@ -26,6 +27,7 @@ public final class Flashcards {
         answers = AnswerBook(db: database, roles: roles)
         customCards = CustomCards(db: database, roles: roles)
         owner = Owner(db: database)
+        gameCards = try GameCardLibrary(files: [])
         seedLoader = SeedLoader(db: database, roles: roles)
         var reload: () throws -> Void = {}
         backup = Backup(db: database, roles: roles, safetyFolder: safetyCopyFolder, afterRestore: { try reload() })
@@ -48,6 +50,24 @@ public final class Flashcards {
     public func loadSeed(_ data: Data) throws {
         try seedLoader.load(data)
         seeds.append(data)
+    }
+
+    /// The bundled game cards, the public set first and then any private file; each file adds its sets.
+    public func loadGameCards(_ files: [Data]) throws {
+        gameCards = try GameCardLibrary(files: files)
+    }
+
+    /// Starts a game on the loaded cards and keeps it, replacing any game in progress.
+    public func startGame(players: [String], sets: Set<String>) throws -> GameTable {
+        let game = try Game.start(players: players, library: gameCards, sets: sets, shuffle: roles.shuffle)
+        let table = GameTable(game: game, db: database, roles: roles)
+        try table.save()
+        return table
+    }
+
+    /// The game that was in progress when the app was last closed, if any.
+    public func resumeGame() throws -> GameTable? {
+        try GameTable.resume(from: database, roles: roles)
     }
 
     public func setGender(of profileID: String, to gender: Gender?) throws {

@@ -5,16 +5,10 @@ final class PlayGameTests: XCTestCase {
     private let identity: ([String]) -> [String] = { $0 }
     private let reversed: ([String]) -> [String] = { Array($0.reversed()) }
 
-    private func library(whites: Int = 60, blacks: [String] = ["One _____.", "Two _____.", "Three _____.", "Four _____."]) throws -> GameCardLibrary {
-        let black = blacks.enumerated().map { #"{"id":"s-b-\#($0.offset + 1)","text":"\#($0.element)"}"# }.joined(separator: ",")
-        let white = (1...max(whites, 1)).prefix(whites).map { #"{"id":"s-w-\#($0)","text":"White \#($0)"}"# }.joined(separator: ",")
-        return try GameCardLibrary(files: [Data(#"{"version":1,"sets":[{"id":"s","title":"S","black":[\#(black)],"white":[\#(white)]}]}"#.utf8)])
-    }
-
     private func start(_ players: [String] = ["Maya", "Sam", "Lee"], whites: Int = 60,
-                       blacks: [String] = ["One _____.", "Two _____.", "Three _____.", "Four _____."],
+                       blacks: [String] = GameFixtures.blacks,
                        sets: Set<String> = ["s"], shuffle: ([String]) -> [String] = { $0 }) throws -> Game {
-        try Game.start(players: players, library: try library(whites: whites, blacks: blacks), sets: sets, shuffle: shuffle)
+        try Game.start(players: players, library: try GameFixtures.library(whites: whites, blacks: blacks), sets: sets, shuffle: shuffle)
     }
 
     private func everyoneButTheCzarPlays(_ game: inout Game) throws {
