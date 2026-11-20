@@ -276,16 +276,16 @@ OCR is not perfect, so each edition was proofread against its pages. The builder
 
 ## Party game
 
-Open the **Game** tab, type 3 to 10 names, switch on the card sets you want and tap **Start Game**. Each player gets 10 white cards, and the first player is the Card Czar.
+Open the **Game** tab, pick a **Group** or tap **People** you already created in Profiles (turn on **Include Me** to join as a player too, or tap **New Person…** to add someone on the spot), switch on the card sets you want and tap **Start Game**. Two players or up to ten can play—there is no 3-player minimum, no Card Czar and no points.
 
-1. The screen says **Pass the phone to Sam**. Sam taps **I'm Sam**, and only then does Sam's hand show. The Czar never plays white cards.
-2. Sam chooses the number of cards the black card asks for (Pick 2 or Pick 3 read in the order chosen) and taps **Play**. The phone goes on to the next player, and last to the Czar.
-3. The Czar sees every play in a shuffled order with no names, picks the best one, and its player gets a point and is named.
-4. **Next Round**: the Czar passes to the next player, hands are topped back up to 10 and a new black card is turned. Used cards come back when a pile runs out.
+1. Each round turns one unasked **black card** and 12 **white answer cards** shared by everyone in that round.
+2. The screen says **Pass the phone to Maya**. Maya taps **I'm Maya**, sees the black card and the 12 white options with nobody else's pick shown, chooses as many answers as the black card asks for (reusing the same card another player picked is allowed) and taps **Lock In Answer**.
+3. Once the last player finishes, **Everyone's Answers** reveals the black card alongside every player's name and chosen white card(s).
+4. Each finished round is saved to **History** (under the Group when playing as a group, or under each participating Person's profile). Played black cards stay out of future games for those players until you tap **Start Over / Reset Asked Questions**, which keeps saved History intact.
 
-There is no target score and no winner. **Scores** shows the points at any time, and **End** shows the final scores and forgets the game. A game in progress is kept after every move, so closing the app does not lose it, and the last names and card sets are remembered for the next game.
+A game in progress is kept after every move, so closing the app does not lose it, and the last player and set choices are remembered for the next game.
 
-The rules are a pure Swift type (`Game`) with no screens, clock or randomness inside; shuffling comes from `Roles`. `GameTable` applies each move to a copy, saves it, and only then makes it the game. `Game.screen` says what the player holding the phone sees, and `CardPicker` keeps the cards chosen. The SwiftUI views in `app/play` only draw that. The scenarios are in [play-game.feature](tests/play/play-game/play-game.feature) and the state machine in [docs/design/play-game](docs/design/play-game/state-machines.md).
+The rules are a pure Swift type (`Game`) with no screens, clock or randomness inside; shuffling comes from `Roles`. `GameTable` applies each move to a copy, records completed rounds through `GameHistory` (`game_round` table in schema v3) and saves the current game inside one transaction. `Game.screen` says what the player holding the phone sees, and `CardPicker` keeps the cards chosen. The SwiftUI views in `app/play` only draw that. The scenarios are in [play-game.feature](tests/play/play-game/play-game.feature) and the state machine in [docs/design/play-game](docs/design/play-game/state-machines.md).
 
 ## Tests
 

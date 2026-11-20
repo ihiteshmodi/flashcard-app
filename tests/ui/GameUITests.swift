@@ -8,101 +8,98 @@ final class GameUITests: FlashcardsUITestCase {
         add(attachment)
     }
 
-    private func startGame(with names: [String]) {
-        openTab("Game")
-        for (index, name) in names.enumerated() {
-            if index >= 3 {
-                app.buttons["add-player"].tap()
-            }
-            let nameField = field("player-name-\(index)")
-            XCTAssertTrue(nameField.waitForExistence(timeout: 15))
-            nameField.tap()
-            nameField.typeText(name)
-        }
-        for setID in ["main-2022", "intl", "uk", "can", "aus"] {
-            let toggle = app.switches["set-\(setID)"]
-            if toggle.exists, toggle.value as? String == "1" { toggle.tap() }
-        }
-        snapshot("1-setup")
-        app.buttons["start-game"].tap()
-    }
-
     private func passedTo(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
         let label = app.staticTexts["pass-to"]
         XCTAssertTrue(label.waitForExistence(timeout: 15), file: file, line: line)
         XCTAssertEqual(label.label, name, file: file, line: line)
     }
 
-    private func playFirstCard(as name: String) {
+    private func lockInOption(_ optionIndex: Int, as name: String, capturePrefix: String? = nil) {
         passedTo(name)
-        XCTAssertEqual(app.staticTexts["pass-to"].label, name)
-        if name == "Sam" { snapshot("2-pass-the-phone") }
+        if let capturePrefix { snapshot("\(capturePrefix)-pass") }
         app.buttons["ready"].tap()
         XCTAssertFalse(app.buttons["ready"].exists)
-        let card = app.buttons["hand-card-0"]
+        let card = app.buttons["option-card-\(optionIndex)"]
         XCTAssertTrue(card.waitForExistence(timeout: 15))
-        XCTAssertFalse(app.buttons["play-cards"].isEnabled, "nothing is chosen yet")
+        XCTAssertFalse(app.buttons["submit-cards"].isEnabled, "nothing is pre-selected from earlier players")
         card.tap()
-        if name == "Sam" { snapshot("3-choose-a-card") }
-        app.buttons["play-cards"].tap()
+        if let capturePrefix { snapshot("\(capturePrefix)-choose") }
+        app.buttons["submit-cards"].tap()
     }
 
-    private func playARound() {
-        playFirstCard(as: "Sam")
-        playFirstCard(as: "Lee")
-        passedTo("Maya")
-        app.buttons["ready"].tap()
-        XCTAssertTrue(app.buttons["play-0"].waitForExistence(timeout: 15))
-        XCTAssertFalse(app.buttons["pick-winner"].isEnabled, "no play is chosen yet")
-        app.buttons["play-0"].tap()
-        snapshot("4-the-czar-judges")
-        app.buttons["pick-winner"].tap()
-    }
+    func testTwoExistingPeopleCanReuseTheSameAnswerSeeEveryonesSelectionAndKeepItInHistory() {
+        addPerson("Maya")
+        addPerson("Sam")
+        openTab("Game")
 
-    func testAFullRoundIsPlayedOnOnePhoneAndTheNextRoundPassesTheCzarOn() {
-        startGame(with: ["Maya", "Sam", "Lee"])
+        app.buttons["game-person-Maya"].tap()
+        app.buttons["game-person-Sam"].tap()
+        snapshot("1-setup")
+        app.buttons["start-game"].tap()
 
-        playARound()
+        lockInOption(0, as: "Maya", capturePrefix: "2-maya")
+        lockInOption(0, as: "Sam")
 
-        let winner = app.staticTexts["round-winner"]
-        XCTAssertTrue(winner.waitForExistence(timeout: 15))
-        XCTAssertEqual(winner.label, "Sam wins the round")
-        snapshot("5-round-result")
+        XCTAssertTrue(app.staticTexts["reveal-header"].waitForExistence(timeout: 15))
+        snapshot("3-reveal")
+        let mayaReveal = app.descendants(matching: .any)["reveal-Maya"].firstMatch
+        let samReveal = app.descendants(matching: .any)["reveal-Sam"].firstMatch
+        XCTAssertTrue(mayaReveal.exists)
+        XCTAssertTrue(samReveal.exists)
+        XCTAssertTrue(mayaReveal.label.contains("Great Aunt Sharon"), mayaReveal.label)
+        XCTAssertTrue(samReveal.label.contains("Great Aunt Sharon"), samReveal.label)
+
         app.buttons["next-round"].tap()
-        passedTo("Lee")
+        passedTo("Maya")
+
+        openTab("Profiles")
+        app.buttons["profile-row-Maya"].tap()
+        XCTAssertTrue(app.staticTexts["A big wet kiss from Great Aunt Sharon."].waitForExistence(timeout: 15))
+        snapshot("4-profile-history")
     }
 
-    func testTheScoresShowTheWinnerAndEndingTheGameShowsTheFinalScores() {
-        startGame(with: ["Maya", "Sam", "Lee"])
-        playARound()
-        XCTAssertTrue(app.buttons["next-round"].waitForExistence(timeout: 15))
+    func testPlayingAsAGroupRecordsEveryonesAnswersInGroupHistoryOnly() {
+        addPerson("Maya")
+        addPerson("Sam")
+        app.buttons["add-profile"].tap()
+        app.buttons["New Group"].tap()
+        let groupName = field("group-name")
+        XCTAssertTrue(groupName.waitForExistence(timeout: 15))
+        groupName.tap()
+        groupName.typeText("Friends")
+        app.buttons["member-Maya"].tap()
+        app.buttons["member-Sam"].tap()
+        app.buttons["group-create"].tap()
+        XCTAssertTrue(app.buttons["profile-row-Friends"].waitForExistence(timeout: 15))
 
-        app.buttons["scores"].tap()
-        let sam = app.descendants(matching: .any)["score-Sam"].firstMatch
-        XCTAssertTrue(sam.waitForExistence(timeout: 15))
-        XCTAssertTrue(sam.label.contains("1 point"), sam.label)
-        snapshot("6-scores")
-        app.buttons["scores-done"].tap()
+        openTab("Game")
+        app.buttons["game-group-Friends"].tap()
+        app.buttons["start-game"].tap()
+
+        lockInOption(0, as: "Maya")
+        lockInOption(1, as: "Sam")
+        XCTAssertTrue(app.staticTexts["reveal-header"].waitForExistence(timeout: 15))
 
         app.buttons["end-game"].tap()
         app.buttons["End Game"].tap()
+        XCTAssertTrue(app.navigationBars["Party Game"].waitForExistence(timeout: 15))
 
-        XCTAssertTrue(app.navigationBars["Party Game"].waitForExistence(timeout: 15), "the setup screen is back")
-        XCTAssertFalse(app.buttons["scores"].exists, "there is no game to continue")
-        XCTAssertTrue(app.descendants(matching: .any)["score-Sam"].firstMatch.exists, "the final scores are shown")
+        openTab("Profiles")
+        app.buttons["profile-row-Friends"].tap()
+        XCTAssertTrue(app.staticTexts["Maya: A big wet kiss from Great Aunt Sharon."].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["Sam: A cloud that rains diarrhea."].exists)
+
+        app.navigationBars.buttons["Profiles"].tap()
+        XCTAssertTrue(app.buttons["profile-row-Maya"].waitForExistence(timeout: 15))
+        app.buttons["profile-row-Maya"].tap()
+        XCTAssertTrue(app.staticTexts["Nothing asked yet. Swipe a card right on the Cards tab."].waitForExistence(timeout: 15))
     }
 
-    func testAGameWithTwoPlayersIsRefusedWithTheReason() {
+    func testStartingAGameWithNoPlayersSelectedShowsAClearMessage() {
         openTab("Game")
-        for (index, name) in ["Maya", "Sam"].enumerated() {
-            let nameField = field("player-name-\(index)")
-            XCTAssertTrue(nameField.waitForExistence(timeout: 15))
-            nameField.tap()
-            nameField.typeText(name)
-        }
 
         app.buttons["start-game"].tap()
 
-        XCTAssertTrue(app.staticTexts["Add at least 3 players"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["Pick at least one player"].waitForExistence(timeout: 15))
     }
 }

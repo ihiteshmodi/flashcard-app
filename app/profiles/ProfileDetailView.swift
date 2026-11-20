@@ -72,10 +72,38 @@ struct ProfileDetailView: View {
         }
     }
 
+    private enum TimelineItem: Identifiable {
+        case card(HistoryEntry)
+        case gameRound(GameRoundEntry)
+
+        var id: String {
+            switch self {
+            case .card(let entry): return "card-\(entry.id)"
+            case .gameRound(let round): return "game-\(round.id)"
+            }
+        }
+
+        var date: Date {
+            switch self {
+            case .card(let entry): return entry.askedAt
+            case .gameRound(let round): return round.playedAt
+            }
+        }
+    }
+
     private func header(_ profile: Profile) -> some View {
         let summary = ((try? app.profiles.people()) ?? []) + ((try? app.profiles.groups()) ?? [])
         let mine = summary.first { $0.id == profile.id }
-        return Text(mine.map { "\($0.progress.asked) of \($0.progress.total) asked · \($0.answerCount) answers" } ?? "")
+        let gameCount = ((try? app.gameHistory.history(profileID: profile.id)) ?? []).count
+        var parts: [String] = []
+        if let mine {
+            parts.append("\(mine.progress.asked) of \(mine.progress.total) asked")
+            parts.append("\(mine.answerCount) answers")
+        }
+        if gameCount > 0 {
+            parts.append("\(gameCount) game \(gameCount == 1 ? "round" : "rounds")")
+        }
+        return Text(parts.joined(separator: " · "))
             .font(.footnote)
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -98,6 +126,9 @@ struct ProfileDetailView: View {
 
     private func history(_ profile: Profile) -> some View {
         let entries = (try? app.answers.history(profileID: profile.id, onlyWithAnswers: onlyAnswered)) ?? []
+        let gameRounds = (try? app.gameHistory.history(profileID: profile.id)) ?? []
+        let items = (entries.map(TimelineItem.card) + gameRounds.map(TimelineItem.gameRound))
+            .sorted { $0.date > $1.date }
         return List {
             Section {
                 Picker("Filter", selection: $onlyAnswered) {
@@ -109,21 +140,49 @@ struct ProfileDetailView: View {
             }
             .listRowBackground(Color.clear)
             Section {
-                if entries.isEmpty {
+                if items.isEmpty {
                     Text(onlyAnswered ? "No saved answers yet." : "Nothing asked yet. Swipe a card right on the Cards tab.")
                         .foregroundStyle(.secondary)
                         .listRowBackground(Theme.surface)
                 }
-                ForEach(entries) { entry in
-                    Button { editing = entry } label: { historyRow(entry) }
-                        .listRowBackground(Theme.surface)
-                        .accessibilityIdentifier("history-\(entry.card.id)")
+                ForEach(items) { item in
+                    switch item {
+                    case .card(let entry):
+                        Button { editing = entry } label: { historyRow(entry) }
+                            .listRowBackground(Theme.surface)
+                            .accessibilityIdentifier("history-\(entry.card.id)")
+                    case .gameRound(let round):
+                        gameRoundRow(round, profile: profile)
+                            .listRowBackground(Theme.surface)
+                            .accessibilityIdentifier("game-history-\(round.blackCardID)")
+                    }
                 }
             } footer: {
-                if !entries.isEmpty { Text("Tap an entry to edit the answer.") }
+                if !entries.isEmpty { Text("Tap a conversation card entry to edit the answer.") }
             }
         }
         .appListStyle()
+    }
+
+    private func gameRoundRow(_ round: GameRoundEntry, profile: Profile) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Party Game")
+                .font(.caption2.weight(.semibold))
+                .textCase(.uppercase)
+                .foregroundStyle(.secondary)
+            Text(round.prompt)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.leading)
+            ForEach(round.answerLines(for: profile), id: \.self) { line in
+                Text(line)
+                    .font(.subheadline)
+                    .foregroundStyle(Color.accentColor)
+                    .multilineTextAlignment(.leading)
+            }
+            Text(round.playedAt.formatted(date: .abbreviated, time: .omitted))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
     }
 
     private func historyRow(_ entry: HistoryEntry) -> some View {
