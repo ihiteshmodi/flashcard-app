@@ -230,9 +230,14 @@ func pickCount(from footer: String) -> Int? {
 var black: [[String: Any]] = []
 var white: [[String: Any]] = []
 
+// A card page has at least this many cards whose footer names the game. A rules page can name the game in its text.
+let minimumFootersOnACardPage = 5
+
 for pageNumber in 0..<document.pageCount {
     guard let page = document.page(at: pageNumber) else { continue }
     let rendered = renderPage(page)
+    var pageBlack: [[String: Any]] = [], pageWhite: [[String: Any]] = []
+    var footersRead = 0
     let width = Int((cellWidth - 2) * scale), height = Int((cellHeight - 2) * scale)
     for cell in 0..<20 {
         let x = Int((originX + Double(cell % 4) * cellWidth + 1) * scale)
@@ -252,7 +257,7 @@ for pageNumber in 0..<document.pageCount {
         let all = recognise(readable, width: width, height: height, correction: true)
         let footerWords = all.filter { ($0.minY + $0.maxY) / 2 > Double(height) * footerStart }
         let footer = footerWords.map(\.text).joined(separator: " ")
-        guard footer.range(of: "Humanity|Edition|Against", options: [.regularExpression, .caseInsensitive]) != nil else { continue }
+        let footerRead = footer.range(of: "Humanity|Edition|Against", options: [.regularExpression, .caseInsensitive]) != nil
 
         let body = all.filter { ($0.minY + $0.maxY) / 2 <= Double(height) * footerStart }
         let heights = body.map { $0.maxY - $0.minY }.sorted()
@@ -275,9 +280,15 @@ for pageNumber in 0..<document.pageCount {
             else if footer.uppercased().contains("PICK") { flags.append("pick-unreadable: \(footer)") }
             if footer.uppercased().contains("DRAW") { flags.append("draw: \(footer)") }
         }
+        // The footer of a bottom-row card is sometimes not read; the card is kept when its text is, and flagged.
+        if footerRead { footersRead += 1 } else {
+            if composed.isEmpty { continue }
+            flags.append("footer-unread")
+        }
         if !flags.isEmpty { entry["flags"] = flags }
-        if isBlack { black.append(entry) } else { white.append(entry) }
+        if isBlack { pageBlack.append(entry) } else { pageWhite.append(entry) }
     }
+    if footersRead >= minimumFootersOnACardPage { black += pageBlack; white += pageWhite }
     FileHandle.standardError.write(Data("page \(pageNumber): \(black.count) black, \(white.count) white so far\n".utf8))
 }
 

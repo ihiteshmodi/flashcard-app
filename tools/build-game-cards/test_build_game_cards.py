@@ -31,8 +31,10 @@ class BlankTests(unittest.TestCase):
 
 class OcrCleaningTests(unittest.TestCase):
     CASES = [
+        ("five asterisks are the one-star rating", "***** Do NOT go here!", "★☆☆☆☆ Do NOT go here!", True),
         ("apostrophes become curly", "Mom's spaghetti.", "Mom’s spaghetti.", False),
         ("a lowercase L before an apostrophe is an I", "l'm sorry.", "I’m sorry.", False),
+        ("a lone lowercase L is an I", "Why can’t l sleep at night?", "Why can’t I sleep at night?", True),
         ("a lone bar is an I", "because | am hot dog.", "because I am hot dog.", False),
         ("straight quotes become curly", 'Saying "I love you."', "Saying “I love you.”", False),
         ("a blank is spaced from the word before it", "Do you see_____?", "Do you see _____?", True),
@@ -44,6 +46,18 @@ class OcrCleaningTests(unittest.TestCase):
         ("an opening quote glued to the word before the blank moves to the blank", "I’m” _____ Mandy.”", "I’m “_____ Mandy.”", True),
         ("an opening quote never closed is closed at the end", "It’s called “_____.", "It’s called “_____.”", True),
         ("a full stop before a closing quote is kept", "On the 12th day, me: _____.”", "On the 12th day, me: _____.”", True),
+        ("a closing quote read as 55 after the blank", 'say "Thanks for _____. 55', "say “Thanks for _____.”", True),
+        ("a closing quote read as 55 before the blank", 'say "Thanks for 55 _____.', "say “Thanks for _____.”", True),
+        ("a quote glued to the blank opens it", 'this dance move"_____.', "this dance move “_____.”", True),
+        ("the PICK badge read as text is not part of the card", "put _____ inside of _____. They were wrong. (PICK 2)", "put _____ inside of _____. They were wrong.", True),
+        ("a roman numeral read with a lowercase L", "Queen Elizabeth Il.", "Queen Elizabeth II.", False),
+        ("a hyphen at the end of a wrapped line joins the next word", "a late- stage society.", "a late-stage society.", False),
+        ("a slash at the end of a wrapped line joins the next word", "superhero/ sidekick duo!", "superhero/sidekick duo!", True),
+        ("a trademark read as the letters TM is the mark, after the full stop", "Lunchables. TM", "Lunchables.™", False),
+        ("a full stop read apart from the mark after it joins the mark", "Lunchables™ •", "Lunchables™.", False),
+        ("a card ending in a registered mark ends with a full stop", "Viagra®", "Viagra®.", False),
+        ("a mark inside the card is left alone", "A Super Soaker™ full of cat pee.", "A Super Soaker™ full of cat pee.", False),
+        ("a white card ending in a hyphen ends with a full stop", "Half-assed foreplay-", "Half-assed foreplay.", False),
     ]
 
     def test_ocr_slips_are_cleaned(self):
@@ -114,6 +128,23 @@ class BuildSetTests(unittest.TestCase):
         self.assertEqual([c["id"] for c in built["black"]], ["intl-b-001"])
         self.assertEqual([c["text"] for c in built["white"]], ["Words."])
 
+    def test_a_page_with_only_a_stray_card_is_a_rules_page_not_a_card_page(self):
+        stray = {"lines": ["Gambling If you have more than one white card."], "page": 1}
+        cards = [{"lines": [f"Card {n}."], "page": 2} for n in range(5)]
+
+        built = build_set("main", "Main", {"black": [], "white": [stray] + cards})
+
+        self.assertEqual([c["text"] for c in built["white"]], [f"Card {n}." for n in range(5)])
+
+    def test_the_footer_the_reader_took_for_card_text_is_removed(self):
+        raw = {"black": [{"lines": ["Why is Alan", "so sweaty?", "• Cards Against Humanity"]}, {"lines": ["— Cards Against Humanity"]}],
+               "white": [{"lines": ["Words.", "• / Cards Against Humanity"]}]}
+
+        built = build_set("uk", "UK", raw)
+
+        self.assertEqual([c["text"] for c in built["black"]], ["Why is Alan so sweaty?"])
+        self.assertEqual([c["text"] for c in built["white"]], ["Words."])
+
     def test_a_card_read_by_ocr_with_no_blank_is_left_for_review_not_refused(self):
         raw = {"black": [{"lines": ["Make a haiku."]}], "white": []}
 
@@ -150,6 +181,15 @@ class SettleOcrSlipsTests(unittest.TestCase):
         settle_ocr_slips(sets)
 
         self.assertEqual(self.texts(sets, "b"), ["A tonne of almonds."])
+
+    def test_a_different_spelling_is_a_regional_card_not_a_slip_even_when_it_is_in_two_sets(self):
+        sets = [card_set("a", "A tonne of almonds."), card_set("b", "A tonne of almonds."), card_set("c", "A ton of almonds."),
+                card_set("d", "Goat."), card_set("e", "God."), card_set("f", "God.")]
+
+        settle_ocr_slips(sets)
+
+        self.assertEqual(self.texts(sets, "c"), ["A ton of almonds."])
+        self.assertEqual(self.texts(sets, "d"), ["Goat."])
 
     def test_a_card_that_is_in_more_than_one_set_is_left_alone(self):
         sets = [card_set("a", "Shut up."), card_set("b", "Shut up."), card_set("c", "Shut up,"), card_set("d", "Shut up,")]

@@ -21,6 +21,16 @@ def join_lines(lines):
     return re.sub(r"\s+", " ", " ".join(lines)).strip()
 
 
+FOOTER = re.compile(r"[•/—\s]*Cards Against Humanity$", re.IGNORECASE)
+
+
+def entry_text(entry):
+    """The words on a card. A reader can take the footer under the card for words, so it is taken off again."""
+    if isinstance(entry, dict):
+        return FOOTER.sub("", join_lines(entry["lines"])).strip()
+    return join_lines(entry)
+
+
 def blank_runs_standardised(text):
     return BLANK.sub("_____", text)
 
@@ -30,29 +40,43 @@ def clean_ocr_text(text, black):
     full stop after a drawn blank, which the reader does not see."""
     t = text.replace("•", ".")
     t = re.sub(r"(?<!\w)\|(?!\w)", "I", t)
+    t = re.sub(r"(?<![\w’'])l(?![\w’'])", "I", t)
+    t = re.sub(r"(?<=[a-z]) Il(?=[.,]?$)", " II", t)
+    t = re.sub(r"^\*{5}", "★☆☆☆☆", t)
     t = re.sub(r"\bl(?=['’](?:m|ve|ll|d)\b)", "I", t)
     t = t.replace("'", "’")
     if black:
         # The reader sees the quote marks around a blank as digits.
         t = re.sub(r"(?<!\w)66(?=\s*_)", "“", t)
         t = re.sub(r"(_+)\.?\s*29(?!\d)", r"\1.”", t)
-        t = re.sub(r"(_+)(\.?)\s*(?:99|66)(?!\d)", r"\1\2”", t)
+        t = re.sub(r"(_+)(\.?)\s*(?:99|66|55)(?!\d)", r"\1\2”", t)
+        # A closing quote that shares a line with the blank can be read first, so it lands before the blank.
+        t = re.sub(r"\s(?:55|99)\s+(_+)([.,!?]?)$", r" \1\2”", t)
     quoted = []
     for index, character in enumerate(t):
         if character == '"':
             before = t[index - 1] if index else " "
-            quoted.append("“" if before.isspace() or before in "(—" else "”")
+            opens = before.isspace() or before in "(—" or t[index + 1:index + 2] == "_"
+            quoted.append("“" if opens else "”")
         else:
             quoted.append(character)
     t = "".join(quoted)
     if black:
         t = re.sub(r"(\w)” (_+)", r"\1 “\2", t)
+        t = re.sub(r"(\w)(“_)", r"\1 \2", t)
     t = re.sub(r"(?<![_\s“(])(_+)", r" \1", t)
     t = re.sub(r"(_+)(?=[A-Za-z])", r"\1 ", t)
     if black:
         t = re.sub(r"\s+([.,!?;:”])", r"\1", t)
     t = re.sub(r"\s+", " ", t).strip()
+    t = re.sub(r"(?<=[A-Za-z])([-/]) (?=[A-Za-z])", r"\1", t)
+    t = re.sub(r"\s*\bTM$", "™", t)
+    t = re.sub(r"™\s+\.$", "™.", t)
+    if not black:
+        t = re.sub(r"-$", ".", t)
+        t = re.sub(r"(?<!\.)([®™])$", r"\1.", t)
     if black:
+        t = re.sub(r"\s*\(PICK\s*\d\)$", "", t)
         t = re.sub(r"(_+)$", r"\1.", t)
         t = re.sub(r"(_+)”$", r"\1.”", t)
         if t.count("“") > t.count("”"):
@@ -62,7 +86,19 @@ def clean_ocr_text(text, black):
 
 def _written_on(entries):
     """The deck ends with blank cards to write on; they have no text and are not cards."""
-    return [e for e in entries if join_lines(e["lines"] if isinstance(e, dict) else e)]
+    return [e for e in entries if entry_text(e)]
+
+
+MIN_CARDS_ON_A_CARD_PAGE = 5
+
+
+def _on_card_pages(entries):
+    """A rules page can mention the game by name and pass for one card; real card pages are nearly full."""
+    per_page = {}
+    for entry in entries:
+        if isinstance(entry, dict) and "page" in entry:
+            per_page[entry["page"]] = per_page.get(entry["page"], 0) + 1
+    return [e for e in entries if not (isinstance(e, dict) and "page" in e and per_page[e["page"]] < MIN_CARDS_ON_A_CARD_PAGE)]
 
 
 def _pick(entry):
@@ -79,12 +115,12 @@ def _pick(entry):
 def build_set(set_id, title, raw, fixes=None):
     fixes = dict(fixes or {})
     unused = set(fixes)
-    raw = {"black": _written_on(raw["black"]), "white": _written_on(raw["white"])}
+    raw = {kind: _written_on(_on_card_pages(raw[kind])) for kind in ("black", "white")}
 
     black = []
     for index, entry in enumerate(raw["black"], start=1):
         read_by_ocr = isinstance(entry, dict)
-        text = join_lines(entry["lines"] if read_by_ocr else entry)
+        text = entry_text(entry)
         if read_by_ocr:
             text = clean_ocr_text(text, black=True)
         if text in fixes:
@@ -101,7 +137,7 @@ def build_set(set_id, title, raw, fixes=None):
     white = []
     for index, entry in enumerate(raw["white"], start=1):
         read_by_ocr = isinstance(entry, dict)
-        text = join_lines(entry["lines"] if read_by_ocr else entry)
+        text = entry_text(entry)
         if read_by_ocr:
             text = clean_ocr_text(text, black=False)
         if text in fixes:
@@ -114,36 +150,27 @@ def build_set(set_id, title, raw, fixes=None):
     return {"id": set_id, "title": title, "black": black, "white": white}
 
 
-def _edits(a, b, limit):
-    """The number of single-character edits between two texts, or more than limit when they are further apart."""
-    if abs(len(a) - len(b)) > limit:
-        return limit + 1
-    previous = list(range(len(b) + 1))
-    for i, ca in enumerate(a, start=1):
-        row = [i]
-        for j, cb in enumerate(b, start=1):
-            row.append(min(previous[j] + 1, row[j - 1] + 1, previous[j - 1] + (ca != cb)))
-        previous = row
-    return previous[-1]
+def _skeleton(text):
+    return re.sub(r"[^a-z0-9]", "", text.lower())
 
 
 def settle_ocr_slips(sets):
-    """The editions repeat most cards, so a card seen in only one set that is a couple of characters away from a card
-    seen in two or more sets is that card with an OCR slip. Cards that differ in a digit are different cards."""
+    """The editions repeat most cards, so a card seen in only one set that differs from a card seen in two or more sets
+    only in case, spacing or punctuation is that card with an OCR slip. A different letter is never settled: the
+    editions spell some cards their own way (ton and tonne, arse and ass), and one wrong letter can be another card."""
     for kind in ("black", "white"):
         owners = {}
         for built in sets:
             for card in built[kind]:
                 owners.setdefault(card["text"], set()).add(built["id"])
-        common = [text for text, ids in owners.items() if len(ids) >= 2]
+        common = {}
+        for text, ids in owners.items():
+            if len(ids) >= 2:
+                common.setdefault(_skeleton(text), []).append(text)
         for built in sets:
             for card in built[kind]:
-                if len(owners[card["text"]]) != 1:
-                    continue
-                matches = [t for t in common
-                           if _edits(card["text"].lower(), t.lower(), 2) <= 2
-                           and re.findall(r"\d", card["text"]) == re.findall(r"\d", t)]
-                if len(matches) == 1:
+                matches = common.get(_skeleton(card["text"]), [])
+                if len(owners[card["text"]]) == 1 and len(matches) == 1:
                     card["text"] = matches[0]
 
 

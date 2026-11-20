@@ -15,12 +15,18 @@ final class PrivateGameCardsSmokeTests: XCTestCase {
         return library
     }
 
-    func testEveryPrivateSetHasEnoughCardsToPlayAndNoneIsEmpty() throws {
+    /// The printed decks: a card read short of these was lost from the bottom row of a page.
+    private let printedDecks: [String: (black: Int, white: Int)] = [
+        "main-2022": (100, 500), "intl": (90, 510), "uk": (100, 500), "can": (100, 500), "aus": (100, 500),
+    ]
+
+    func testEveryPrivateSetHasEveryCardOfThePrintedDeckAndNoneIsEmpty() throws {
         let library = try library()
 
+        XCTAssertEqual(Set(library.sets.map(\.id)).subtracting(["family"]), Set(printedDecks.keys))
         for set in library.sets where set.id != "family" {
-            XCTAssertGreaterThanOrEqual(set.blackCards.count, 80, set.title)
-            XCTAssertGreaterThanOrEqual(set.whiteCards.count, 450, set.title)
+            XCTAssertEqual(set.blackCards.count, printedDecks[set.id]?.black, "\(set.title) black cards")
+            XCTAssertEqual(set.whiteCards.count, printedDecks[set.id]?.white, "\(set.title) white cards")
             XCTAssertTrue((set.blackCards.map(\.text) + set.whiteCards.map(\.text)).allSatisfy { !$0.isEmpty }, set.title)
         }
     }

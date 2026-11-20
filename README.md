@@ -249,7 +249,7 @@ The cards for the party game (black prompt cards with blanks, white answer cards
 | Set | File | In git |
 |---|---|---|
 | Family Edition (95 black, 505 white) | `app/resources/GameCards.json` | Yes |
-| Cards Against Humanity 2022, International, UK, Canadian, Australian | `Generated/game-cards.json` | No (git-ignored, like the private decks) |
+| Cards Against Humanity 2022 (100 black, 500 white), International (90, 510), UK (100, 500), Canadian (100, 500), Australian (100, 500) | `Generated/game-cards.json` | No (git-ignored, like the private decks) |
 
 Card content is from Cards Against Humanity LLC, licensed [CC BY-NC-SA 2.0](https://creativecommons.org/licenses/by-nc-sa/2.0/): credit the source, non-commercial use only, share alike. The adult editions are for personal use and stay out of git.
 
@@ -261,13 +261,16 @@ swift tools/build-game-cards/extract-text-cells.swift CAH_FamilyGame-1.1-SmallCa
 python3 tools/build-game-cards/build_game_cards.py app/resources/GameCards.json \
   --set family "Family Edition" family-raw.json --fixes family tools/build-game-cards/family-fixes.json
 
-# Main editions: the PDF text is outlines, so it is read by on-device OCR (macOS Vision), then cleaned
-swift tools/build-game-cards/ocr-cards.swift CAH_PrintPlay_UK-FINAL-outlined.pdf > uk-raw.json
+# Main editions: the PDF text is outlines, so it is read by on-device OCR (macOS Vision), then cleaned.
+# Read each PDF (about two minutes each), then build all editions into one file.
+swift tools/build-game-cards/ocr-cards.swift CAH_PrintPlay_UK-FINAL-outlined.pdf > uk-raw.json   # likewise the others
 python3 tools/build-game-cards/build_game_cards.py Generated/game-cards.json --review review.txt \
-  --set uk "UK Edition" uk-raw.json   # add one --set per edition
+  --set uk "UK Edition" uk-raw.json --fixes uk tools/build-game-cards/uk-fixes.json   # one --set per edition
 ```
 
-OCR is not perfect: it reads the blanks (drawn lines) from the pixels, cleans quote marks, and `settle_ocr_slips` fixes a card seen once that is a couple of characters from a card seen in two or more editions. `--review` lists the words the dictionary does not know and odd black cards, so a person can check them.
+The low-ink PDFs hold the same cards as the regular ones, so only the regular PDFs are read (the OCR reader does not read the low-ink black cards).
+
+OCR is not perfect, so each edition was proofread against its pages. The builder cleans quote marks, apostrophes, an I read as l or a bar, the closing quote read as digits, wrapped hyphens, trademark marks and the footer under a card. It drops pages that only mention the game by name (the rules page), and keeps a card whose footer was not read but whose text was. `settle_ocr_slips` makes a card seen once match the same card seen in two or more editions when they differ only in case, spacing or punctuation; a different letter is never settled, because the editions spell some cards their own way (ton and tonne). What OCR still gets wrong, found by comparing with the pages, is corrected in `tools/build-game-cards/<set>-fixes.json`; a fix that matches no card stops the build, so a changed PDF is noticed. `--review` lists the words the dictionary does not know and odd black cards, so a person can check them. `PrivateGameCardsSmokeTests` checks the exact number of cards in each edition, so a card lost from the bottom row of a page fails the tests.
 
 ## Tests
 
