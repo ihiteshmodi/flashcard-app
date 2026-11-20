@@ -242,11 +242,40 @@ Errors:
 | `BackupError.notABackup` | This file is not a Flashcards backup | Import of an unrelated file |
 | `BackupError.newerVersion` | This backup is from a newer version of the app. Update the app first. | Import from a newer schema |
 
+## Game cards
+
+The cards for the party game (black prompt cards with blanks, white answer cards) are plain data, separate from the conversation decks. `GameCardLibrary(files:)` reads them: each file adds sets, a set can be switched on per game, a black card knows how many white cards it asks for (`pick`, from its blanks, or stated for cards like "Make a haiku."), and a card printed in several enabled sets is dealt once. The game rules and screens are not built yet.
+
+| Set | File | In git |
+|---|---|---|
+| Family Edition (95 black, 505 white) | `app/resources/GameCards.json` | Yes |
+| Cards Against Humanity 2022, International, UK, Canadian, Australian | `Generated/game-cards.json` | No (git-ignored, like the private decks) |
+
+Card content is from Cards Against Humanity LLC, licensed [CC BY-NC-SA 2.0](https://creativecommons.org/licenses/by-nc-sa/2.0/): credit the source, non-commercial use only, share alike. The adult editions are for personal use and stay out of git.
+
+`tools/build-game-cards` turns the print-and-play PDFs into those files:
+
+```bash
+# Family Edition: the PDF has a text layer, so the text is exact
+swift tools/build-game-cards/extract-text-cells.swift CAH_FamilyGame-1.1-SmallCards.pdf 2-6 7-32 > family-raw.json
+python3 tools/build-game-cards/build_game_cards.py app/resources/GameCards.json \
+  --set family "Family Edition" family-raw.json --fixes family tools/build-game-cards/family-fixes.json
+
+# Main editions: the PDF text is outlines, so it is read by on-device OCR (macOS Vision), then cleaned
+swift tools/build-game-cards/ocr-cards.swift CAH_PrintPlay_UK-FINAL-outlined.pdf > uk-raw.json
+python3 tools/build-game-cards/build_game_cards.py Generated/game-cards.json --review review.txt \
+  --set uk "UK Edition" uk-raw.json   # add one --set per edition
+```
+
+OCR is not perfect: it reads the blanks (drawn lines) from the pixels, cleans quote marks, and `settle_ocr_slips` fixes a card seen once that is a couple of characters from a card seen in two or more editions. `--review` lists the words the dictionary does not know and odd black cards, so a person can check them.
+
 ## Tests
 
 ```bash
 swift test                                        # core rules against a real in-memory SQLite, no simulator
 python3 -m unittest discover tools/build-seed     # seed builder
+python3 -m unittest discover tools/build-game-cards   # game card builder
+
 xcodebuild test -project Flashcards.xcodeproj -scheme Flashcards \
   -destination 'platform=iOS Simulator,name=<your simulator>'    # UI flows (slow; several minutes)
 ```
@@ -262,7 +291,9 @@ src/Flashcards.swift                  the application interface used by the app 
 app/                                  SwiftUI screens (thin), composition root, demo decks
 tests/<capability>/<feature>/         .feature scenarios + XCTest specs; tests/ui for simulator flows
 tools/build-seed/                     importer for the private deck export
+tools/build-game-cards/               PDF to game card sets (text extractor, OCR reader, builder)
 docs/design/flashcards/               impact map, architecture, test strategy
+docs/design/game-cards/               impact map for the party game cards
 ```
 
 Design notes live in [docs/design/flashcards](docs/design/flashcards): the [impact map](docs/design/flashcards/impact-map.md) (who, why, what), the [architecture](docs/design/flashcards/architecture.md) and the [test strategy](docs/design/flashcards/test-strategy.md).

@@ -17,6 +17,9 @@ targets:
       - path: Generated/seed.json
         optional: true
         buildPhase: resources
+      - path: Generated/game-cards.json
+        optional: true
+        buildPhase: resources
     dependencies:
       - package: FlashcardsCore
     info:

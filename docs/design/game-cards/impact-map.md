@@ -28,7 +28,7 @@ Out of scope for now: the game rules (rounds, Card Czar, hands, scoring), the sc
 | `intl`, `uk`, `can`, `aus` | Regional editions | `CAH_PrintPlay_*` (shapes, read by OCR) | Private, git-ignored |
 
 The low-ink PDFs repeat the same cards as the regular ones and add nothing.
-Card content is licensed CC BY-NC-SA 4.0 by Cards Against Humanity LLC: attribution, non-commercial, share-alike. The adult sets stay out of git, as the other private decks do.
+Card content is licensed CC BY-NC-SA 2.0 by Cards Against Humanity LLC (the PDFs' own terms page): attribution, non-commercial, share-alike. The adult sets stay out of git, as the other private decks do.
 
 ## Features
 | Feature | Folder |
