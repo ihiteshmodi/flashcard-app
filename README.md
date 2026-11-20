@@ -29,6 +29,7 @@
 - **Optional answers.** After a right swipe, a sheet offers a note, the picked option (multiple choice, this or that) and, in a group, who answered. Dismiss it to save nothing; the card still counts as asked.
 - **Decks.** Turn decks on or off per profile. Add your own questions, "this or that" and multiple-choice cards.
 - **Backup.** Export everything as one SQLite file; the share sheet opens at once (AirDrop, Save to Files, Google Drive) and the file can be imported back. Import keeps a safety copy first.
+- **Party game.** A pass-around game on one shared phone with black prompt cards and white answer cards. See [Party game](#party-game).
 - **Dark mode.** True black, or follow the system.
 
 No accounts, no network, no analytics. All data stays on the phone.
@@ -73,8 +74,9 @@ The IPA embeds your private `Generated/seed.json` (when you have one), so keep i
 1. **Profiles** tab: add a person (name, optional emoji, gender Woman or Man, and closeness Friend, Dating or Partner). Add a group from the same menu and tick its members. Open a person to move them from Friend to Dating to Partner with one tap.
 2. **Cards** tab: pick who you are talking to with the name at the top, then swipe. Use ✓ / ✕ and the Undo / Redo buttons if you prefer taps.
 3. After a right swipe, type the answer in the sheet and tap **Save Answer**, or tap **Not Now**.
-4. Open a profile to see its **History**, change its **Decks**, or (for groups) edit **Members**.
-5. **Library** tab: add your own cards (any deck, category, tip line, Dare kind, and the three labels below). **Settings** tab: who you are ("I am"), export, import, appearance.
+4. **Game** tab: see [Party game](#party-game).
+5. Open a profile to see its **History**, change its **Decks**, or (for groups) edit **Members**.
+6. **Library** tab: add your own cards (any deck, category, tip line, Dare kind, and the three labels below). **Settings** tab: who you are ("I am"), export, import, appearance.
 
 ### Who sees which card
 Every card has three labels: **Who it's for** (Everyone, Women, Men, Couples), **How spicy** (Safe, Flirty, Explicit) and **Worded for** (Anyone, A man's view, A woman's view). A profile is shown a card only when all three fit:
@@ -244,7 +246,7 @@ Errors:
 
 ## Game cards
 
-The cards for the party game (black prompt cards with blanks, white answer cards) are plain data, separate from the conversation decks. `GameCardLibrary(files:)` reads them: each file adds sets, a set can be switched on per game, a black card knows how many white cards it asks for (`pick`, from its blanks, or stated for cards like "Make a haiku."), and a card printed in several enabled sets is dealt once. The game rules and screens are not built yet.
+The cards for the party game (black prompt cards with blanks, white answer cards) are plain data, separate from the conversation decks. `GameCardLibrary(files:)` reads them: each file adds sets, a set can be switched on per game, a black card knows how many white cards it asks for (`pick`, from its blanks, or stated for cards like "Make a haiku."), and a card printed in several enabled sets is dealt once. The game itself is described in [Party game](#party-game).
 
 | Set | File | In git |
 |---|---|---|
@@ -272,6 +274,19 @@ The low-ink PDFs hold the same cards as the regular ones, so only the regular PD
 
 OCR is not perfect, so each edition was proofread against its pages. The builder cleans quote marks, apostrophes, an I read as l or a bar, the closing quote read as digits, wrapped hyphens, trademark marks and the footer under a card. It drops pages that only mention the game by name (the rules page), and keeps a card whose footer was not read but whose text was. `settle_ocr_slips` makes a card seen once match the same card seen in two or more editions when they differ only in case, spacing or punctuation; a different letter is never settled, because the editions spell some cards their own way (ton and tonne). What OCR still gets wrong, found by comparing with the pages, is corrected in `tools/build-game-cards/<set>-fixes.json`; a fix that matches no card stops the build, so a changed PDF is noticed. `--review` lists the words the dictionary does not know and odd black cards, so a person can check them. `PrivateGameCardsSmokeTests` checks the exact number of cards in each edition, so a card lost from the bottom row of a page fails the tests.
 
+## Party game
+
+Open the **Game** tab, type 3 to 10 names, switch on the card sets you want and tap **Start Game**. Each player gets 10 white cards, and the first player is the Card Czar.
+
+1. The screen says **Pass the phone to Sam**. Sam taps **I'm Sam**, and only then does Sam's hand show. The Czar never plays white cards.
+2. Sam chooses the number of cards the black card asks for (Pick 2 or Pick 3 read in the order chosen) and taps **Play**. The phone goes on to the next player, and last to the Czar.
+3. The Czar sees every play in a shuffled order with no names, picks the best one, and its player gets a point and is named.
+4. **Next Round**: the Czar passes to the next player, hands are topped back up to 10 and a new black card is turned. Used cards come back when a pile runs out.
+
+There is no target score and no winner. **Scores** shows the points at any time, and **End** shows the final scores and forgets the game. A game in progress is kept after every move, so closing the app does not lose it, and the last names and card sets are remembered for the next game.
+
+The rules are a pure Swift type (`Game`) with no screens, clock or randomness inside; shuffling comes from `Roles`. `GameTable` applies each move to a copy, saves it, and only then makes it the game. `Game.screen` says what the player holding the phone sees, and `CardPicker` keeps the cards chosen. The SwiftUI views in `app/play` only draw that. The scenarios are in [play-game.feature](tests/play/play-game/play-game.feature) and the state machine in [docs/design/play-game](docs/design/play-game/state-machines.md).
+
 ## Tests
 
 ```bash
@@ -297,6 +312,7 @@ tools/build-seed/                     importer for the private deck export
 tools/build-game-cards/               PDF to game card sets (text extractor, OCR reader, builder)
 docs/design/flashcards/               impact map, architecture, test strategy
 docs/design/game-cards/               impact map for the party game cards
+docs/design/play-game/                impact map and state machine for the party game
 ```
 
 Design notes live in [docs/design/flashcards](docs/design/flashcards): the [impact map](docs/design/flashcards/impact-map.md) (who, why, what), the [architecture](docs/design/flashcards/architecture.md) and the [test strategy](docs/design/flashcards/test-strategy.md).

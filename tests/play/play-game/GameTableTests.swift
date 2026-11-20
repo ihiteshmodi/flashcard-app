@@ -128,4 +128,35 @@ final class GameTableTests: XCTestCase {
         // The reversed deck gave Sam s-w-20 and Lee s-w-10 to play; the pile made again from those two is reversed.
         XCTAssertTrue(table.game.visibleHandOf("Sam").map(\.id).contains("s-w-10"))
     }
+
+    func testNothingIsRememberedBeforeTheFirstGame() throws {
+        XCTAssertNil(try world().app.lastGameSetup())
+    }
+
+    func testTheLastPlayersAndSetsAreRememberedForTheNextGame() throws {
+        let world = try world()
+        _ = try world.app.startGame(players: [" Maya", "Sam", "Lee"], sets: ["s"])
+
+        let setup = try XCTUnwrap(try world.app.lastGameSetup())
+
+        XCTAssertEqual(setup.players, ["Maya", "Sam", "Lee"])
+        XCTAssertEqual(setup.sets, ["s"])
+    }
+
+    func testAGameThatCouldNotStartIsNotRemembered() throws {
+        let world = try world()
+
+        XCTAssertThrowsError(try world.app.startGame(players: ["Maya"], sets: ["s"]))
+
+        XCTAssertNil(try world.app.lastGameSetup())
+    }
+
+    func testTheRememberedSetupSurvivesTheGameEnding() throws {
+        let world = try world()
+        let table = try table(world)
+
+        _ = try table.end()
+
+        XCTAssertEqual(try world.app.lastGameSetup()?.players, ["Maya", "Sam", "Lee"])
+    }
 }

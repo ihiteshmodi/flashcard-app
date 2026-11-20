@@ -62,7 +62,16 @@ public final class Flashcards {
         let game = try Game.start(players: players, library: gameCards, sets: sets, shuffle: roles.shuffle)
         let table = GameTable(game: game, db: database, roles: roles)
         try table.save()
+        let setup = GameSetup(players: game.players, sets: sets.sorted())
+        try database.setSetting("game.setup", String(decoding: try JSONEncoder().encode(setup), as: UTF8.self))
         return table
+    }
+
+    /// The players and card sets of the last game that started, so the next one does not start from empty.
+    public func lastGameSetup() throws -> (players: [String], sets: Set<String>)? {
+        guard let saved = try database.setting("game.setup"),
+              let setup = try? JSONDecoder().decode(GameSetup.self, from: Data(saved.utf8)) else { return nil }
+        return (setup.players, Set(setup.sets))
     }
 
     /// The game that was in progress when the app was last closed, if any.
@@ -88,4 +97,9 @@ public final class Flashcards {
     private func syncSessions() throws {
         for session in sessions.values { try session.syncWithLibrary() }
     }
+}
+
+private struct GameSetup: Codable {
+    let players: [String]
+    let sets: [String]
 }

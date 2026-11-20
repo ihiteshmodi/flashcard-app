@@ -19,6 +19,9 @@ enum CompositionRoot {
                     try app.loadSeed(Data(contentsOf: url))
                 }
             }
+            // The Family Edition is bundled; the private editions are there only when the file was built in.
+            let cardFiles = ["GameCards", "game-cards"].compactMap { Bundle.main.url(forResource: $0, withExtension: "json") }
+            try app.loadGameCards(cardFiles.map { try Data(contentsOf: $0) })
             return app
         }
     }

@@ -8,6 +8,8 @@ struct RootView: View {
         TabView {
             CardsView(app: app)
                 .tabItem { Label("Cards", systemImage: "rectangle.on.rectangle.angled") }
+            GameView(app: app)
+                .tabItem { Label("Game", systemImage: "party.popper") }
             NavigationStack { ProfilesView(app: app) }
                 .tabItem { Label("Profiles", systemImage: "person.2") }
             NavigationStack { LibraryView(app: app) }

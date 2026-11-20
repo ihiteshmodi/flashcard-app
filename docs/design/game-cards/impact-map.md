@@ -18,7 +18,7 @@ Three roles: user gets a ready deck; customer is the same person (no revenue); d
 3. Know how many white cards a black card asks for (Pick 1, Pick 2).
 4. Never deal the same card twice when two enabled sets contain it.
 
-Out of scope for now: the game rules (rounds, Card Czar, hands, scoring), the screens, and playing on several phones. Open-ended play with no winner was chosen.
+Out of scope here: the game rules and screens, which are built in [play-game](../play-game/impact-map.md), and playing on several phones. Open-ended play with no winner was chosen.
 
 ## Source and sets
 | Set id | Title | Source PDF | Shipped |
