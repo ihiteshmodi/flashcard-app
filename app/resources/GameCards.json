@@ -1,0 +1,2413 @@
+{
+ "version": 1,
+ "sets": [
+  {
+   "id": "family",
+   "title": "Family Edition",
+   "black": [
+    {
+     "id": "family-b-001",
+     "text": "Papa, come quickly! There, in the garden! Do you see _____? Tell me you see it, Papa!"
+    },
+    {
+     "id": "family-b-002",
+     "text": "Attention students! Principal Butthead is at home recovering from _____. We hope he’ll be back soon."
+    },
+    {
+     "id": "family-b-003",
+     "text": "I’m sorry, Jordan, but that’s not an acceptable Science Fair project. That’s just _____."
+    },
+    {
+     "id": "family-b-004",
+     "text": "The warm August air was filled with change. Things were different, for Kayla was now _____."
+    },
+    {
+     "id": "family-b-005",
+     "text": "This is gonna be the best sleepover ever. Once Mom goes to bed, it’s time for _____!"
+    },
+    {
+     "id": "family-b-006",
+     "text": "Coming soon! Batman vs. _____."
+    },
+    {
+     "id": "family-b-007",
+     "text": "Class, pay close attention. I will now demonstrate the physics of _____."
+    },
+    {
+     "id": "family-b-008",
+     "text": "Hey Riley, I’ll give you five bucks if you try _____."
+    },
+    {
+     "id": "family-b-009",
+     "text": "When I look in the mirror, I see _____."
+    },
+    {
+     "id": "family-b-010",
+     "text": "My dad and I enjoy _____ together."
+    },
+    {
+     "id": "family-b-011",
+     "text": "Hey, kids. I’m Sensei Todd. Today, I’m gonna teach you how to defend yourself against _____."
+    },
+    {
+     "id": "family-b-012",
+     "text": "MY NAME CHUNGO. CHUNGO LOVE _____."
+    },
+    {
+     "id": "family-b-013",
+     "text": "Never fear, Captain _____ is here!"
+    },
+    {
+     "id": "family-b-014",
+     "text": "Kids, Dad is trying something new this week. It’s called “_____.”"
+    },
+    {
+     "id": "family-b-015",
+     "text": "Oh, no thank you, Mrs. Lee. I’ve had plenty of _____ for now."
+    },
+    {
+     "id": "family-b-016",
+     "text": "Time to put on my favorite t-shirt, the one that says “I ♥ _____.”"
+    },
+    {
+     "id": "family-b-017",
+     "text": "And over here is Picasso’s most famous painting, “Portrait of _____.”"
+    },
+    {
+     "id": "family-b-018",
+     "text": "The aliens are here. They want _____."
+    },
+    {
+     "id": "family-b-019",
+     "text": "They call me “Mr. _____.”"
+    },
+    {
+     "id": "family-b-020",
+     "text": "CHUNGO FEEL SICK. CHUNGO NO LIKE _____ ANYMORE."
+    },
+    {
+     "id": "family-b-021",
+     "text": "Mom!? You have to come pick me up! There’s _____ at this party!"
+    },
+    {
+     "id": "family-b-022",
+     "text": "CNN breaking news! Over half of Americans are now _____."
+    },
+    {
+     "id": "family-b-023",
+     "text": "On the next episode of Dora the Explorer, Dora explores _____."
+    },
+    {
+     "id": "family-b-024",
+     "text": "Alright, which one of you little turds is responsible for _____?!"
+    },
+    {
+     "id": "family-b-025",
+     "text": "Ladies and gentlemen, I have discovered something amazing. I have discovered _____."
+    },
+    {
+     "id": "family-b-026",
+     "text": "And in the blue corner, weighing in at 280 pounds, it’s Tommy “_____” Takahashi!"
+    },
+    {
+     "id": "family-b-027",
+     "text": "Outback Steakhouse: No rules. Just _____."
+    },
+    {
+     "id": "family-b-028",
+     "text": "Ew. Grandpa smells like _____."
+    },
+    {
+     "id": "family-b-029",
+     "text": "My name is Peter Parker. I was bitten by a radioactive spider, and now I’m _____."
+    },
+    {
+     "id": "family-b-030",
+     "text": "Put on your helmet, strap on your goggles, and get ready for _____!"
+    },
+    {
+     "id": "family-b-031",
+     "text": "Attention students! This is Principal Butthead reminding you that we do not allow _____ in the hallway. Thank you."
+    },
+    {
+     "id": "family-b-032",
+     "text": "What’s about to take this school dance to the next level?"
+    },
+    {
+     "id": "family-b-033",
+     "text": "Little Miss Muffet Sat on a tuffet Eating her curds and _____."
+    },
+    {
+     "id": "family-b-034",
+     "text": "All I want for Christmas is _____."
+    },
+    {
+     "id": "family-b-035",
+     "text": "Me and my friends don’t play with dolls anymore. We’re into _____ now."
+    },
+    {
+     "id": "family-b-036",
+     "text": "We’re not supposed to go in the attic. My parents keep _____ in there."
+    },
+    {
+     "id": "family-b-037",
+     "text": "Police! Arrest this man! He’s _____."
+    },
+    {
+     "id": "family-b-038",
+     "text": "My favorite dinosaur is “_____asaurus.”"
+    },
+    {
+     "id": "family-b-039",
+     "text": "When I pooped, what came out of my butt?"
+    },
+    {
+     "id": "family-b-040",
+     "text": "I’m not like the other children. Toys bore me, and I don’t care for sweets. I prefer _____."
+    },
+    {
+     "id": "family-b-041",
+     "text": "I’m sorry, Mrs. Sanchez, but I couldn’t finish my homework because of _____."
+    },
+    {
+     "id": "family-b-042",
+     "text": "Oh Dark Lord, we show our devotion with a humble offering of _____!"
+    },
+    {
+     "id": "family-b-043",
+     "text": "Thanks for watching! If you want to see more vids of _____, smash that subscribe."
+    },
+    {
+     "id": "family-b-044",
+     "text": "We’re off to see the wizard, the wonderful wizard of _____!"
+    },
+    {
+     "id": "family-b-045",
+     "text": "What’s all fun and games until somebody gets hurt?"
+    },
+    {
+     "id": "family-b-046",
+     "text": "Young lady, we do not allow _____ at the dinner table."
+    },
+    {
+     "id": "family-b-047",
+     "text": "Welcome! We’re glad you’re here. Now sit back, relax, and enjoy _____."
+    },
+    {
+     "id": "family-b-048",
+     "text": "My favorite book is The Amazing Adventures of _____."
+    },
+    {
+     "id": "family-b-049",
+     "text": "Well, look what we have here! A big fancy man walkin’ in like he’s _____."
+    },
+    {
+     "id": "family-b-050",
+     "text": "ENOUGH! I will not let _____ tear this family apart!"
+    },
+    {
+     "id": "family-b-051",
+     "text": "Rub a dub dub, _____ in a tub!"
+    },
+    {
+     "id": "family-b-052",
+     "text": "Madam President, we’ve run out of time. The only option is _____."
+    },
+    {
+     "id": "family-b-053",
+     "text": "I have invented a new sport. I call it “_____ ball.”"
+    },
+    {
+     "id": "family-b-054",
+     "text": "Hey, check out my band! We’re called “Rage Against _____.”"
+    },
+    {
+     "id": "family-b-055",
+     "text": "Moms love _____."
+    },
+    {
+     "id": "family-b-056",
+     "text": "Where do babies come from?"
+    },
+    {
+     "id": "family-b-057",
+     "text": "CHUNGO ANGRY. CHUNGO DESTROY _____."
+    },
+    {
+     "id": "family-b-058",
+     "text": "At school, I’m just Mandy. But at summer camp, I’m “_____ Mandy.”"
+    },
+    {
+     "id": "family-b-059",
+     "text": "Did you hear about the new Avenger? She’s _____!"
+    },
+    {
+     "id": "family-b-060",
+     "text": "It’s BIG. It’s SCARY. It’s _____!"
+    },
+    {
+     "id": "family-b-061",
+     "text": "Disney proudly presents: “_____ on Ice.”"
+    },
+    {
+     "id": "family-b-062",
+     "text": "What really killed the dinosaurs?"
+    },
+    {
+     "id": "family-b-063",
+     "text": "Beep beep! _____ coming through!"
+    },
+    {
+     "id": "family-b-064",
+     "text": "New from McDonald’s: it’s the Mc_____ Burger."
+    },
+    {
+     "id": "family-b-065",
+     "text": "You don’t love me, Sam. All you care about is _____."
+    },
+    {
+     "id": "family-b-066",
+     "text": "Did you know that Benjamin Franklin invented _____?"
+    },
+    {
+     "id": "family-b-067",
+     "text": "“On the 12th day of Christmas, my true love gave to me: _____.”"
+    },
+    {
+     "id": "family-b-068",
+     "text": "The easiest way to tell me and my twin apart is that I have a freckle on my cheek and she’s _____."
+    },
+    {
+     "id": "family-b-069",
+     "text": "Hey guys. I just want to tell all my followers who are struggling with _____: it DOES get better."
+    },
+    {
+     "id": "family-b-070",
+     "text": "You’re grounded, young lady! No _____ for a whole week."
+    },
+    {
+     "id": "family-b-071",
+     "text": "Princess Marigold, the kingdom is in danger! You must stop _____."
+    },
+    {
+     "id": "family-b-072",
+     "text": "Shut up, Becky! At least I’m not _____."
+    },
+    {
+     "id": "family-b-073",
+     "text": "I lost my arm in a _____ accident."
+    },
+    {
+     "id": "family-b-074",
+     "text": "Isn’t this great, honey? Just you, me, the kids, and _____."
+    },
+    {
+     "id": "family-b-075",
+     "text": "Foolish child! Did you think you could escape from _____?"
+    },
+    {
+     "id": "family-b-076",
+     "text": "Girls just wanna have _____."
+    },
+    {
+     "id": "family-b-077",
+     "text": "Run, run, as fast as you can. You can’t catch me, I’m _____!"
+    },
+    {
+     "id": "family-b-078",
+     "text": "New from Mattel, it’s _____ Barbie!"
+    },
+    {
+     "id": "family-b-079",
+     "text": "No fair! How come Chloe gets her own phone, and all I get is _____?"
+    },
+    {
+     "id": "family-b-080",
+     "text": "Bow before me, for I am the Queen of _____!"
+    },
+    {
+     "id": "family-b-081",
+     "text": "New from Hasbro! It’s BUNGO: The Game of _____."
+    },
+    {
+     "id": "family-b-082",
+     "text": "I don’t really know what my mom’s job is, but I think it has something to do with _____."
+    },
+    {
+     "id": "family-b-083",
+     "text": "Our day at the water park was totally ruined by _____."
+    },
+    {
+     "id": "family-b-084",
+     "text": "Alright, kids. The votes are in, and the new school mascot will be _____!"
+    },
+    {
+     "id": "family-b-085",
+     "text": "What killed Old Jim?"
+    },
+    {
+     "id": "family-b-086",
+     "text": "Next from J.K. Rowling: Harry Potter and the Chamber of _____."
+    },
+    {
+     "id": "family-b-087",
+     "text": "What’s keeping Dad so busy in the garage?"
+    },
+    {
+     "id": "family-b-088",
+     "text": "Boys? No. _____? Yes!"
+    },
+    {
+     "id": "family-b-089",
+     "text": "ME HUNGRY. ME WANT _____."
+    },
+    {
+     "id": "family-b-090",
+     "text": "Oh, that’s my mom’s friend Carl. He comes over and helps her with _____."
+    },
+    {
+     "id": "family-b-091",
+     "text": "Guys, stop it! There’s nothing funny about _____."
+    },
+    {
+     "id": "family-b-092",
+     "text": "Huddle up, Wildcats! They may be bigger. They may be faster. But we’ve got a secret weapon: _____."
+    },
+    {
+     "id": "family-b-093",
+     "text": "Coming to theaters this holiday season, “Star Wars: The Rise of _____.”"
+    },
+    {
+     "id": "family-b-094",
+     "text": "I do not fight for wealth. I do not fight for glory. I fight for _____!"
+    },
+    {
+     "id": "family-b-095",
+     "text": "Come on, Danny. All the cool kids are doin’ it. Wanna try _____?"
+    }
+   ],
+   "white": [
+    {
+     "id": "family-w-001",
+     "text": "A big wet kiss from Great Aunt Sharon."
+    },
+    {
+     "id": "family-w-002",
+     "text": "A cloud that rains diarrhea."
+    },
+    {
+     "id": "family-w-003",
+     "text": "A caveperson named Helen."
+    },
+    {
+     "id": "family-w-004",
+     "text": "Acting kinda sus."
+    },
+    {
+     "id": "family-w-005",
+     "text": "All of your teeth falling out."
+    },
+    {
+     "id": "family-w-006",
+     "text": "Beautiful Grandma."
+    },
+    {
+     "id": "family-w-007",
+     "text": "Defecating on the neighbor’s lawn."
+    },
+    {
+     "id": "family-w-008",
+     "text": "Eight hours of video games."
+    },
+    {
+     "id": "family-w-009",
+     "text": "Going night-night."
+    },
+    {
+     "id": "family-w-010",
+     "text": "Hanging out with Zendaya."
+    },
+    {
+     "id": "family-w-011",
+     "text": "Kissing Mom on the lips."
+    },
+    {
+     "id": "family-w-012",
+     "text": "Me, your dad."
+    },
+    {
+     "id": "family-w-013",
+     "text": "Playing trumpet for the Mayor."
+    },
+    {
+     "id": "family-w-014",
+     "text": "Ratzilla."
+    },
+    {
+     "id": "family-w-015",
+     "text": "Teeny tiny turds."
+    },
+    {
+     "id": "family-w-016",
+     "text": "That there tarantula."
+    },
+    {
+     "id": "family-w-017",
+     "text": "The way Grandpa smells."
+    },
+    {
+     "id": "family-w-018",
+     "text": "Three glasses of red wine."
+    },
+    {
+     "id": "family-w-019",
+     "text": "Whatever Dad does at work."
+    },
+    {
+     "id": "family-w-020",
+     "text": "Getting shot out of a cannon."
+    },
+    {
+     "id": "family-w-021",
+     "text": "Jesus."
+    },
+    {
+     "id": "family-w-022",
+     "text": "Eating pasta out of my pants."
+    },
+    {
+     "id": "family-w-023",
+     "text": "A burrito smoothie."
+    },
+    {
+     "id": "family-w-024",
+     "text": "A bear."
+    },
+    {
+     "id": "family-w-025",
+     "text": "Old people."
+    },
+    {
+     "id": "family-w-026",
+     "text": "My sister’s stupid boyfriend."
+    },
+    {
+     "id": "family-w-027",
+     "text": "Stuffing my underwear with pancakes."
+    },
+    {
+     "id": "family-w-028",
+     "text": "Stinky Martha, the superhero that nobody likes."
+    },
+    {
+     "id": "family-w-029",
+     "text": "My chainsaw."
+    },
+    {
+     "id": "family-w-030",
+     "text": "Diarrhea."
+    },
+    {
+     "id": "family-w-031",
+     "text": "Boogers."
+    },
+    {
+     "id": "family-w-032",
+     "text": "The police."
+    },
+    {
+     "id": "family-w-033",
+     "text": "Sniffing a dog’s butt."
+    },
+    {
+     "id": "family-w-034",
+     "text": "Horrible allergies."
+    },
+    {
+     "id": "family-w-035",
+     "text": "Your face."
+    },
+    {
+     "id": "family-w-036",
+     "text": "A gerbil named “Gerbil.”"
+    },
+    {
+     "id": "family-w-037",
+     "text": "Fartus Magnimus, God of Beans."
+    },
+    {
+     "id": "family-w-038",
+     "text": "Rated-R stuff."
+    },
+    {
+     "id": "family-w-039",
+     "text": "Blowing up the Moon."
+    },
+    {
+     "id": "family-w-040",
+     "text": "Getting launched into space."
+    },
+    {
+     "id": "family-w-041",
+     "text": "Likes."
+    },
+    {
+     "id": "family-w-042",
+     "text": "A bird pooping on the president’s head."
+    },
+    {
+     "id": "family-w-043",
+     "text": "Chungo, the talking gorilla."
+    },
+    {
+     "id": "family-w-044",
+     "text": "The way I feel when I see Kyle."
+    },
+    {
+     "id": "family-w-045",
+     "text": "Hot gossip."
+    },
+    {
+     "id": "family-w-046",
+     "text": "Forgetting to put on underwear."
+    },
+    {
+     "id": "family-w-047",
+     "text": "Running full speed into a wall."
+    },
+    {
+     "id": "family-w-048",
+     "text": "The Russians."
+    },
+    {
+     "id": "family-w-049",
+     "text": "A black hole."
+    },
+    {
+     "id": "family-w-050",
+     "text": "Putting my butt on stuff."
+    },
+    {
+     "id": "family-w-051",
+     "text": "Racism, sexism, and homophobia."
+    },
+    {
+     "id": "family-w-052",
+     "text": "Making the bees angry."
+    },
+    {
+     "id": "family-w-053",
+     "text": "My strong, terrifying daughter."
+    },
+    {
+     "id": "family-w-054",
+     "text": "A Democrat."
+    },
+    {
+     "id": "family-w-055",
+     "text": "TikTok."
+    },
+    {
+     "id": "family-w-056",
+     "text": "Cheeto fingers."
+    },
+    {
+     "id": "family-w-057",
+     "text": "A huge honkin’ carrot."
+    },
+    {
+     "id": "family-w-058",
+     "text": "The country of Bolivia."
+    },
+    {
+     "id": "family-w-059",
+     "text": "My parents."
+    },
+    {
+     "id": "family-w-060",
+     "text": "Idiots."
+    },
+    {
+     "id": "family-w-061",
+     "text": "Filling my butt with spaghetti."
+    },
+    {
+     "id": "family-w-062",
+     "text": "Putting an apple in a little boy’s mouth and roasting him for dinner."
+    },
+    {
+     "id": "family-w-063",
+     "text": "Taking a dump in the backyard and blaming it on the dog."
+    },
+    {
+     "id": "family-w-064",
+     "text": "Climbing into a cow’s butt."
+    },
+    {
+     "id": "family-w-065",
+     "text": "Work."
+    },
+    {
+     "id": "family-w-066",
+     "text": "Mashing a banana into your belly button."
+    },
+    {
+     "id": "family-w-067",
+     "text": "China."
+    },
+    {
+     "id": "family-w-068",
+     "text": "Shrek."
+    },
+    {
+     "id": "family-w-069",
+     "text": "Cavities."
+    },
+    {
+     "id": "family-w-070",
+     "text": "Eating people."
+    },
+    {
+     "id": "family-w-071",
+     "text": "Butts of all shapes and sizes."
+    },
+    {
+     "id": "family-w-072",
+     "text": "A 40-piece Chicken McNuggets."
+    },
+    {
+     "id": "family-w-073",
+     "text": "Climate change."
+    },
+    {
+     "id": "family-w-074",
+     "text": "Barf."
+    },
+    {
+     "id": "family-w-075",
+     "text": "A poop as big as Mom."
+    },
+    {
+     "id": "family-w-076",
+     "text": "A couch that eats children."
+    },
+    {
+     "id": "family-w-077",
+     "text": "Going to Hell."
+    },
+    {
+     "id": "family-w-078",
+     "text": "The loose skin at the joint of the elbow known as “the weenus.”"
+    },
+    {
+     "id": "family-w-079",
+     "text": "A horse with no legs."
+    },
+    {
+     "id": "family-w-080",
+     "text": "Fat stacks of cash."
+    },
+    {
+     "id": "family-w-081",
+     "text": "Dora the Explorer."
+    },
+    {
+     "id": "family-w-082",
+     "text": "Illegal drugs."
+    },
+    {
+     "id": "family-w-083",
+     "text": "Cold, wet garlic bread."
+    },
+    {
+     "id": "family-w-084",
+     "text": "Dad’s meatloaf."
+    },
+    {
+     "id": "family-w-085",
+     "text": "Extra-warm Pepsi."
+    },
+    {
+     "id": "family-w-086",
+     "text": "The old man with the rake who lives down the dark and winding road."
+    },
+    {
+     "id": "family-w-087",
+     "text": "Calling 9-1-1."
+    },
+    {
+     "id": "family-w-088",
+     "text": "Spending my parents’ hard-earned money."
+    },
+    {
+     "id": "family-w-089",
+     "text": "Toe jam."
+    },
+    {
+     "id": "family-w-090",
+     "text": "Hot lava."
+    },
+    {
+     "id": "family-w-091",
+     "text": "Butt surgery."
+    },
+    {
+     "id": "family-w-092",
+     "text": "Freeing all the animals from the zoo."
+    },
+    {
+     "id": "family-w-093",
+     "text": "A bountiful harvest of squashes and corns."
+    },
+    {
+     "id": "family-w-094",
+     "text": "Bombs."
+    },
+    {
+     "id": "family-w-095",
+     "text": "Boobies."
+    },
+    {
+     "id": "family-w-096",
+     "text": "Respecting personal boundaries."
+    },
+    {
+     "id": "family-w-097",
+     "text": "Having no idea what’s going on."
+    },
+    {
+     "id": "family-w-098",
+     "text": "John Wilkes Booth."
+    },
+    {
+     "id": "family-w-099",
+     "text": "Getting married."
+    },
+    {
+     "id": "family-w-100",
+     "text": "Politics."
+    },
+    {
+     "id": "family-w-101",
+     "text": "Garbage."
+    },
+    {
+     "id": "family-w-102",
+     "text": "Naked people."
+    },
+    {
+     "id": "family-w-103",
+     "text": "This stupid game."
+    },
+    {
+     "id": "family-w-104",
+     "text": "Biting a rich person."
+    },
+    {
+     "id": "family-w-105",
+     "text": "Screaming at birds."
+    },
+    {
+     "id": "family-w-106",
+     "text": "Getting stuck in the toilet."
+    },
+    {
+     "id": "family-w-107",
+     "text": "Getting crushed by a piano."
+    },
+    {
+     "id": "family-w-108",
+     "text": "Huge pants."
+    },
+    {
+     "id": "family-w-109",
+     "text": "Mom’s spaghetti."
+    },
+    {
+     "id": "family-w-110",
+     "text": "An old, dirty cat with bad breath."
+    },
+    {
+     "id": "family-w-111",
+     "text": "A corn dog."
+    },
+    {
+     "id": "family-w-112",
+     "text": "Hot wet garbage."
+    },
+    {
+     "id": "family-w-113",
+     "text": "Principal Butthead."
+    },
+    {
+     "id": "family-w-114",
+     "text": "A statue of a naked guy."
+    },
+    {
+     "id": "family-w-115",
+     "text": "A chicken that has pickles as horns and a butt the size of a bus."
+    },
+    {
+     "id": "family-w-116",
+     "text": "Joining the army."
+    },
+    {
+     "id": "family-w-117",
+     "text": "Witchcraft."
+    },
+    {
+     "id": "family-w-118",
+     "text": "Taking out my eyeballs."
+    },
+    {
+     "id": "family-w-119",
+     "text": "Sacrificing Uncle Tim."
+    },
+    {
+     "id": "family-w-120",
+     "text": "Moving to Ohio."
+    },
+    {
+     "id": "family-w-121",
+     "text": "A hundred screaming monkeys."
+    },
+    {
+     "id": "family-w-122",
+     "text": "A dinosaur that is pooping but doesn’t know it is pooping."
+    },
+    {
+     "id": "family-w-123",
+     "text": "Emotions."
+    },
+    {
+     "id": "family-w-124",
+     "text": "Ham."
+    },
+    {
+     "id": "family-w-125",
+     "text": "Clams."
+    },
+    {
+     "id": "family-w-126",
+     "text": "Spider-Man."
+    },
+    {
+     "id": "family-w-127",
+     "text": "Drinking out of the toilet and eating garbage."
+    },
+    {
+     "id": "family-w-128",
+     "text": "Trying to catch that dang raccoon."
+    },
+    {
+     "id": "family-w-129",
+     "text": "Slapping my huge belly."
+    },
+    {
+     "id": "family-w-130",
+     "text": "The doll that watches me sleep."
+    },
+    {
+     "id": "family-w-131",
+     "text": "Money."
+    },
+    {
+     "id": "family-w-132",
+     "text": "LeBron James."
+    },
+    {
+     "id": "family-w-133",
+     "text": "Divorce."
+    },
+    {
+     "id": "family-w-134",
+     "text": "Me."
+    },
+    {
+     "id": "family-w-135",
+     "text": "Salmon."
+    },
+    {
+     "id": "family-w-136",
+     "text": "Screaming the F-word."
+    },
+    {
+     "id": "family-w-137",
+     "text": "A whole thing of cottage cheese."
+    },
+    {
+     "id": "family-w-138",
+     "text": "Crab-walking from the toilet to get more toilet paper."
+    },
+    {
+     "id": "family-w-139",
+     "text": "Mayonnaise."
+    },
+    {
+     "id": "family-w-140",
+     "text": "Total world domination."
+    },
+    {
+     "id": "family-w-141",
+     "text": "Failure."
+    },
+    {
+     "id": "family-w-142",
+     "text": "JoJo Siwa."
+    },
+    {
+     "id": "family-w-143",
+     "text": "Getting kicked in the nuts."
+    },
+    {
+     "id": "family-w-144",
+     "text": "Farting and walking away."
+    },
+    {
+     "id": "family-w-145",
+     "text": "Sharks with legs."
+    },
+    {
+     "id": "family-w-146",
+     "text": "Triangles."
+    },
+    {
+     "id": "family-w-147",
+     "text": "Ninjas."
+    },
+    {
+     "id": "family-w-148",
+     "text": "The floor."
+    },
+    {
+     "id": "family-w-149",
+     "text": "The whole family."
+    },
+    {
+     "id": "family-w-150",
+     "text": "Bench pressing a horse."
+    },
+    {
+     "id": "family-w-151",
+     "text": "Spiders."
+    },
+    {
+     "id": "family-w-152",
+     "text": "Uranus."
+    },
+    {
+     "id": "family-w-153",
+     "text": "A Republican."
+    },
+    {
+     "id": "family-w-154",
+     "text": "Giving wedgies to my haters."
+    },
+    {
+     "id": "family-w-155",
+     "text": "“Baby Shark” on repeat forever."
+    },
+    {
+     "id": "family-w-156",
+     "text": "Big Randy."
+    },
+    {
+     "id": "family-w-157",
+     "text": "Blasting my math teacher into the sun."
+    },
+    {
+     "id": "family-w-158",
+     "text": "Dreaming about boys."
+    },
+    {
+     "id": "family-w-159",
+     "text": "Taking a dump in the pool."
+    },
+    {
+     "id": "family-w-160",
+     "text": "Crying in the bathroom."
+    },
+    {
+     "id": "family-w-161",
+     "text": "Happiness."
+    },
+    {
+     "id": "family-w-162",
+     "text": "Poison."
+    },
+    {
+     "id": "family-w-163",
+     "text": "Hot, juicy broccoli farts."
+    },
+    {
+     "id": "family-w-164",
+     "text": "A scoop of tuna."
+    },
+    {
+     "id": "family-w-165",
+     "text": "Doing karate."
+    },
+    {
+     "id": "family-w-166",
+     "text": "Eating bicycles to somehow become famous."
+    },
+    {
+     "id": "family-w-167",
+     "text": "Lil Nas X."
+    },
+    {
+     "id": "family-w-168",
+     "text": "Dad’s famous poops."
+    },
+    {
+     "id": "family-w-169",
+     "text": "Squirty cheese."
+    },
+    {
+     "id": "family-w-170",
+     "text": "My girlfriend, who goes to another school."
+    },
+    {
+     "id": "family-w-171",
+     "text": "Having too many fingers."
+    },
+    {
+     "id": "family-w-172",
+     "text": "Slapping that butt."
+    },
+    {
+     "id": "family-w-173",
+     "text": "Questioning authority."
+    },
+    {
+     "id": "family-w-174",
+     "text": "Chugging a gallon of milk and then vomiting a gallon of milk."
+    },
+    {
+     "id": "family-w-175",
+     "text": "Farting a lot today."
+    },
+    {
+     "id": "family-w-176",
+     "text": "Going bald."
+    },
+    {
+     "id": "family-w-177",
+     "text": "Germs."
+    },
+    {
+     "id": "family-w-178",
+     "text": "Nuclear war."
+    },
+    {
+     "id": "family-w-179",
+     "text": "Barfing into a popcorn bucket."
+    },
+    {
+     "id": "family-w-180",
+     "text": "A cursed llama with no eyes."
+    },
+    {
+     "id": "family-w-181",
+     "text": "The wettest fart you ever heard."
+    },
+    {
+     "id": "family-w-182",
+     "text": "Shaving Dad’s back."
+    },
+    {
+     "id": "family-w-183",
+     "text": "Overthrowing the government."
+    },
+    {
+     "id": "family-w-184",
+     "text": "Murdering."
+    },
+    {
+     "id": "family-w-185",
+     "text": "Exploding."
+    },
+    {
+     "id": "family-w-186",
+     "text": "Bleeding."
+    },
+    {
+     "id": "family-w-187",
+     "text": "The oppressive system of capitalism."
+    },
+    {
+     "id": "family-w-188",
+     "text": "Saying “I love you.”"
+    },
+    {
+     "id": "family-w-189",
+     "text": "A long, hot pee."
+    },
+    {
+     "id": "family-w-190",
+     "text": "Throwing up double peace signs with your besties at Starbucks."
+    },
+    {
+     "id": "family-w-191",
+     "text": "A balloon filled with chili."
+    },
+    {
+     "id": "family-w-192",
+     "text": "Stealing dead bodies from the morgue."
+    },
+    {
+     "id": "family-w-193",
+     "text": "The freedom of speech."
+    },
+    {
+     "id": "family-w-194",
+     "text": "Egg salad."
+    },
+    {
+     "id": "family-w-195",
+     "text": "Mom’s friend, Donna."
+    },
+    {
+     "id": "family-w-196",
+     "text": "Rich people."
+    },
+    {
+     "id": "family-w-197",
+     "text": "Pirate music."
+    },
+    {
+     "id": "family-w-198",
+     "text": "Being a dinosaur."
+    },
+    {
+     "id": "family-w-199",
+     "text": "A fake kid made out of wood."
+    },
+    {
+     "id": "family-w-200",
+     "text": "Homework."
+    },
+    {
+     "id": "family-w-201",
+     "text": "Batman."
+    },
+    {
+     "id": "family-w-202",
+     "text": "A dead body."
+    },
+    {
+     "id": "family-w-203",
+     "text": "Drinking a whole bottle of ranch."
+    },
+    {
+     "id": "family-w-204",
+     "text": "Destroying the planet."
+    },
+    {
+     "id": "family-w-205",
+     "text": "Living in a pineapple under the sea."
+    },
+    {
+     "id": "family-w-206",
+     "text": "Lovingly placing two bagel bites over the eyes of my dead brother."
+    },
+    {
+     "id": "family-w-207",
+     "text": "This pumpkin."
+    },
+    {
+     "id": "family-w-208",
+     "text": "Extremely tight underpants."
+    },
+    {
+     "id": "family-w-209",
+     "text": "A nice, warm glass of pee."
+    },
+    {
+     "id": "family-w-210",
+     "text": "Magical corn that makes you fart rainbows."
+    },
+    {
+     "id": "family-w-211",
+     "text": "Complaining."
+    },
+    {
+     "id": "family-w-212",
+     "text": "Bursting into flames."
+    },
+    {
+     "id": "family-w-213",
+     "text": "Poop from the sky."
+    },
+    {
+     "id": "family-w-214",
+     "text": "My whole body getting big and strong and beautiful."
+    },
+    {
+     "id": "family-w-215",
+     "text": "Big, juicy pimples."
+    },
+    {
+     "id": "family-w-216",
+     "text": "The humble earthworm."
+    },
+    {
+     "id": "family-w-217",
+     "text": "The garbage man."
+    },
+    {
+     "id": "family-w-218",
+     "text": "A big, and I mean BIG turtle."
+    },
+    {
+     "id": "family-w-219",
+     "text": "Your mom!"
+    },
+    {
+     "id": "family-w-220",
+     "text": "The octopus stuck to my face."
+    },
+    {
+     "id": "family-w-221",
+     "text": "Dying of old age."
+    },
+    {
+     "id": "family-w-222",
+     "text": "Pantaloons."
+    },
+    {
+     "id": "family-w-223",
+     "text": "Screaming into a can of Pringles."
+    },
+    {
+     "id": "family-w-224",
+     "text": "Grandpa."
+    },
+    {
+     "id": "family-w-225",
+     "text": "Shutting up."
+    },
+    {
+     "id": "family-w-226",
+     "text": "Silence."
+    },
+    {
+     "id": "family-w-227",
+     "text": "My annoying brother."
+    },
+    {
+     "id": "family-w-228",
+     "text": "My future husband."
+    },
+    {
+     "id": "family-w-229",
+     "text": "A hot air balloon powered by fart gas."
+    },
+    {
+     "id": "family-w-230",
+     "text": "Sitting on the toilet and going poop."
+    },
+    {
+     "id": "family-w-231",
+     "text": "A screaming soccer dad."
+    },
+    {
+     "id": "family-w-232",
+     "text": "Cocktail weenies."
+    },
+    {
+     "id": "family-w-233",
+     "text": "The British."
+    },
+    {
+     "id": "family-w-234",
+     "text": "WAR!"
+    },
+    {
+     "id": "family-w-235",
+     "text": "Science."
+    },
+    {
+     "id": "family-w-236",
+     "text": "Picking my nose and eating it."
+    },
+    {
+     "id": "family-w-237",
+     "text": "Having a really big head."
+    },
+    {
+     "id": "family-w-238",
+     "text": "A dead whale."
+    },
+    {
+     "id": "family-w-239",
+     "text": "Eating a burger while farting on a manatee."
+    },
+    {
+     "id": "family-w-240",
+     "text": "The power of the Dark Side."
+    },
+    {
+     "id": "family-w-241",
+     "text": "Big butt cheeks filled with poop."
+    },
+    {
+     "id": "family-w-242",
+     "text": "My friend Steve."
+    },
+    {
+     "id": "family-w-243",
+     "text": "Violence."
+    },
+    {
+     "id": "family-w-244",
+     "text": "Going live on Zoom without pants on."
+    },
+    {
+     "id": "family-w-245",
+     "text": "Eating toenail clippings."
+    },
+    {
+     "id": "family-w-246",
+     "text": "Using balloons as boobies."
+    },
+    {
+     "id": "family-w-247",
+     "text": "My dang kids."
+    },
+    {
+     "id": "family-w-248",
+     "text": "Squeezing a lemon into my eye."
+    },
+    {
+     "id": "family-w-249",
+     "text": "Tombus, the talking rhombus."
+    },
+    {
+     "id": "family-w-250",
+     "text": "Eating a rock, getting the rock stuck in your stomach, swallowing a second rock to push out the first rock, then getting that rock stuck, and then having to go to the emergency room."
+    },
+    {
+     "id": "family-w-251",
+     "text": "Ellen."
+    },
+    {
+     "id": "family-w-252",
+     "text": "Uncle Bob."
+    },
+    {
+     "id": "family-w-253",
+     "text": "Outback Steakhouse."
+    },
+    {
+     "id": "family-w-254",
+     "text": "Dwayne “The Rock” Johnson."
+    },
+    {
+     "id": "family-w-255",
+     "text": "A baby with a full mustache."
+    },
+    {
+     "id": "family-w-256",
+     "text": "Getting hit in the face with a soccer ball."
+    },
+    {
+     "id": "family-w-257",
+     "text": "Eating a whole roll of toilet paper."
+    },
+    {
+     "id": "family-w-258",
+     "text": "The bacon."
+    },
+    {
+     "id": "family-w-259",
+     "text": "The first female president of the United States."
+    },
+    {
+     "id": "family-w-260",
+     "text": "Falling off a mountain."
+    },
+    {
+     "id": "family-w-261",
+     "text": "Person milk."
+    },
+    {
+     "id": "family-w-262",
+     "text": "Pink eye."
+    },
+    {
+     "id": "family-w-263",
+     "text": "Pork."
+    },
+    {
+     "id": "family-w-264",
+     "text": "The government."
+    },
+    {
+     "id": "family-w-265",
+     "text": "JOHN CENAAAA!"
+    },
+    {
+     "id": "family-w-266",
+     "text": "Nothing."
+    },
+    {
+     "id": "family-w-267",
+     "text": "GOOOAAALLLL!!!"
+    },
+    {
+     "id": "family-w-268",
+     "text": "Mom’s new haircut."
+    },
+    {
+     "id": "family-w-269",
+     "text": "Happy daddies with happy sandals."
+    },
+    {
+     "id": "family-w-270",
+     "text": "Giggling and farting and slurping milkshakes."
+    },
+    {
+     "id": "family-w-271",
+     "text": "Ice pee."
+    },
+    {
+     "id": "family-w-272",
+     "text": "Obama."
+    },
+    {
+     "id": "family-w-273",
+     "text": "Twerking."
+    },
+    {
+     "id": "family-w-274",
+     "text": "Reading my sister’s diary."
+    },
+    {
+     "id": "family-w-275",
+     "text": "The ice cream man."
+    },
+    {
+     "id": "family-w-276",
+     "text": "Love."
+    },
+    {
+     "id": "family-w-277",
+     "text": "Raisins."
+    },
+    {
+     "id": "family-w-278",
+     "text": "Living in the dumpster."
+    },
+    {
+     "id": "family-w-279",
+     "text": "Having a baby."
+    },
+    {
+     "id": "family-w-280",
+     "text": "Shoplifting."
+    },
+    {
+     "id": "family-w-281",
+     "text": "My father, who is a walrus."
+    },
+    {
+     "id": "family-w-282",
+     "text": "The dentist."
+    },
+    {
+     "id": "family-w-283",
+     "text": "Aunt Linda."
+    },
+    {
+     "id": "family-w-284",
+     "text": "One tough mama."
+    },
+    {
+     "id": "family-w-285",
+     "text": "Releasing the falcons!"
+    },
+    {
+     "id": "family-w-286",
+     "text": "Literally ruining my life."
+    },
+    {
+     "id": "family-w-287",
+     "text": "Flushing myself down the toilet."
+    },
+    {
+     "id": "family-w-288",
+     "text": "Fire farts."
+    },
+    {
+     "id": "family-w-289",
+     "text": "Lice."
+    },
+    {
+     "id": "family-w-290",
+     "text": "A big, fat, wiggly, squishy, talking, screaming turd."
+    },
+    {
+     "id": "family-w-291",
+     "text": "Anti-vaxxers."
+    },
+    {
+     "id": "family-w-292",
+     "text": "Wiping my butt."
+    },
+    {
+     "id": "family-w-293",
+     "text": "Saying mean stuff and making people feel bad."
+    },
+    {
+     "id": "family-w-294",
+     "text": "Beyoncé."
+    },
+    {
+     "id": "family-w-295",
+     "text": "A truck."
+    },
+    {
+     "id": "family-w-296",
+     "text": "Only beans."
+    },
+    {
+     "id": "family-w-297",
+     "text": "The beautiful potato."
+    },
+    {
+     "id": "family-w-298",
+     "text": "Legs."
+    },
+    {
+     "id": "family-w-299",
+     "text": "The woman I’m going to marry one day."
+    },
+    {
+     "id": "family-w-300",
+     "text": "Unleashing a hell demon that will destroy our world."
+    },
+    {
+     "id": "family-w-301",
+     "text": "Feminism."
+    },
+    {
+     "id": "family-w-302",
+     "text": "Lighting stuff on fire."
+    },
+    {
+     "id": "family-w-303",
+     "text": "Turning 40."
+    },
+    {
+     "id": "family-w-304",
+     "text": "Getting a skull tattoo."
+    },
+    {
+     "id": "family-w-305",
+     "text": "An invisible giant who takes giant, visible poops."
+    },
+    {
+     "id": "family-w-306",
+     "text": "A cowboy who is half boy, half cow."
+    },
+    {
+     "id": "family-w-307",
+     "text": "The longest tongue in the world."
+    },
+    {
+     "id": "family-w-308",
+     "text": "Josh."
+    },
+    {
+     "id": "family-w-309",
+     "text": "Locking Mother in the pantry."
+    },
+    {
+     "id": "family-w-310",
+     "text": "Ariana Grande."
+    },
+    {
+     "id": "family-w-311",
+     "text": "Puberty."
+    },
+    {
+     "id": "family-w-312",
+     "text": "A glorious beard."
+    },
+    {
+     "id": "family-w-313",
+     "text": "A dog that stares into eternal nothingness."
+    },
+    {
+     "id": "family-w-314",
+     "text": "Dumbness."
+    },
+    {
+     "id": "family-w-315",
+     "text": "Farting, barfing, and passing out."
+    },
+    {
+     "id": "family-w-316",
+     "text": "Flamin’ Hot Cheetos."
+    },
+    {
+     "id": "family-w-317",
+     "text": "Peeing in a glorious golden arc."
+    },
+    {
+     "id": "family-w-318",
+     "text": "Eating a ham and cheese sandwich on March 24, 2022."
+    },
+    {
+     "id": "family-w-319",
+     "text": "Niagara Falls, but with diarrhea instead of water."
+    },
+    {
+     "id": "family-w-320",
+     "text": "My ex-wife."
+    },
+    {
+     "id": "family-w-321",
+     "text": "Using my butt as a microwave."
+    },
+    {
+     "id": "family-w-322",
+     "text": "Glen’s fabulous body."
+    },
+    {
+     "id": "family-w-323",
+     "text": "Gluten."
+    },
+    {
+     "id": "family-w-324",
+     "text": "Who cares."
+    },
+    {
+     "id": "family-w-325",
+     "text": "Many wolves."
+    },
+    {
+     "id": "family-w-326",
+     "text": "One long hair growing out of a mole."
+    },
+    {
+     "id": "family-w-327",
+     "text": "A butt that eats underwear."
+    },
+    {
+     "id": "family-w-328",
+     "text": "Poo-poo."
+    },
+    {
+     "id": "family-w-329",
+     "text": "Mooing."
+    },
+    {
+     "id": "family-w-330",
+     "text": "Meat blindness."
+    },
+    {
+     "id": "family-w-331",
+     "text": "Punching everyone."
+    },
+    {
+     "id": "family-w-332",
+     "text": "How much wood a woodchuck would chuck if a woodchuck could chuck wood."
+    },
+    {
+     "id": "family-w-333",
+     "text": "Swords."
+    },
+    {
+     "id": "family-w-334",
+     "text": "Kevin’s mom."
+    },
+    {
+     "id": "family-w-335",
+     "text": "Getting scalded in the face with hot beans."
+    },
+    {
+     "id": "family-w-336",
+     "text": "Chest hair."
+    },
+    {
+     "id": "family-w-337",
+     "text": "My annoying sister."
+    },
+    {
+     "id": "family-w-338",
+     "text": "Getting slapped with a fish."
+    },
+    {
+     "id": "family-w-339",
+     "text": "Harry Potter."
+    },
+    {
+     "id": "family-w-340",
+     "text": "Peeing sand."
+    },
+    {
+     "id": "family-w-341",
+     "text": "Being French, hoh-hoh-hoh!"
+    },
+    {
+     "id": "family-w-342",
+     "text": "Guacamole."
+    },
+    {
+     "id": "family-w-343",
+     "text": "Getting naked."
+    },
+    {
+     "id": "family-w-344",
+     "text": "A super angry cat I found outside."
+    },
+    {
+     "id": "family-w-345",
+     "text": "Slappy Spatchy, the game where you slap each other with spatulas. Learn more at www.SlappySpatchy.com."
+    },
+    {
+     "id": "family-w-346",
+     "text": "A pregnant person."
+    },
+    {
+     "id": "family-w-347",
+     "text": "A bunch of dead squirrels on a trampoline."
+    },
+    {
+     "id": "family-w-348",
+     "text": "Grandma panties."
+    },
+    {
+     "id": "family-w-349",
+     "text": "Thick, nasty burps."
+    },
+    {
+     "id": "family-w-350",
+     "text": "Having no bones."
+    },
+    {
+     "id": "family-w-351",
+     "text": "Famous peanut scientist George Washington Carver."
+    },
+    {
+     "id": "family-w-352",
+     "text": "Saving up my boogers for ten years and then building the world’s largest booger."
+    },
+    {
+     "id": "family-w-353",
+     "text": "Swallowing a bunch of popcorn kernels and shooting them out of my butt like a machine gun."
+    },
+    {
+     "id": "family-w-354",
+     "text": "A hug."
+    },
+    {
+     "id": "family-w-355",
+     "text": "The Dark Lord."
+    },
+    {
+     "id": "family-w-356",
+     "text": "Being super serious right now."
+    },
+    {
+     "id": "family-w-357",
+     "text": "Freeing a fart from its butt prison."
+    },
+    {
+     "id": "family-w-358",
+     "text": "An order of mozzarella sticks."
+    },
+    {
+     "id": "family-w-359",
+     "text": "Fake news."
+    },
+    {
+     "id": "family-w-360",
+     "text": "The baby."
+    },
+    {
+     "id": "family-w-361",
+     "text": "Like a million alligators."
+    },
+    {
+     "id": "family-w-362",
+     "text": "Big, slappy hands."
+    },
+    {
+     "id": "family-w-363",
+     "text": "Beer."
+    },
+    {
+     "id": "family-w-364",
+     "text": "Spit."
+    },
+    {
+     "id": "family-w-365",
+     "text": "The fifth graders."
+    },
+    {
+     "id": "family-w-366",
+     "text": "Licking a goat."
+    },
+    {
+     "id": "family-w-367",
+     "text": "A flamethrower."
+    },
+    {
+     "id": "family-w-368",
+     "text": "Drama!"
+    },
+    {
+     "id": "family-w-369",
+     "text": "Old Jim’s Steamy Butt Sauce."
+    },
+    {
+     "id": "family-w-370",
+     "text": "Going to the emergency room."
+    },
+    {
+     "id": "family-w-371",
+     "text": "Sitting atop a pile of tuna, like some kind of tuna queen."
+    },
+    {
+     "id": "family-w-372",
+     "text": "Girls."
+    },
+    {
+     "id": "family-w-373",
+     "text": "A Pringle."
+    },
+    {
+     "id": "family-w-374",
+     "text": "Never showering."
+    },
+    {
+     "id": "family-w-375",
+     "text": "Hunky men."
+    },
+    {
+     "id": "family-w-376",
+     "text": "The gym teacher."
+    },
+    {
+     "id": "family-w-377",
+     "text": "Coming back from the dead."
+    },
+    {
+     "id": "family-w-378",
+     "text": "Burning books."
+    },
+    {
+     "id": "family-w-379",
+     "text": "Deep-frying Dad’s laptop."
+    },
+    {
+     "id": "family-w-380",
+     "text": "Violating the dress code."
+    },
+    {
+     "id": "family-w-381",
+     "text": "Building a ladder of hot dogs to the moon."
+    },
+    {
+     "id": "family-w-382",
+     "text": "Practicing kissing."
+    },
+    {
+     "id": "family-w-383",
+     "text": "Eating a lightning bug to gain its lightning powers."
+    },
+    {
+     "id": "family-w-384",
+     "text": "Slowly turning into cheese."
+    },
+    {
+     "id": "family-w-385",
+     "text": "Whispering secrets to my best friend, Turkey."
+    },
+    {
+     "id": "family-w-386",
+     "text": "Ear wax."
+    },
+    {
+     "id": "family-w-387",
+     "text": "Knives."
+    },
+    {
+     "id": "family-w-388",
+     "text": "Stuff."
+    },
+    {
+     "id": "family-w-389",
+     "text": "Taking a selfie."
+    },
+    {
+     "id": "family-w-390",
+     "text": "Dancing with my son."
+    },
+    {
+     "id": "family-w-391",
+     "text": "Punching a guy through a wall."
+    },
+    {
+     "id": "family-w-392",
+     "text": "Nipples."
+    },
+    {
+     "id": "family-w-393",
+     "text": "Cat pee."
+    },
+    {
+     "id": "family-w-394",
+     "text": "Cringe."
+    },
+    {
+     "id": "family-w-395",
+     "text": "Billie Eilish."
+    },
+    {
+     "id": "family-w-396",
+     "text": "Really bad Dad jokes."
+    },
+    {
+     "id": "family-w-397",
+     "text": "Elegant party hats."
+    },
+    {
+     "id": "family-w-398",
+     "text": "Santa Claus."
+    },
+    {
+     "id": "family-w-399",
+     "text": "The gluteus maximus."
+    },
+    {
+     "id": "family-w-400",
+     "text": "Baby Yoda."
+    },
+    {
+     "id": "family-w-401",
+     "text": "Peeing in the cat’s litter box."
+    },
+    {
+     "id": "family-w-402",
+     "text": "A big sad dragon with no friends."
+    },
+    {
+     "id": "family-w-403",
+     "text": "A big whiny cry-baby."
+    },
+    {
+     "id": "family-w-404",
+     "text": "Seymour Butts."
+    },
+    {
+     "id": "family-w-405",
+     "text": "The bus driver."
+    },
+    {
+     "id": "family-w-406",
+     "text": "Getting run over by a train."
+    },
+    {
+     "id": "family-w-407",
+     "text": "Spinning and barfing."
+    },
+    {
+     "id": "family-w-408",
+     "text": "Some freakin’ privacy."
+    },
+    {
+     "id": "family-w-409",
+     "text": "Butt hair."
+    },
+    {
+     "id": "family-w-410",
+     "text": "Having many husbands."
+    },
+    {
+     "id": "family-w-411",
+     "text": "Making the bathroom smell."
+    },
+    {
+     "id": "family-w-412",
+     "text": "Coffee."
+    },
+    {
+     "id": "family-w-413",
+     "text": "Anime."
+    },
+    {
+     "id": "family-w-414",
+     "text": "The sweet honking of Karen’s bassoon."
+    },
+    {
+     "id": "family-w-415",
+     "text": "Pooping in a bag and lighting it on fire."
+    },
+    {
+     "id": "family-w-416",
+     "text": "Space lasers."
+    },
+    {
+     "id": "family-w-417",
+     "text": "Being dead."
+    },
+    {
+     "id": "family-w-418",
+     "text": "Pooping barf forever."
+    },
+    {
+     "id": "family-w-419",
+     "text": "FOOOOD FIIIIIIIIIIIIIIIIIGHT!!!"
+    },
+    {
+     "id": "family-w-420",
+     "text": "Wearing high heels."
+    },
+    {
+     "id": "family-w-421",
+     "text": "A long, long snake."
+    },
+    {
+     "id": "family-w-422",
+     "text": "Getting trampled by horses."
+    },
+    {
+     "id": "family-w-423",
+     "text": "The babysitter."
+    },
+    {
+     "id": "family-w-424",
+     "text": "The lunch lady."
+    },
+    {
+     "id": "family-w-425",
+     "text": "Peeing on my poopy."
+    },
+    {
+     "id": "family-w-426",
+     "text": "Not wearing pants."
+    },
+    {
+     "id": "family-w-427",
+     "text": "Meatballs, meatballs, meatballs!"
+    },
+    {
+     "id": "family-w-428",
+     "text": "Finding Waldo."
+    },
+    {
+     "id": "family-w-429",
+     "text": "Going around sniffing people’s armpits."
+    },
+    {
+     "id": "family-w-430",
+     "text": "Stealing Mom’s credit card."
+    },
+    {
+     "id": "family-w-431",
+     "text": "Diaper beans."
+    },
+    {
+     "id": "family-w-432",
+     "text": "Cigarettes."
+    },
+    {
+     "id": "family-w-433",
+     "text": "Getting my ponytail stuck in my butt."
+    },
+    {
+     "id": "family-w-434",
+     "text": "Looking into people’s windows."
+    },
+    {
+     "id": "family-w-435",
+     "text": "Sucking at life."
+    },
+    {
+     "id": "family-w-436",
+     "text": "Covering my body with vaseline and sliding on the floor like a slug."
+    },
+    {
+     "id": "family-w-437",
+     "text": "Evil."
+    },
+    {
+     "id": "family-w-438",
+     "text": "A big rock."
+    },
+    {
+     "id": "family-w-439",
+     "text": "Rubbing lotion on a hairless cat."
+    },
+    {
+     "id": "family-w-440",
+     "text": "Goblins."
+    },
+    {
+     "id": "family-w-441",
+     "text": "Nasty Cousin Amber."
+    },
+    {
+     "id": "family-w-442",
+     "text": "Tongue kissing."
+    },
+    {
+     "id": "family-w-443",
+     "text": "Abraham Lincoln."
+    },
+    {
+     "id": "family-w-444",
+     "text": "Covering myself with ketchup and mustard because I am hot dog."
+    },
+    {
+     "id": "family-w-445",
+     "text": "Hot, fresh doodies."
+    },
+    {
+     "id": "family-w-446",
+     "text": "Feet."
+    },
+    {
+     "id": "family-w-447",
+     "text": "Sadness."
+    },
+    {
+     "id": "family-w-448",
+     "text": "Going beast mode."
+    },
+    {
+     "id": "family-w-449",
+     "text": "An owl that hates you."
+    },
+    {
+     "id": "family-w-450",
+     "text": "A doll that pees real pee!"
+    },
+    {
+     "id": "family-w-451",
+     "text": "A naked lady in a painting."
+    },
+    {
+     "id": "family-w-452",
+     "text": "Chunks."
+    },
+    {
+     "id": "family-w-453",
+     "text": "Some weird guy."
+    },
+    {
+     "id": "family-w-454",
+     "text": "Getting a girlfriend."
+    },
+    {
+     "id": "family-w-455",
+     "text": "Falling in love with a hot dog."
+    },
+    {
+     "id": "family-w-456",
+     "text": "Throwing stuff at other stuff."
+    },
+    {
+     "id": "family-w-457",
+     "text": "Hogs."
+    },
+    {
+     "id": "family-w-458",
+     "text": "A turd that just won’t flush."
+    },
+    {
+     "id": "family-w-459",
+     "text": "The entire state of Texas."
+    },
+    {
+     "id": "family-w-460",
+     "text": "Showing everyone my butt."
+    },
+    {
+     "id": "family-w-461",
+     "text": "My big donkey brother."
+    },
+    {
+     "id": "family-w-462",
+     "text": "The huge, stupid moon."
+    },
+    {
+     "id": "family-w-463",
+     "text": "Math."
+    },
+    {
+     "id": "family-w-464",
+     "text": "Pee-pee."
+    },
+    {
+     "id": "family-w-465",
+     "text": "Dinner."
+    },
+    {
+     "id": "family-w-466",
+     "text": "Butthole."
+    },
+    {
+     "id": "family-w-467",
+     "text": "Smelling like onions."
+    },
+    {
+     "id": "family-w-468",
+     "text": "Being fake."
+    },
+    {
+     "id": "family-w-469",
+     "text": "Peer pressure."
+    },
+    {
+     "id": "family-w-470",
+     "text": "Peeing in my backpack."
+    },
+    {
+     "id": "family-w-471",
+     "text": "Bad parenting."
+    },
+    {
+     "id": "family-w-472",
+     "text": "Mom’s butt."
+    },
+    {
+     "id": "family-w-473",
+     "text": "One weird lookin’ toe."
+    },
+    {
+     "id": "family-w-474",
+     "text": "You."
+    },
+    {
+     "id": "family-w-475",
+     "text": "Boys."
+    },
+    {
+     "id": "family-w-476",
+     "text": "Sitting on a cake."
+    },
+    {
+     "id": "family-w-477",
+     "text": "Teaching a chicken to kill."
+    },
+    {
+     "id": "family-w-478",
+     "text": "The middle finger."
+    },
+    {
+     "id": "family-w-479",
+     "text": "A bra."
+    },
+    {
+     "id": "family-w-480",
+     "text": "Being famous on YouTube."
+    },
+    {
+     "id": "family-w-481",
+     "text": "Cream."
+    },
+    {
+     "id": "family-w-482",
+     "text": "Balls."
+    },
+    {
+     "id": "family-w-483",
+     "text": "Having no friends."
+    },
+    {
+     "id": "family-w-484",
+     "text": "Peeing into everyone’s mouth."
+    },
+    {
+     "id": "family-w-485",
+     "text": "Gluing my butt cheeks together."
+    },
+    {
+     "id": "family-w-486",
+     "text": "How school slowly breaks your spirit and drains your will to live."
+    },
+    {
+     "id": "family-w-487",
+     "text": "A Pokémon named “Jim.”"
+    },
+    {
+     "id": "family-w-488",
+     "text": "True love’s kiss."
+    },
+    {
+     "id": "family-w-489",
+     "text": "Total crap."
+    },
+    {
+     "id": "family-w-490",
+     "text": "Cool sunglasses."
+    },
+    {
+     "id": "family-w-491",
+     "text": "Literally dying from the smell of a fart."
+    },
+    {
+     "id": "family-w-492",
+     "text": "Snot bubbles."
+    },
+    {
+     "id": "family-w-493",
+     "text": "Doing crimes and going to jail."
+    },
+    {
+     "id": "family-w-494",
+     "text": "This goat, who is my friend."
+    },
+    {
+     "id": "family-w-495",
+     "text": "Aliens."
+    },
+    {
+     "id": "family-w-496",
+     "text": "School."
+    },
+    {
+     "id": "family-w-497",
+     "text": "A cow."
+    },
+    {
+     "id": "family-w-498",
+     "text": "The terrible winter of 1609."
+    },
+    {
+     "id": "family-w-499",
+     "text": "Getting sucked into a jet engine."
+    },
+    {
+     "id": "family-w-500",
+     "text": "Not breathing."
+    },
+    {
+     "id": "family-w-501",
+     "text": "Licking a used band-aid."
+    },
+    {
+     "id": "family-w-502",
+     "text": "Braiding my armpit hair."
+    },
+    {
+     "id": "family-w-503",
+     "text": "Waking up inside of a spider web."
+    },
+    {
+     "id": "family-w-504",
+     "text": "An eggy smell."
+    },
+    {
+     "id": "family-w-505",
+     "text": "Getting hit by an airplane."
+    }
+   ]
+  }
+ ]
+}
