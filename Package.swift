@@ -22,6 +22,7 @@ let package = Package(
                 "play/swipe-cards/swipe-cards.feature",
                 "play/answers/answers.feature",
                 "play/game-cards/game-cards.feature",
+                "play/play-game/play-game.feature",
                 "people/manage-profiles/manage-profiles.feature",
                 "people/manage-groups/manage-groups.feature",
                 "library/choose-decks/choose-decks.feature",

@@ -1,13 +1,13 @@
 import Foundation
 
-public struct BlackCard: Identifiable, Equatable {
+public struct BlackCard: Identifiable, Equatable, Codable {
     public let id: String
     public let setID: String
     public let text: String
     public let pick: Int
 }
 
-public struct WhiteCard: Identifiable, Equatable {
+public struct WhiteCard: Identifiable, Equatable, Codable {
     public let id: String
     public let setID: String
     public let text: String
