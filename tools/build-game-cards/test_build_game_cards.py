@@ -130,11 +130,11 @@ class SettleOcrSlipsTests(unittest.TestCase):
         return [c["text"] for c in next(s for s in sets if s["id"] == set_id)["white"]]
 
     def test_a_card_one_edit_from_a_card_in_two_sets_takes_that_cards_text(self):
-        sets = [card_set("a", "Shut the fuck up."), card_set("b", "Shut the fuck up."), card_set("c", "Shut the fuck up,")]
+        sets = [card_set("a", "Eat the whole pie."), card_set("b", "Eat the whole pie."), card_set("c", "Eat the whole pie,")]
 
         settle_ocr_slips(sets)
 
-        self.assertEqual(self.texts(sets, "c"), ["Shut the fuck up."])
+        self.assertEqual(self.texts(sets, "c"), ["Eat the whole pie."])
 
     def test_cards_that_differ_in_a_number_are_different_cards(self):
         sets = [card_set("a", "Barely making $25,000 a year."), card_set("b", "Barely making $25,000 a year."),
@@ -145,11 +145,11 @@ class SettleOcrSlipsTests(unittest.TestCase):
         self.assertEqual(self.texts(sets, "c"), ["Barely making £15,000 a year."])
 
     def test_a_card_close_to_a_card_in_only_one_other_set_is_left_alone(self):
-        sets = [card_set("a", "A fuck-ton of almonds."), card_set("b", "A fuck-tonne of almonds.")]
+        sets = [card_set("a", "A ton of almonds."), card_set("b", "A tonne of almonds.")]
 
         settle_ocr_slips(sets)
 
-        self.assertEqual(self.texts(sets, "b"), ["A fuck-tonne of almonds."])
+        self.assertEqual(self.texts(sets, "b"), ["A tonne of almonds."])
 
     def test_a_card_that_is_in_more_than_one_set_is_left_alone(self):
         sets = [card_set("a", "Shut up."), card_set("b", "Shut up."), card_set("c", "Shut up,"), card_set("d", "Shut up,")]
