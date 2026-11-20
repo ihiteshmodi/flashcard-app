@@ -1,6 +1,9 @@
 # Private source content and mockups
 Internal Artifacts/
 
+# Agent skills (kept local, not published)
+.agents/
+
 # Generated card data (built from the private source)
 Generated/
 *.sqlite
