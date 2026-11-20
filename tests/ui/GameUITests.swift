@@ -87,7 +87,8 @@ final class GameUITests: FlashcardsUITestCase {
         app.buttons["end-game"].tap()
         app.buttons["End Game"].tap()
 
-        XCTAssertTrue(app.buttons["start-game"].waitForExistence(timeout: 15), "there is no game to continue")
+        XCTAssertTrue(app.navigationBars["Party Game"].waitForExistence(timeout: 15), "the setup screen is back")
+        XCTAssertFalse(app.buttons["scores"].exists, "there is no game to continue")
         XCTAssertTrue(app.descendants(matching: .any)["score-Sam"].firstMatch.exists, "the final scores are shown")
     }
 
